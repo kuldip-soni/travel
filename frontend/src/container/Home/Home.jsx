@@ -6,7 +6,7 @@ function Home(props) {
             <section id="hero">
                 <div className="container">
                     <div className="hero-size">
-                        <h1>Make in your journey.</h1>
+                        <h1>Make in your journeyc.</h1>
                         <p className="sub-title">
                             Explore the world with what you love beautiful natural beauty.
                         </p>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 function Header(props) {
     return (
@@ -11,8 +12,9 @@ function Header(props) {
                     <i className="fa-solid fa-bars menubars" onclick="handleMenu()" />
                     <ul id="menu">
                         <i className="fa-solid fa-xmark xmarkbar" onclick="handleMenu()" />
-                        <li><a href="./index.html">Home</a></li>
-                        <li><a href="./About Us.html">About Us</a></li>
+                        <li><NavLink to='/'>Home</NavLink></li>
+                        <li><NavLink to='/about'>About Us</NavLink></li>
+                        <li><NavLink to='/destination'>Destination</NavLink></li>
                         <li>
                             <a href="./Package.html">Package <i className="fa-solid fa-chevron-down" /></a>
                             <ul className="Products-items">
