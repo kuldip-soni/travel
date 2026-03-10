@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './component/Header/Header';
 import Footer from './component/Footer/Footer';
 import Home from './container/Home/Home';
@@ -10,8 +10,20 @@ import UserRoutes from './Routes/UserRoutes';
 import AdminRoutes from './Routes/AdminRoutes';
 
 function App(props) {
+  const [count, setCount] = useState(0);
   return (
     <div>
+      <h1>React Counter</h1>
+
+      <h2>{count}</h2>
+
+      <button onClick={() => setCount(count + 1)}>
+        Increase
+      </button>
+
+      <button onClick={() => setCount(count - 1)}>
+        Decrease
+      </button>
        <Button variant="contained" color="success">
             Success
         </Button>
@@ -19,7 +31,6 @@ function App(props) {
       <Routes>
         <Route path='/*' element={<UserRoutes/>} />
         <Route path='/Admin/*' element={<AdminRoutes/>} />
-
       </Routes>
       
     </div>
@@ -27,3 +38,5 @@ function App(props) {
 }
 
 export default App;
+        
+

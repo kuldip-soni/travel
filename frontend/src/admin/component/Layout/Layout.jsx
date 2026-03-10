@@ -115,8 +115,8 @@ export default function Layout({children}) {
   };
 
   const alllinks=[
-    {icon:'AddLocationAltIcon',label:'Loaction',to:'/admin/location'},
-    {icon:'BackpackIcon',label:'Package',to:'/admin/package'},
+    {icon:<AddLocationAltIcon />,label:'Location',to:'/admin/location'},
+    {icon:<BackpackIcon />,label:'Package',to:'/admin/package'},
 
     ]
 
