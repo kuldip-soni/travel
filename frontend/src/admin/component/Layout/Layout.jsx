@@ -20,6 +20,14 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import BackpackIcon from '@mui/icons-material/Backpack';
+import MapIcon from '@mui/icons-material/Map';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import HotelIcon from '@mui/icons-material/Hotel';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import PersonIcon from '@mui/icons-material/Person';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import SensorDoorIcon from '@mui/icons-material/SensorDoor';
+import BookIcon from '@mui/icons-material/Book';
 import { NavLink } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -102,7 +110,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function Layout({children}) {
+export default function Layout({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -114,14 +122,29 @@ export default function Layout({children}) {
     setOpen(false);
   };
 
-  const alllinks=[
-    {icon:<AddLocationAltIcon />,label:'Location',to:'/admin/location'},
-    {icon:<BackpackIcon />,label:'Package',to:'/admin/package'},
+  const alllinks = [
+    { icon: <AddLocationAltIcon />, label: 'Location', to: '/admin/location' },
+    { icon: <BackpackIcon />, label: 'Package', to: '/admin/package' },
+    { icon: <MapIcon />, label: 'Itineary', to: '/admin/itineary' },
+    { icon: <DirectionsBusIcon />, label: 'Transport', to: '/admin/transport' },
+    { icon: <HotelIcon />, label: 'Hotel', to: '/admin/hotel' },
+    { icon: <LocalDiningIcon />, label: 'Restaurant', to: '/admin/restaurant' },
+    { icon: <PersonIcon />, label: 'Vendor', to: '/admin/vendor' },
+    { icon: <HomeRepairServiceIcon />, label: 'Service', to: '/admin/service' },
+    { icon: <SensorDoorIcon />, label: 'Room', to: '/admin/room' },
+    { icon: <BookIcon />, label: 'Blog', to: '/admin/blog' },
 
-    ]
 
-    console.log(alllinks);
-    
+
+
+
+
+
+
+  ]
+
+  console.log(alllinks);
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -165,11 +188,11 @@ export default function Layout({children}) {
                   },
                   open
                     ? {
-                        justifyContent: 'initial',
-                      }
+                      justifyContent: 'initial',
+                    }
                     : {
-                        justifyContent: 'center',
-                      },
+                      justifyContent: 'center',
+                    },
                 ]}
 
                 component={NavLink}
@@ -183,11 +206,11 @@ export default function Layout({children}) {
                     },
                     open
                       ? {
-                          mr: 3,
-                        }
+                        mr: 3,
+                      }
                       : {
-                          mr: 'auto',
-                        },
+                        mr: 'auto',
+                      },
                   ]}
                 >
                   {v.icon}
@@ -197,23 +220,23 @@ export default function Layout({children}) {
                   sx={[
                     open
                       ? {
-                          opacity: 1,
-                        }
+                        opacity: 1,
+                      }
                       : {
-                          opacity: 0,
-                        },
+                        opacity: 0,
+                      },
                   ]}
                 />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
-        
+
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        { children }
-        
+        {children}
+
       </Box>
     </Box>
   );

@@ -13,20 +13,6 @@ function App(props) {
   const [count, setCount] = useState(0);
   return (
     <div>
-      <h1>React Counter</h1>
-
-      <h2>{count}</h2>
-
-      <button onClick={() => setCount(count + 1)}>
-        Increase
-      </button>
-
-      <button onClick={() => setCount(count - 1)}>
-        Decrease
-      </button>
-       <Button variant="contained" color="success">
-            Success
-        </Button>
       
       <Routes>
         <Route path='/*' element={<UserRoutes/>} />
@@ -38,5 +24,6 @@ function App(props) {
 }
 
 export default App;
+
         
 

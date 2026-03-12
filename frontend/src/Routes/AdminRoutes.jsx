@@ -5,17 +5,48 @@ import Location from '../admin/container/Location/Location';
 import { ThemeProvider } from '@emotion/react';
 import theme from '../admin/theme';
 import Package from '../admin/container/Package/Package';
+import Itineary from '../admin/container/itineary/Itineary';
+import Transport from '../admin/container/Transport/Transport';
+import Hotel from '../admin/container/Hotel/Hotel';
+import Restaurant from '../admin/container/Restaurant/Restaurant';
+import Vendor from '../admin/container/Vendor/Vendor';
+import Service from '../admin/container/Service/Service';
+import Room from '../admin/container/Room/Room';
+import Blog from '../admin/container/Blog/Blog';
+
+
+
+
+
+
+
 
 function AdminRoutes(props) {
     return (
-    <ThemeProvider theme={theme}>
-     <Layout>
-        <Routes>
-            <Route path='/location' element={<Location />}/>
-            <Route path='/package'  element={<Package />}/>
-        </Routes>
-     </Layout>
-    </ThemeProvider>
+        <ThemeProvider theme={theme}>
+            <Layout>
+                <Routes>
+                    <Route path='/location' element={<Location />} />
+                    <Route path='/package' element={<Package />} />
+                    <Route path='/itineary' element={<Itineary />} />
+                    <Route path='/transport' element={<Transport />} />
+                    <Route path='/hotel' element={<Hotel />} />
+                    <Route path='/restaurant' element={<Restaurant />} />
+                    <Route path='/vendor' element={<Vendor />} />
+                    <Route path='/service' element={<Service />} />
+                    <Route path='/room' element={<Room />} />
+                    <Route path='/blog' element={<Blog />} />
+
+
+
+
+
+
+
+
+                </Routes>
+            </Layout>
+        </ThemeProvider>
     );
 }
 
