@@ -31,6 +31,17 @@ app.put('/putlocation/:id',(req,res)=>{
 })
 
 })
+
+app.delete('/dellocation/:id',(req,res)=>{
+  console.log(req.params.id);
+
+  res.status(200).json({
+    sucess:true,
+    data:null,
+    message:"location is delete sucessfuly"
+  })
+  
+})
     
     
 

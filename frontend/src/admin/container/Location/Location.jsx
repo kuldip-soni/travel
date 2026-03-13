@@ -17,24 +17,7 @@ import { useFormik } from 'formik';
 
 
 
-const location = [
-    {
-        value: '',
-        label: '--select location--',
-    },
-    {
-        value: 'ind',
-        label: 'india',
-    },
-    {
-        value: 'jpn',
-        label: 'japan',
-    },
-    {
-        value: 'usa',
-        label: 'usa',
-    },
-];
+
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -70,7 +53,7 @@ function Location(props) {
     };
 
     let locationschema = object({
-        Location: string().required('please select location'),
+        
         loction_img: mixed().required('please upload location image'),
 
 
@@ -79,7 +62,7 @@ function Location(props) {
 
     const formik = useFormik({
         initialValues: {
-            Location: '',
+            
             loction_img:'',
 
         },
@@ -113,30 +96,7 @@ function Location(props) {
                     <DialogContent>
 
                         <form onSubmit={formik.handleSubmit} id="subscription-form">
-                            <TextField
-                                error={formik.errors.Location && formik.touched.Location}
-                                id="standard-select-currency-native"
-                                name="Location"
-                                select
-                                fullWidth
-
-                                slotProps={{
-                                    select: {
-                                        native: true,
-                                    },
-                                }}
-                                variant="standard"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.Location}
-                                helperText={formik.errors.Location && formik.touched.Location ? formik.errors.Location : ''}
-                            >
-                                {location.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </TextField>
+                            
 
                             <TextField
 
@@ -184,7 +144,7 @@ function Location(props) {
                                 tabIndex={-1}
                                 startIcon={<CloudUploadIcon />}
                             >
-                                Upload image
+                                Upload  location image
                                 <VisuallyHiddenInput
                                     error={formik.errors.loction_img && formik.touched.loction_img}
                                     type="file"
