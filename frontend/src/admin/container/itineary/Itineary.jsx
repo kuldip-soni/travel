@@ -16,7 +16,7 @@ import { useFormik } from 'formik';
 const Package = [
   {
     value: '',
-    label: '--select location--',
+    label: '--select package--',
   },
   {
     value: 'ind',
@@ -54,13 +54,17 @@ function Itineary(props) {
   };
 
   let itinearyschema = object({
-    Package: string().required('please select  Package'),
+    Package: string().required('please select  package'),
+    title: string().required('please enter title'),
+    description: string().required('please enter description'),
 
   });
 
   const formik = useFormik({
     initialValues: {
       Package: '',
+      title: '',
+      description:'',
 
 
 
@@ -124,7 +128,7 @@ function Itineary(props) {
 
 
               <TextField
-                
+                error={formik.errors.title && formik.touched.title}
                 margin="dense"
                 id="title"
                 name="title"
@@ -132,17 +136,27 @@ function Itineary(props) {
                 type="text"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.title}
+                helperText={formik.errors.title && formik.touched.title ? formik.errors.title : ''}
               />
 
               <TextField
-                
+                error={formik.errors.description && formik.touched.description}
                 margin="dense"
                 id="description"
                 name="description"
                 label="Description"
                 type="text"
+                multiline
+                rows={4}
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.description}
+                helperText={formik.errors.description && formik.touched.description ? formik.errors.description : ''}
               />
             </form>
           </DialogContent>

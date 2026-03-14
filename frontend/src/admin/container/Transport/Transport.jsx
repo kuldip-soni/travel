@@ -16,7 +16,7 @@ import { useFormik } from 'formik';
 const vendor = [
   {
     value: '',
-    label: '--select location--',
+    label: '--select vendor--',
   },
   {
     value: 'ind',
@@ -35,7 +35,7 @@ const vendor = [
 const service = [
   {
     value: '',
-    label: '--select location--',
+    label: '--select service--',
   },
   {
     value: 'ind',
@@ -74,6 +74,12 @@ function Transport(props) {
   let Transportschema = object({
     vendor: string().required('please select vendor'),
     service: string().required('please select service'),
+    From: string().required('please enter From'),
+    To: string().required('please enter To'),
+    DateTime: string().required('please enter Date & Time'),
+    Passenger: string().required('please enter Passenger'),
+    Amount: string().required('please enter Amount'),
+
 
 
   });
@@ -82,6 +88,11 @@ function Transport(props) {
     initialValues: {
       vendor: '',
       service: '',
+      From:'',
+      To:'',
+      DateTime:'',
+      Passenger:'',
+      Amount:'',
 
 
 
@@ -137,6 +148,7 @@ function Transport(props) {
                   </option>
                 ))}
               </TextField>
+              <br /><br />
 
               <TextField
                 error={formik.errors.service && formik.touched.service}
@@ -164,7 +176,7 @@ function Transport(props) {
               </TextField>
 
               <TextField
-                
+                error={formik.errors.From && formik.touched.From}
                 margin="dense"
                 id="From"
                 name="From"
@@ -172,10 +184,14 @@ function Transport(props) {
                 type="text"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.From}
+                helperText={formik.errors.From && formik.touched.From ? formik.errors.From : ''}
               />
 
               <TextField
-               
+               error={formik.errors.To && formik.touched.To}
                 margin="dense"
                 id="To"
                 name="To"
@@ -183,40 +199,57 @@ function Transport(props) {
                 type="text"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.To}
+                helperText={formik.errors.To && formik.touched.To ? formik.errors.To : ''}
               />
 
               <TextField
-               
+               error={formik.errors.DateTime && formik.touched.DateTime}
                 margin="dense"
-                id="Date & Time"
-                name="Date & Time"
-                label="Date & Time"
-                type="text"
+                id="DateTime"
+                name="DateTime"
+                
+                type="datetime-local"
                 fullWidth
                 variant="standard"
+                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.DateTime}
+                helperText={formik.errors.DateTime && formik.touched.DateTime ? formik.errors.DateTime : ''}
               />
 
               <TextField
-                
+                error={formik.errors.Passenger && formik.touched.Passenger}
                 margin="dense"
                 id="Passenger"
                 name="Passenger"
                 label="Passenger"
-                type="text"
+                type="number"
                 fullWidth
                 variant="standard"
+                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Passenger}
+                helperText={formik.errors.Passenger && formik.touched.Passenger ? formik.errors.Passenger : ''}
               />
 
               <TextField
-                
+                error={formik.errors.Amount && formik.touched.Amount}
                 margin="dense"
                 id="Amount"
                 name="Amount"
                 label="Amount"
-                type="text"
+                type="number"
                 fullWidth
                 variant="standard"
+                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Amount}
+                helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
               />
+              
 
 
             </form>

@@ -38,7 +38,7 @@ const location = [
 const iteneary = [
     {
         value: '',
-        label: '--select location--',
+        label: '--select iteneary--',
     },
     {
         value: 'ind',
@@ -90,9 +90,14 @@ function Package(props) {
 
     let packageschema = object({
         Location: string().required('please select location'),
+        name: string().required('please enter name'),
+        duration: string().required('please enter duration'),
+        Price: string().required('please enter Price'),
         iteneary: string().required('please select iteneary'),
-
         package_img: mixed().required('please upload package image'),
+
+
+
     });
 
 
@@ -101,6 +106,9 @@ function Package(props) {
     const formik = useFormik({
         initialValues: {
             Location: '',
+            name:'',
+            duration:'',
+            Price:'',
             iteneary:'',
             package_img: '',
 
@@ -157,7 +165,7 @@ function Package(props) {
                             </TextField>
 
                             <TextField
-
+                                error={formik.errors.name && formik.touched.name}
                                 margin="dense"
                                 id="name"
                                 name="name"
@@ -165,10 +173,14 @@ function Package(props) {
                                 type="text"
                                 fullWidth
                                 variant="standard"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.name}
+                                helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
                             />
 
                             <TextField
-
+                                 error={formik.errors.duration && formik.touched.duration}
                                 margin="dense"
                                 id="duration"
                                 name="duration"
@@ -176,17 +188,25 @@ function Package(props) {
                                 type="text"
                                 fullWidth
                                 variant="standard"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.duration}
+                                helperText={formik.errors.duration && formik.touched.duration ? formik.errors.duration : ''}
                             />
 
                             <TextField
-
+                               error={formik.errors.Price && formik.touched.Price}
                                 margin="dense"
                                 id="Price"
                                 name="Price"
                                 label="Price"
-                                type="text"
+                                type="number"
                                 fullWidth
                                 variant="standard"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.Price}
+                                helperText={formik.errors.Price && formik.touched.Price ? formik.errors.Price : ''}
                             />
                             <br /><br />
 
@@ -208,7 +228,7 @@ function Package(props) {
                                 value={formik.values.iteneary}
                                 helperText={formik.errors.iteneary && formik.touched.iteneary ? formik.errors.iteneary : ''}
                             >
-                                {location.map((option) => (
+                                {iteneary.map((option) => (
                                     <option key={option.value} value={option.value}>
                                         {option.label}
                                     </option>

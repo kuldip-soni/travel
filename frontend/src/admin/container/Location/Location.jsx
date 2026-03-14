@@ -53,17 +53,22 @@ function Location(props) {
     };
 
     let locationschema = object({
-        
-        loction_img: mixed().required('please upload location image'),
 
+        loction_img: mixed().required('please upload location image'),
+        city: string().required('please enter city'),
+        state: string().required('please enter state'),
+        country: string().required('please enter country'),
 
     });
 
 
     const formik = useFormik({
         initialValues: {
-            
-            loction_img:'',
+
+            loction_img: '',
+            city: '',
+            state:'',
+            country:'',
 
         },
         validationSchema: locationschema,
@@ -96,9 +101,10 @@ function Location(props) {
                     <DialogContent>
 
                         <form onSubmit={formik.handleSubmit} id="subscription-form">
-                            
+
 
                             <TextField
+                                error={formik.errors.city && formik.touched.city}
 
 
                                 margin="dense"
@@ -108,11 +114,17 @@ function Location(props) {
                                 type="text"
                                 fullWidth
                                 variant="standard"
+                            
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.city}
+                                helperText={formik.errors.city && formik.touched.city ? formik.errors.city : ''}
+                                
                             />
 
                             <TextField
 
-
+                                error={formik.errors.state && formik.touched.state}
                                 margin="dense"
                                 id="state"
                                 name="state"
@@ -120,11 +132,15 @@ function Location(props) {
                                 type="text"
                                 fullWidth
                                 variant="standard"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.state}
+                                helperText={formik.errors.state && formik.touched.state ? formik.errors.state : ''}
                             />
 
                             <TextField
 
-
+                                 error={formik.errors.country && formik.touched.country}
                                 margin="dense"
                                 id="country"
                                 name="country"
@@ -132,6 +148,10 @@ function Location(props) {
                                 type="text"
                                 fullWidth
                                 variant="standard"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.country}
+                                helperText={formik.errors.country && formik.touched.country ? formik.errors.country : ''}
                             />
 
                             <br /><br />
@@ -149,22 +169,22 @@ function Location(props) {
                                     error={formik.errors.loction_img && formik.touched.loction_img}
                                     type="file"
                                     name='loction_img'
-                                   
+
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.loction_img}
-                                    
+
                                     //onChange={(event) => console.log(event.target.files)}
                                     multiple
                                 />
                             </Button>
                             <br />
-                        
-                              {formik.errors.loction_img && formik.touched.loction_img ? 
-                             <span className='error'>{formik.errors.loction_img}</span>  :
-                               ''}
-                              
-                            
+
+                            {formik.errors.loction_img && formik.touched.loction_img ?
+                                <span className='error'>{formik.errors.loction_img}</span> :
+                                ''}
+
+
 
 
                         </form>
