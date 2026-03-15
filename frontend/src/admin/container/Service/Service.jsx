@@ -16,7 +16,7 @@ import { useFormik } from 'formik';
 const vendor = [
   {
     value: '',
-    label: '--select location--',
+    label: '--select Vendor--',
   },
   {
     value: 'ind',
@@ -54,12 +54,20 @@ function Service(props) {
 
   let Serviceschema = object({
     vendor: string().required('please select vendor'),
+    Name: string().required('please enter Name'),
+    Description: string().required('please enter Description'),
+    Amount: string().required('please enter Amount'),
+
+
 
 
   });
   const formik = useFormik({
     initialValues: {
       vendor: '',
+      Name: '',
+      Description: '',
+      Amount: '',
 
 
 
@@ -118,7 +126,8 @@ function Service(props) {
               </TextField>
 
               <TextField
-               
+
+                error={formik.errors.Name && formik.touched.Name}
                 margin="dense"
                 id="Name"
                 name="Name"
@@ -126,28 +135,45 @@ function Service(props) {
                 type="text"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Name}
+                helperText={formik.errors.Name && formik.touched.Name ? formik.errors.Name : ''}
               />
 
               <TextField
-               
+
+                error={formik.errors.Description && formik.touched.Description}
                 margin="dense"
                 id="Description"
                 name="Description"
                 label="Description"
                 type="text"
                 fullWidth
+                multiline
+                rows={4}
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Description}
+                helperText={formik.errors.Description && formik.touched.Description ? formik.errors.Description : ''}
+
               />
 
               <TextField
-                
+
+                error={formik.errors.Amount && formik.touched.Amount}
                 margin="dense"
                 id="Amount"
                 name="Amount"
                 label="Amount"
-                type="text"
+                type="number"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Amount}
+                helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
               />
 
 

@@ -1,41 +1,41 @@
 const express = require("express");
 const router = express.Router();
 
-router.get('/getlocation', (req, res) => {
+router.get('/gettransport', (req, res) => {
     res.send('Hello Node!')
 })
 
-router.post('/addlocation', (req, res) => {
+router.post('/addtransport', (req, res) => {
     console.log(req.body);
 
     res.status(200).json({
         sucess: true,
         data: req.body,
-        message: "location is add sucessfuly"
+        message: "transport is add sucessfuly"
 
     })
 
 })
 
-router.put('/putlocation/:id', (req, res) => {
+router.put('/puttransport/:id', (req, res) => {
     console.log(req.params.id, req.body);
 
     res.status(200).json({
         sucess: true,
         data: req.body,
-        message: "location is update sucessfuly"
+        message: "transport is update sucessfuly"
 
     })
 
 })
 
-router.delete('/dellocation/:id', (req, res) => {
+router.delete('/deltransport/:id', (req, res) => {
     console.log(req.params.id);
 
     res.status(200).json({
         sucess: true,
         data: null,
-        message: "location is delete sucessfuly"
+        message: "transport is delete sucessfuly"
     })
 
 })

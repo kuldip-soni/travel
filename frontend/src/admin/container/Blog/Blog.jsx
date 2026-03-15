@@ -49,6 +49,10 @@ function Blog(props) {
   let Blogschema = object({
 
     Blog_img: mixed().required('please upload Blog image'),
+    Title: string().required('please enter Title'),
+    Date: string().required('please select Date'),
+    Description: string().required('please enter Description'),
+
 
 
   });
@@ -58,6 +62,9 @@ function Blog(props) {
     initialValues: {
 
       Blog_img: '',
+      Title: '',
+      Date: '',
+      Description: '',
 
     },
     validationSchema: Blogschema,
@@ -88,7 +95,8 @@ function Blog(props) {
 
 
               <TextField
-               
+
+                error={formik.errors.Title && formik.touched.Title}
                 margin="dense"
                 id="Title"
                 name="Title"
@@ -96,28 +104,43 @@ function Blog(props) {
                 type="text"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Title}
+                helperText={formik.errors.Title && formik.touched.Title ? formik.errors.Title : ''}
               />
 
               <TextField
-                
+
+                error={formik.errors.Date && formik.touched.Date}
                 margin="dense"
                 id="Date"
                 name="Date"
-                label="Date"
-                type="text"
+                type="date"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Date}
+                helperText={formik.errors.Date && formik.touched.Date ? formik.errors.Date : ''}
               />
 
               <TextField
-                
+
+                error={formik.errors.Description && formik.touched.Description}
                 margin="dense"
                 id="Description"
                 name="Description"
                 label="Description"
                 type="text"
+                multiline
+                rows={4}
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Description}
+                helperText={formik.errors.Description && formik.touched.Description ? formik.errors.Description : ''}
               />
 
               <br /><br />

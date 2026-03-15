@@ -17,7 +17,7 @@ import { useFormik } from 'formik';
 const vendor = [
   {
     value: '',
-    label: '--select location--',
+    label: '--select vendor--',
   },
   {
     value: 'ind',
@@ -36,7 +36,7 @@ const vendor = [
 const service = [
   {
     value: '',
-    label: '--select location--',
+    label: '--select service--',
   },
   {
     value: 'ind',
@@ -75,6 +75,13 @@ function Hotel(props) {
   let Hotelschema = object({
     vendor: string().required('please select vendor'),
     service: string().required('please select service'),
+    Checkin: string().required('please enter Checkin'),
+    Checkout: string().required('please enter Checkout'),
+    Datetime: string().required('please select Datetime'),
+    Passenger: string().required('please enter Passenger'),
+    Amount: string().required('please enter Amount'),
+
+
 
 
   });
@@ -82,10 +89,15 @@ function Hotel(props) {
     initialValues: {
       vendor: '',
       service: '',
-
-
+      Checkin: '',
+      Checkout: '',
+      Datetime: '',
+      Passenger: '',
+      Amount: '',
 
     },
+
+
     validationSchema: Hotelschema,
 
     onSubmit: values => {
@@ -136,7 +148,7 @@ function Hotel(props) {
                   </option>
                 ))}
               </TextField>
-
+              <br /><br />
               <TextField
                 error={formik.errors.service && formik.touched.service}
                 id="standard-select-currency-native"
@@ -163,7 +175,7 @@ function Hotel(props) {
               </TextField>
 
               <TextField
-                
+                error={formik.errors.Checkin && formik.touched.Checkin}
                 margin="dense"
                 id="Checkin"
                 name="Checkin"
@@ -171,10 +183,15 @@ function Hotel(props) {
                 type="text"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Checkin}
+                helperText={formik.errors.Checkin && formik.touched.Checkin ? formik.errors.Checkin : ''}
+
               />
 
               <TextField
-               
+                error={formik.errors.Checkout && formik.touched.Checkout}
                 margin="dense"
                 id="Checkout"
                 name="Checkout"
@@ -182,39 +199,59 @@ function Hotel(props) {
                 type="text"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Checkout}
+                helperText={formik.errors.Checkout && formik.touched.Checkout ? formik.errors.Checkout : ''}
+
               />
 
               <TextField
-               
+                error={formik.errors.Datetime && formik.touched.Datetime}
                 margin="dense"
-                id="Date & Time"
-                name="Date & Time"
-                label="Date & Time"
-                type="text"
+                id="Datetime"
+                name="Datetime"
+                type="datetime-local"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Datetime}
+                helperText={formik.errors.Datetime && formik.touched.Datetime ? formik.errors.Datetime : ''}
+
               />
+
 
               <TextField
 
+                error={formik.errors.Passenger && formik.touched.Passenger}
                 margin="dense"
                 id="Passenger"
                 name="Passenger"
                 label="Passenger"
-                type="text"
+                type="number"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Passenger}
+                helperText={formik.errors.Passenger && formik.touched.Passenger ? formik.errors.Passenger : ''}
               />
 
               <TextField
-                
+
+                error={formik.errors.Amount && formik.touched.Amount}
                 margin="dense"
                 id="Amount"
                 name="Amount"
                 label="Amount"
-                type="text"
+                type="number"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Amount}
+                helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
               />
 
 

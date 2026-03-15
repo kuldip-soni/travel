@@ -16,7 +16,7 @@ import { useFormik } from 'formik';
 const vendor = [
   {
     value: '',
-    label: '--select location--',
+    label: '--select vendor--',
   },
   {
     value: 'ind',
@@ -35,7 +35,7 @@ const vendor = [
 const service = [
   {
     value: '',
-    label: '--select location--',
+    label: '--select service--',
   },
   {
     value: 'ind',
@@ -74,6 +74,10 @@ function Restaurant(props) {
   let Restaurantschema = object({
     vendor: string().required('please select vendor'),
     service: string().required('please select service'),
+    Datetime: string().required('please select Datetime'),
+    meals: string().required('please enter no of meals'),
+    Passenger: string().required('please enter Passenger'),
+    Amount: string().required('please enter Amount'),
 
 
   });
@@ -81,10 +85,14 @@ function Restaurant(props) {
     initialValues: {
       vendor: '',
       service: '',
-
-
+      Datetime: '',
+      meals: '',
+      Passenger: '',
+      Amount: '',
 
     },
+
+
     validationSchema: Restaurantschema,
 
     onSubmit: values => {
@@ -135,7 +143,7 @@ function Restaurant(props) {
                   </option>
                 ))}
               </TextField>
-
+              <br /><br />
               <TextField
                 error={formik.errors.service && formik.touched.service}
                 id="standard-select-currency-native"
@@ -160,49 +168,70 @@ function Restaurant(props) {
                   </option>
                 ))}
               </TextField>
+              <br /><br />
 
               <TextField
-                
+
+                error={formik.errors.Datetime && formik.touched.Datetime}
                 margin="dense"
-                id="Date & Time"
-                name="Date & Time"
-                label="Date & Time"
-                type="text"
+                id="Datetime"
+                name="Datetime"
+                type="datetime-local"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Datetime}
+                helperText={formik.errors.Datetime && formik.touched.Datetime ? formik.errors.Datetime : ''}
+
               />
 
               <TextField
-                
+
+                error={formik.errors.meals && formik.touched.meals}
                 margin="dense"
-                id="No of meals"
-                name="No of meals"
+                id="meals"
+                name="meals"
                 label="No of meals"
-                type="text"
+                type="number"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.meals}
+                helperText={formik.errors.meals && formik.touched.meals ? formik.errors.meals : ''}
               />
 
               <TextField
-                
+
+                error={formik.errors.Passenger && formik.touched.Passenger}
                 margin="dense"
                 id="Passenger"
                 name="Passenger"
                 label="Passenger"
-                type="text"
+                type="number"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Passenger}
+                helperText={formik.errors.Passenger && formik.touched.Passenger ? formik.errors.Passenger : ''}
               />
 
               <TextField
-               
+
+                error={formik.errors.Amount && formik.touched.Amount}
                 margin="dense"
                 id="Amount"
                 name="Amount"
                 label="Amount"
-                type="text"
+                type="number"
                 fullWidth
                 variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.Amount}
+                helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
               />
 
 
