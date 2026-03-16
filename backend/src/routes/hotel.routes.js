@@ -1,43 +1,15 @@
 const express = require("express");
+
+const { gethotel, addhotel, puthotel, delhotel } = require("../controller/hotel.controller");
+
 const router = express.Router();
 
-router.get('/gethotel', (req, res) => {
-    res.send('Hello Node!')
-})
+router.get('/gethotel', gethotel)
 
-router.post('/addhotel', (req, res) => {
-    console.log(req.body);
+router.post('/addhotel', addhotel)
 
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "hotel is add sucessfuly"
+router.put('/puthotel/:id', puthotel)
 
-    })
-
-})
-
-router.put('/puthotel/:id', (req, res) => {
-    console.log(req.params.id, req.body);
-
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "hotel is update sucessfuly"
-
-    })
-
-})
-
-router.delete('/delhotel/:id', (req, res) => {
-    console.log(req.params.id);
-
-    res.status(200).json({
-        sucess: true,
-        data: null,
-        message: "hotel is delete sucessfuly"
-    })
-
-})
+router.delete('/delhotel/:id', delhotel)
 
 module.exports = router;  

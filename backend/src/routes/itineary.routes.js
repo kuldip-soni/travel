@@ -1,43 +1,13 @@
 const express = require("express");
+const { getitineary, additineary, putitineary, delitineary } = require("../controller/itineary.controller");
 const router = express.Router();
 
-router.get('/getitineary', (req, res) => {
-    res.send('Hello Node!')
-})
+router.get('/getitineary', getitineary)
 
-router.post('/additineary', (req, res) => {
-    console.log(req.body);
+router.post('/additineary', additineary)
 
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "itineary is add sucessfuly"
+router.put('/putitineary/:id', putitineary)
 
-    })
-
-})
-
-router.put('/putitineary/:id', (req, res) => {
-    console.log(req.params.id, req.body);
-
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "itineary is update sucessfuly"
-
-    })
-
-})
-
-router.delete('/delitineary/:id', (req, res) => {
-    console.log(req.params.id);
-
-    res.status(200).json({
-        sucess: true,
-        data: null,
-        message: "itineary is delete sucessfuly"
-    })
-
-})
+router.delete('/delitineary/:id', delitineary)
 
 module.exports = router;  

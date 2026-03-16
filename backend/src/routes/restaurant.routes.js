@@ -1,43 +1,15 @@
 const express = require("express");
+
+const { getrestaurant, addrestaurant, putrestaurant, delrestaurant } = require("../controller/restaurant.controller");
+
 const router = express.Router();
 
-router.get('/getrestaurant', (req, res) => {
-    res.send('Hello Node!')
-})
+router.get('/getrestaurant', getrestaurant)
 
-router.post('/addrestaurant', (req, res) => {
-    console.log(req.body);
+router.post('/addrestaurant', addrestaurant)
 
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "restaurant is add sucessfuly"
+router.put('/putrestaurant/:id', putrestaurant)
 
-    })
-
-})
-
-router.put('/putrestaurant/:id', (req, res) => {
-    console.log(req.params.id, req.body);
-
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "restaurant is update sucessfuly"
-
-    })
-
-})
-
-router.delete('/delrestaurant/:id', (req, res) => {
-    console.log(req.params.id);
-
-    res.status(200).json({
-        sucess: true,
-        data: null,
-        message: "restaurant is delete sucessfuly"
-    })
-
-})
+router.delete('/delrestaurant/:id', delrestaurant)
 
 module.exports = router;  

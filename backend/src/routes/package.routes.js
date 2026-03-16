@@ -1,44 +1,13 @@
 const express = require("express");
+const { getpackage, addpackage, putpackage, delpackage } = require("../controller/package.controller");
 const router = express.Router();
 
-router.get('/getpackage', (req, res) => {
-    res.send('Hello Node!')
-})
+router.get('/getpackage', getpackage)
 
-router.post('/addpackage', (req, res) => {
-    console.log(req.body);
+router.post('/addpackage', addpackage)
 
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "package is add sucessfuly"
+router.put('/putpackage/:id', putpackage)
 
-    })
-
-})
-
-router.put('/putpackage/:id', (req, res) => {
-    console.log(req.params.id, req.body);
-
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "package is update sucessfuly"
-
-    })
-
-})
-
-router.delete('/delpackage/:id', (req, res) => {
-    console.log(req.params.id);
-
-    res.status(200).json({
-        sucess: true,
-        data: null,
-        message: "package is delete sucessfuly"
-    })
-
-})
+router.delete('/delpackage/:id', delpackage)
 
 module.exports = router;  
-
