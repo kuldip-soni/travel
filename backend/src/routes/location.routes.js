@@ -1,43 +1,13 @@
 const express = require("express");
+const { getlocation, addlocation, putlocation, dellocation } = require("../controller/location.controller");
 const router = express.Router();
 
-router.get('/getlocation', (req, res) => {
-    res.send('Hello Node!')
-})
+router.get('/getlocation', getlocation)
 
-router.post('/addlocation', (req, res) => {
-    console.log(req.body);
+router.post('/addlocation', addlocation)
 
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "location is add sucessfuly"
+router.put('/putlocation/:id', putlocation)
 
-    })
-
-})
-
-router.put('/putlocation/:id', (req, res) => {
-    console.log(req.params.id, req.body);
-
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "location is update sucessfuly"
-
-    })
-
-})
-
-router.delete('/dellocation/:id', (req, res) => {
-    console.log(req.params.id);
-
-    res.status(200).json({
-        sucess: true,
-        data: null,
-        message: "location is delete sucessfuly"
-    })
-
-})
+router.delete('/dellocation/:id', dellocation)
 
 module.exports = router;  
