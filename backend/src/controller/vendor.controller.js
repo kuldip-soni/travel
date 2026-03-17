@@ -29,7 +29,7 @@ const getvendor = async(req, res) => {
 
 const addvendor = async(req,res) => {
     try {
-        console.log("req.body");
+        console.log("req.body", req.body);
        const {name,phoneno,gstno,email,type,company_name,status}=req.body;
        console.log(name,phoneno,gstno,email,type,company_name,status);
        

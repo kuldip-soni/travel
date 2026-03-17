@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -12,7 +12,8 @@ import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
-
+import { useDispatch } from 'react-redux'
+import { getlocation } from '../../../redux/slice/location.slice';
 
 
 
@@ -34,6 +35,14 @@ const VisuallyHiddenInput = styled('input')({
 
 function Location(props) {
     const [open, setOpen] = React.useState(false);
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+         
+        dispatch(getlocation());
+
+    },[]);
 
     const handleClickOpen = () => {
         setOpen(true);

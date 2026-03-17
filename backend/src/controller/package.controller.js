@@ -61,21 +61,65 @@ const addpackage = async(req,res) => {
     
 }
 
-const putpackage = () => {
+const putpackage =async (req,res) => {
     try {
-       console.log("putpackage");
+         console.log("req.body");
+        const { name,duration,price,image } = req.body;
+        const packageId =req.params.id;
+        console.log(name,duration,price,image,packageId);
+        
+        const [rows, fields, result] = await pool.query("UPDATE  package  SET  name=?, duration=?, price=?, image=? WHERE id=?",
+            [name,duration,price,image,packageId]
+
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: {name,duration,price,image,id:packageId},
+            message: "package is update sucessfuly"
+
+        })
+        console.log(fields, result);
+
+        
         
     } catch (error) {
+         console.log(error);
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (putpackage)" + error
+        })
         
     }
     
 }
 
-const delpackage = () => {
+const delpackage = async(req,res) => {
     try {
-        console.log("delpackage");
+        const  packageId =req.params.id;
+        console.log( packageId);
+        
+        const [rows, fields, result] = await pool.query("DELETE FROM package WHERE id=?",
+            [ packageId]
+
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: null,
+            message: "package is deleated sucessfuly"
+
+        })
+        
         
     } catch (error) {
+         console.log(error);
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (delpackage)" + error
+        })
         
     }
     
