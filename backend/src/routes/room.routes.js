@@ -1,43 +1,13 @@
 const express = require("express");
+const { getroom, addroom, putroom, delroom } = require("../controller/room.controller");
 const router = express.Router();
 
-router.get('/getroom', (req, res) => {
-    res.send('Hello Node!')
-})
+router.get('/getroom', getroom)
 
-router.post('/addroom', (req, res) => {
-    console.log(req.body);
+router.post('/addroom', addroom)
 
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "room is add sucessfuly"
+router.put('/putroom/:id', putroom)
 
-    })
-
-})
-
-router.put('/putroom/:id', (req, res) => {
-    console.log(req.params.id, req.body);
-
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "room is update sucessfuly"
-
-    })
-
-})
-
-router.delete('/delroom/:id', (req, res) => {
-    console.log(req.params.id);
-
-    res.status(200).json({
-        sucess: true,
-        data: null,
-        message: "room is delete sucessfuly"
-    })
-
-})
+router.delete('/delroom/:id', delroom)
 
 module.exports = router;  

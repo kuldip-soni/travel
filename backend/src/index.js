@@ -6,6 +6,7 @@ const Router = require("./routes/index")
 
 
 app.use(express.json());
+
 app.use(cors())
 
 app.use("/", Router);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -12,6 +12,8 @@ import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
+import { getitineary } from '../../../redux/slice/itineary.slice';
+import { useDispatch } from 'react-redux';
 
 const Package = [
   {
@@ -35,6 +37,14 @@ const Package = [
 
 function Itineary(props) {
   const [open, setOpen] = React.useState(false);
+
+  const dispatch = useDispatch();
+  
+      useEffect(()=>{
+           
+          dispatch(getitineary());
+  
+      },[]);
 
   const handleClickOpen = () => {
     setOpen(true);

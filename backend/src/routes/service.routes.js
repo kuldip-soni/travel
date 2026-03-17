@@ -1,43 +1,13 @@
 const express = require("express");
+const { getservice, addservice, putservice, delservice } = require("../controller/service.controller");
 const router = express.Router();
 
-router.get('/getservice', (req, res) => {
-    res.send('Hello Node!')
-})
+router.get('/getservice', getservice)
 
-router.post('/addservice', (req, res) => {
-    console.log(req.body);
+router.post('/addservice', addservice)
 
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "service is add sucessfuly"
+router.put('/putservice/:id', putservice)
 
-    })
-
-})
-
-router.put('/putservice/:id', (req, res) => {
-    console.log(req.params.id, req.body);
-
-    res.status(200).json({
-        sucess: true,
-        data: req.body,
-        message: "service is update sucessfuly"
-
-    })
-
-})
-
-router.delete('/delservice/:id', (req, res) => {
-    console.log(req.params.id);
-
-    res.status(200).json({
-        sucess: true,
-        data: null,
-        message: "service is delete sucessfuly"
-    })
-
-})
+router.delete('/delservice/:id', delservice)
 
 module.exports = router;  

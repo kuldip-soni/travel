@@ -61,22 +61,66 @@ const additineary = async(req,res) => {
     
 }
 
-const putitineary = () => {
+const putitineary = async(req,res) => {
     try {
-       console.log("putitineary");
+        console.log("req.body");
+        const { title,description } = req.body;
+        const itinearyId =req.params.id;
+        console.log(title,description,itinearyId);
+        
+        const [rows, fields, result] = await pool.query("UPDATE  itineary  SET  title=?, description=? WHERE id=?",
+            [title,description,itinearyId]
+
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: {title,description,id:itinearyId},
+            message: "itineary is update sucessfuly"
+
+        })
+        console.log(fields, result);
+
+       
         
     } catch (error) {
+          console.log(error);
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (putitineary)" + error
+        })
         
     }
     
 }
 
-const delitineary = () => {
+const delitineary = async(req,res) => {
     try {
-        console.log("delitineary");
+        const  itinearyId =req.params.id;
+        console.log( itinearyId);
+        
+        const [rows, fields, result] = await pool.query("DELETE FROM itineary WHERE id=?",
+            [ itinearyId]
+
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: null,
+            message: "itineary is deleated sucessfuly"
+
+        })
+        
+        
         
     } catch (error) {
-        
+         console.log(error);
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (delitineary)" + error
+        })
     }
     
 }
