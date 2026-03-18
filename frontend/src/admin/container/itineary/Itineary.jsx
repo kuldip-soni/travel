@@ -8,12 +8,15 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
-import { getitineary } from '../../../redux/slice/itineary.slice';
-import { useDispatch } from 'react-redux';
+import { additineary, delitineary, getitineary } from '../../../redux/slice/itineary.slice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Package = [
   {
@@ -38,13 +41,17 @@ const Package = [
 function Itineary(props) {
   const [open, setOpen] = React.useState(false);
 
+  const itinearydata = useSelector(state => state.itineary);
+    console.log(itinearydata);
+
+
   const dispatch = useDispatch();
-  
-      useEffect(()=>{
-           
-          dispatch(getitineary());
-  
-      },[]);
+
+  useEffect(() => {
+
+    dispatch(getitineary());
+
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -74,18 +81,45 @@ function Itineary(props) {
     initialValues: {
       Package: '',
       title: '',
-      description:'',
+      description: '',
 
 
 
     },
     validationSchema: itinearyschema,
 
-    onSubmit: values => {
-      console.log(values);
-
-    },
+   onSubmit: (values, { resetForm }) => {
+               console.log(values);
+   
+   
+   
+               dispatch(additineary(values));
+               handleClose();
+               resetForm();
+   
+   
+           },
   });
+
+
+  const columns = [
+
+    { field: 'title', headerName: 'title', width: 130 },
+    { field: 'description', headerName: 'description', width: 130 },
+    {
+      headerName: 'Action', width: 130,
+      renderCell: (parms) => (
+        <IconButton aria-label="delete" onClick={() => dispatch(delitineary(parms.row.id))}>
+          <DeleteIcon />
+        </IconButton>
+      )
+    },
+  ];
+
+  
+
+  const paginationModel = { page: 0, pageSize: 5 };
+
 
   console.log(formik.errors, formik.touched);
 
@@ -178,6 +212,15 @@ function Itineary(props) {
           </DialogActions>
         </Dialog>
       </React.Fragment>
+
+      <DataGrid
+        rows={itinearydata.itineary}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
 
     </div>
   );

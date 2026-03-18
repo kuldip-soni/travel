@@ -24,6 +24,22 @@ const initialState = {
     }
 )
 
+export const delpackage=createAsyncThunk(
+     'package/delpackage',
+     async (id) => {
+        try {
+             console.log(id);
+            const response = await axios.delete(`http://localhost:4000/package/delPackage/${id}`);
+            console.log(response);
+            return id;
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+     }
+)
+
 
 export const packageSlice = createSlice({
        name: 'package',
@@ -35,6 +51,13 @@ export const packageSlice = createSlice({
                  state.package=action.payload;
                  
        })
+       builder.addCase(delpackage.fulfilled, (state, action) => {
+                     
+           const index=state.package.findIndex(v => v.id === action.payload);
+           state.package.splice(index,1);
+           
+       
+           })
    
        }
    })

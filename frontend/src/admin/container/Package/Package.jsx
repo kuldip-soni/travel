@@ -8,12 +8,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
-import { getpackage } from '../../../redux/slice/package.slice';
+import { delpackage, getpackage } from '../../../redux/slice/package.slice';
 import { useDispatch, useSelector } from 'react-redux';
 
 
@@ -143,8 +145,13 @@ function Package(props) {
   { field: 'duration', headerName: 'duration', width: 130 },
   { field: 'price', headerName: 'price', width: 130 },
   { field: 'image', headerName: 'image', width: 130 },
-   { headerName: 'Action', width: 130 }
-  
+   { headerName: 'Action', width: 130 ,
+            renderCell: (parms) => (
+                <IconButton aria-label="delete" onClick={()=>dispatch(delpackage(parms.row.id))}>
+                    <DeleteIcon />
+                </IconButton>
+            )
+    },   
 ];
 
 
