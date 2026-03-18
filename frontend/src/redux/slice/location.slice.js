@@ -16,18 +16,77 @@ const initialState = {
             
             const response = await axios.get('http://localhost:4000/location/getLocation');
             console.log(response.data.data);
+            return response.data.data;
         } catch (error) {
-
+           console.log(error);
+           
         }
 
     }
 )
 
 
+export const addlocation = createAsyncThunk(
+    'location/addLocation',
+    async (data) => {
+
+        try {
+            
+            console.log(data);
+            const response = await axios.post('http://localhost:4000/location/addLocation',data);
+            console.log(response.data.data);
+            return response.data.data;
+        } catch (error) {
+           console.log(error);
+           
+        }
+
+    }
+)
+
+export const dellocation=createAsyncThunk(
+     'location/dellocation',
+     async (id) => {
+        try {
+             console.log(id);
+            const response = await axios.delete(`http://localhost:4000/location/delLocation/${id}`);
+            console.log(response);
+            return id;
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+     }
+)
+
+
 export const locationSlice = createSlice({
     name: 'location',
     initialState,
-    extraReducers: () => {
+    extraReducers: (builder) => {
 
-    }
+         builder.addCase(getlocation.fulfilled, (state, action) => {
+              console.log(action.payload);
+              state.location=action.payload;
+              
+    })
+        
+    builder.addCase(addlocation.fulfilled, (state, action) => {
+              state.location.push(action.payload)
+    
+
+    })
+
+    builder.addCase(dellocation.fulfilled, (state, action) => {
+              
+    const index=state.location.findIndex(v => v.id === action.payload);
+    state.location.splice(index,1);
+    
+
+    })
+}
+
 })
+
+export default locationSlice.reducer

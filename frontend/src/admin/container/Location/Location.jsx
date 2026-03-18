@@ -8,12 +8,15 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { mixed, object, string } from 'yup';
+import { date, mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
-import { useDispatch } from 'react-redux'
-import { getlocation } from '../../../redux/slice/location.slice';
+import { useDispatch, useSelector } from 'react-redux'
+import { addlocation, dellocation, getlocation } from '../../../redux/slice/location.slice';
 
 
 
@@ -36,13 +39,20 @@ const VisuallyHiddenInput = styled('input')({
 function Location(props) {
     const [open, setOpen] = React.useState(false);
 
+
+
+    const locationdata = useSelector(state => state.location);
+    console.log(locationdata);
+
     const dispatch = useDispatch();
 
-    useEffect(()=>{
-         
+    useEffect(() => {
+
         dispatch(getlocation());
 
-    },[]);
+    }, []);
+
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -63,7 +73,7 @@ function Location(props) {
 
     let locationschema = object({
 
-        loction_img: mixed().required('please upload location image'),
+        image: mixed().required('please upload location image'),
         city: string().required('please enter city'),
         state: string().required('please enter state'),
         country: string().required('please enter country'),
@@ -74,19 +84,51 @@ function Location(props) {
     const formik = useFormik({
         initialValues: {
 
-            loction_img: '',
+            image: '',
             city: '',
-            state:'',
-            country:'',
+
+            state: '',
+            country: '',
 
         },
         validationSchema: locationschema,
 
-        onSubmit: values => {
+
+        onSubmit: (values, { resetForm }) => {
             console.log(values);
 
+
+
+            dispatch(addlocation(values));
+            handleClose();
+            resetForm();
+
+
         },
+
+
+
     });
+
+    const columns = [
+
+        { field: 'city', headerName: 'City', width: 130 },
+        { field: 'state', headerName: 'State', width: 130 },
+        { field: 'country', headerName: 'Country', width: 130 },
+        {
+            headerName: 'Action', width: 130 ,
+            renderCell: (parms) => (
+                <IconButton aria-label="delete" onClick={()=>dispatch(dellocation(parms.row.id))}>
+                    <DeleteIcon />
+                </IconButton>
+            )
+        },
+
+
+    ];
+
+
+    const paginationModel = { page: 0, pageSize: 5 };
 
     console.log(formik.errors, formik.touched);
 
@@ -123,12 +165,12 @@ function Location(props) {
                                 type="text"
                                 fullWidth
                                 variant="standard"
-                            
+
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.city}
                                 helperText={formik.errors.city && formik.touched.city ? formik.errors.city : ''}
-                                
+
                             />
 
                             <TextField
@@ -149,7 +191,7 @@ function Location(props) {
 
                             <TextField
 
-                                 error={formik.errors.country && formik.touched.country}
+                                error={formik.errors.country && formik.touched.country}
                                 margin="dense"
                                 id="country"
                                 name="country"
@@ -175,13 +217,13 @@ function Location(props) {
                             >
                                 Upload  location image
                                 <VisuallyHiddenInput
-                                    error={formik.errors.loction_img && formik.touched.loction_img}
+                                    error={formik.errors.image && formik.touched.image}
                                     type="file"
-                                    name='loction_img'
+                                    name='image'
 
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    value={formik.values.loction_img}
+                                    value={formik.values.image}
 
                                     //onChange={(event) => console.log(event.target.files)}
                                     multiple
@@ -189,8 +231,8 @@ function Location(props) {
                             </Button>
                             <br />
 
-                            {formik.errors.loction_img && formik.touched.loction_img ?
-                                <span className='error'>{formik.errors.loction_img}</span> :
+                            {formik.errors.image && formik.touched.image ?
+                                <span className='error'>{formik.errors.image}</span> :
                                 ''}
 
 
@@ -206,6 +248,15 @@ function Location(props) {
                     </DialogActions>
                 </Dialog>
             </React.Fragment>
+
+            <DataGrid
+                rows={locationdata.location}
+                columns={columns}
+                initialState={{ pagination: { paginationModel } }}
+                pageSizeOptions={[5, 10]}
+                checkboxSelection
+                sx={{ border: 0 }}
+            />
 
         </div>
     );

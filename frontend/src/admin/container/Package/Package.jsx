@@ -8,12 +8,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
+import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
 import { getpackage } from '../../../redux/slice/package.slice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 
@@ -72,6 +73,9 @@ const VisuallyHiddenInput = styled('input')({
 
 function Package(props) {
     const [open, setOpen] = React.useState(false);
+
+    const packagedata = useSelector(state => state.package);
+    console.log(packagedata);
 
     const dispatch = useDispatch();
 
@@ -132,6 +136,21 @@ function Package(props) {
 
         },
     });
+
+    const columns = [
+ 
+  { field: 'name', headerName: 'name', width: 130 },
+  { field: 'duration', headerName: 'duration', width: 130 },
+  { field: 'price', headerName: 'price', width: 130 },
+  { field: 'image', headerName: 'image', width: 130 },
+   { headerName: 'Action', width: 130 }
+  
+];
+
+
+
+const paginationModel = { page: 0, pageSize: 5 };
+
 
     console.log(formik.errors, formik.touched);
 
@@ -287,6 +306,15 @@ function Package(props) {
                     </DialogActions>
                 </Dialog>
             </React.Fragment>
+             
+            <DataGrid
+        rows={packagedata.package}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
 
         </div>
     );
