@@ -30,10 +30,34 @@ export const addPackage = createAsyncThunk(
         try {
             console.log("addPackage", data);
 
-            const response = await axios.post('http://localhost:4000/package/addpackage', data);
+            const formData = new FormData();
+            formData.append("name", data.name);
+            formData.append("duration", data.duration);
+            formData.append("price", data.price);
+            formData.append("image", data.image);
+
+            const response = await axios.post('http://localhost:4000/package/addpackage', formData);
             console.log(response.data.data);
             return response.data.data;
         } catch (error) {
+
+        }
+
+    }
+)
+
+export const putpackage = createAsyncThunk(
+    'package/putpackage',
+    async (data) => {
+
+        try {
+
+            console.log(data);
+            const response = await axios.put(`http://localhost:4000/package/putpackage/${data.id}`, data);
+            console.log(response.data.data);
+            return response.data.data;
+        } catch (error) {
+            console.log(error);
 
         }
 
@@ -72,16 +96,21 @@ export const packageSlice = createSlice({
 
 
         })
+
+        builder.addCase(putpackage.fulfilled, (state, action) => {
+
+            const index = state.package.findIndex(v => v.id == action.payload.id);
+            state.package[index] = action.payload;
+
+
+        })
+
         builder.addCase(delpackage.fulfilled, (state, action) => {
 
-            console.log(action.payload);
-            
             const index = state.package.findIndex(v => v.id === action.payload);
-            
-            console.log(index);
-            
-            
             state.package.splice(index, 1);
+
+
 
 
         })

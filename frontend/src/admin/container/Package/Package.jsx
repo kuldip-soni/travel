@@ -10,13 +10,16 @@ import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
-import { addPackage, delpackage, getpackage } from '../../../redux/slice/package.slice';
+import { addPackage, delpackage, getpackage, putpackage } from '../../../redux/slice/package.slice';
 import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+
 
 
 
@@ -56,7 +59,7 @@ const iteneary = [
     {
         value: 'usa',
         label: 'usa',
-        
+
     },
 ];
 
@@ -76,6 +79,7 @@ const VisuallyHiddenInput = styled('input')({
 
 function Package(props) {
     const [open, setOpen] = React.useState(false);
+    const [update, setupdate] = useState(false);
 
     const packagedata = useSelector(state => state.package);
     console.log(packagedata);
@@ -95,6 +99,8 @@ function Package(props) {
 
     const handleClose = () => {
         setOpen(false);
+        setupdate(false);
+
     };
 
     const handleSubmit = (event) => {
@@ -134,13 +140,27 @@ function Package(props) {
         },
         validationSchema: packageschema,
 
-        onSubmit: (values, {resetForm}) => {
+        onSubmit: (values, { resetForm }) => {
             console.log(values);
-           dispatch(addPackage(values))
+            if (update) {
+                console.log("update data");
+                dispatch(putpackage(values));
+            } else {
+                dispatch(addPackage(values));
+
+            }
             resetForm();
             handleClose()
         },
     });
+
+     const handleEdit = (data) => {
+        console.log(data);
+        handleClickOpen();
+        formik.setValues(data);
+        setupdate(true);
+
+    }
 
     const columns = [
 
@@ -151,15 +171,20 @@ function Package(props) {
         {
             headerName: 'Action', width: 130,
             renderCell: (parms) => (
-                <IconButton aria-label="delete" onClick={() => dispatch(delpackage(parms.row.id))}>
-                    <DeleteIcon />
-                </IconButton>
+                <>
+                    <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => dispatch(delpackage(parms.row.id))}>
+                        <DeleteIcon />
+                    </IconButton>
+                </>
             )
         },
     ];
 
     console.log(formik.errors);
-    
+
 
 
 
@@ -295,12 +320,10 @@ function Package(props) {
                                     type="file"
                                     name='image'
 
-                                    onChange={formik.handleChange}
+                                    
+                                   // onChange={(event) => console.log(event.target.files)}
+                                   onChange={(event)=>formik.setFieldValue("image",event.target.files[0])}
                                     onBlur={formik.handleBlur}
-                                    value={formik.values.image}
-
-                                    //onChange={(event) => console.log(event.target.files)}
-                                    multiple
                                 />
 
                             </Button>

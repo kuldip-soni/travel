@@ -1,10 +1,12 @@
 const express = require("express");
 const { getpackage, addpackage, putpackage, delpackage } = require("../controller/package.controller");
+const upload = require("../middleware/upload");
 const router = express.Router();
+
 
 router.get('/getpackage', getpackage)
 
-router.post('/addpackage', addpackage)
+router.post('/addpackage',upload.single('image'), addpackage)
 
 router.put('/putpackage/:id', putpackage)
 
