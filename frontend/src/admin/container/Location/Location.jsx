@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -10,13 +10,14 @@ import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { date, mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux'
-import { addlocation, dellocation, getlocation } from '../../../redux/slice/location.slice';
+import { addlocation, dellocation, getlocation, putlocation } from '../../../redux/slice/location.slice';
 
 
 
@@ -38,6 +39,7 @@ const VisuallyHiddenInput = styled('input')({
 
 function Location(props) {
     const [open, setOpen] = React.useState(false);
+    const [update, setupdate] = useState(false);
 
 
 
@@ -60,6 +62,7 @@ function Location(props) {
 
     const handleClose = () => {
         setOpen(false);
+        setupdate(false);
     };
 
     const handleSubmit = (event) => {
@@ -70,6 +73,7 @@ function Location(props) {
         console.log(email);
         handleClose();
     };
+
 
     let locationschema = object({
 
@@ -84,22 +88,28 @@ function Location(props) {
     const formik = useFormik({
         initialValues: {
 
-            image: '',
             city: '',
-
             state: '',
             country: '',
-
+            image: '',
+            
+            
         },
         validationSchema: locationschema,
 
 
         onSubmit: (values, { resetForm }) => {
             console.log(values);
+            if(update){
+                console.log("update data");
+                dispatch(putlocation(values));
+
+            }else{
+
+                dispatch(addlocation(values));
+            }
 
 
-
-            dispatch(addlocation(values));
             handleClose();
             resetForm();
 
@@ -108,19 +118,34 @@ function Location(props) {
 
 
 
+
+
     });
 
+
+    const handleEdit = (data) => {
+        console.log(data);
+        handleClickOpen();
+        formik.setValues(data);
+        setupdate(true);
+
+    }
     const columns = [
 
         { field: 'city', headerName: 'City', width: 130 },
         { field: 'state', headerName: 'State', width: 130 },
         { field: 'country', headerName: 'Country', width: 130 },
         {
-            headerName: 'Action', width: 130 ,
+            headerName: 'Action', width: 130,
             renderCell: (parms) => (
-                <IconButton aria-label="delete" onClick={()=>dispatch(dellocation(parms.row.id))}>
-                    <DeleteIcon />
-                </IconButton>
+                <>
+                    <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => dispatch(dellocation(parms.row.id))}>
+                        <DeleteIcon />
+                    </IconButton>
+                </>
             )
         },
 
@@ -221,12 +246,10 @@ function Location(props) {
                                     type="file"
                                     name='image'
 
-                                    onChange={formik.handleChange}
+                                   
+                                   // onChange={(event) => console.log(event.target.files)}
+                                   onChange={(event)=>formik.setFieldValue("image",event.target.files[0])}
                                     onBlur={formik.handleBlur}
-                                    value={formik.values.image}
-
-                                    //onChange={(event) => console.log(event.target.files)}
-                                    multiple
                                 />
                             </Button>
                             <br />

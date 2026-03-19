@@ -15,7 +15,7 @@ import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
-import { delpackage, getpackage } from '../../../redux/slice/package.slice';
+import { addPackage, delpackage, getpackage } from '../../../redux/slice/package.slice';
 import { useDispatch, useSelector } from 'react-redux';
 
 
@@ -56,6 +56,7 @@ const iteneary = [
     {
         value: 'usa',
         label: 'usa',
+        
     },
 ];
 
@@ -81,11 +82,11 @@ function Package(props) {
 
     const dispatch = useDispatch();
 
-    useEffect(()=>{
-         
+    useEffect(() => {
+
         dispatch(getpackage());
 
-    },[]);
+    }, []);
 
 
     const handleClickOpen = () => {
@@ -109,9 +110,9 @@ function Package(props) {
         Location: string().required('please select location'),
         name: string().required('please enter name'),
         duration: string().required('please enter duration'),
-        Price: string().required('please enter Price'),
+        price: string().required('please enter price'),
         iteneary: string().required('please select iteneary'),
-        package_img: mixed().required('please upload package image'),
+        image: mixed().required('please upload package image'),
 
 
 
@@ -123,40 +124,46 @@ function Package(props) {
     const formik = useFormik({
         initialValues: {
             Location: '',
-            name:'',
-            duration:'',
-            Price:'',
-            iteneary:'',
-            package_img: '',
+            name: '',
+            duration: '',
+            price: '',
+            iteneary: '',
+            image: '',
 
 
         },
         validationSchema: packageschema,
 
-        onSubmit: values => {
+        onSubmit: (values, {resetForm}) => {
             console.log(values);
-
+           dispatch(addPackage(values))
+            resetForm();
+            handleClose()
         },
     });
 
     const columns = [
- 
-  { field: 'name', headerName: 'name', width: 130 },
-  { field: 'duration', headerName: 'duration', width: 130 },
-  { field: 'price', headerName: 'price', width: 130 },
-  { field: 'image', headerName: 'image', width: 130 },
-   { headerName: 'Action', width: 130 ,
+
+        { field: 'name', headerName: 'name', width: 130 },
+        { field: 'duration', headerName: 'duration', width: 130 },
+        { field: 'price', headerName: 'price', width: 130 },
+        { field: 'image', headerName: 'image', width: 130 },
+        {
+            headerName: 'Action', width: 130,
             renderCell: (parms) => (
-                <IconButton aria-label="delete" onClick={()=>dispatch(delpackage(parms.row.id))}>
+                <IconButton aria-label="delete" onClick={() => dispatch(delpackage(parms.row.id))}>
                     <DeleteIcon />
                 </IconButton>
             )
-    },   
-];
+        },
+    ];
+
+    console.log(formik.errors);
+    
 
 
 
-const paginationModel = { page: 0, pageSize: 5 };
+    const paginationModel = { page: 0, pageSize: 5 };
 
 
     console.log(formik.errors, formik.touched);
@@ -217,7 +224,7 @@ const paginationModel = { page: 0, pageSize: 5 };
                             />
 
                             <TextField
-                                 error={formik.errors.duration && formik.touched.duration}
+                                error={formik.errors.duration && formik.touched.duration}
                                 margin="dense"
                                 id="duration"
                                 name="duration"
@@ -232,18 +239,18 @@ const paginationModel = { page: 0, pageSize: 5 };
                             />
 
                             <TextField
-                               error={formik.errors.Price && formik.touched.Price}
+                                error={formik.errors.price && formik.touched.price}
                                 margin="dense"
-                                id="Price"
-                                name="Price"
-                                label="Price"
+                                id="price"
+                                name="price"
+                                label="price"
                                 type="number"
                                 fullWidth
                                 variant="standard"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.Price}
-                                helperText={formik.errors.Price && formik.touched.Price ? formik.errors.Price : ''}
+                                value={formik.values.price}
+                                helperText={formik.errors.price && formik.touched.price ? formik.errors.price : ''}
                             />
                             <br /><br />
 
@@ -284,13 +291,13 @@ const paginationModel = { page: 0, pageSize: 5 };
                             >
                                 Upload  package image
                                 <VisuallyHiddenInput
-                                    error={formik.errors.package_img && formik.touched.package_img}
+                                    error={formik.errors.image && formik.touched.image}
                                     type="file"
-                                    name='package_img'
+                                    name='image'
 
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    value={formik.values.package_img}
+                                    value={formik.values.image}
 
                                     //onChange={(event) => console.log(event.target.files)}
                                     multiple
@@ -299,8 +306,8 @@ const paginationModel = { page: 0, pageSize: 5 };
                             </Button>
                             <br />
 
-                            {formik.errors.package_img && formik.touched.package_img ?
-                                <span className='error'>{formik.errors.package_img}</span> :
+                            {formik.errors.image && formik.touched.image ?
+                                <span className='error'>{formik.errors.image}</span> :
                                 ''}
 
                         </form>
@@ -313,15 +320,15 @@ const paginationModel = { page: 0, pageSize: 5 };
                     </DialogActions>
                 </Dialog>
             </React.Fragment>
-             
+
             <DataGrid
-        rows={packagedata.package}
-        columns={columns}
-        initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        sx={{ border: 0 }}
-      />
+                rows={packagedata.package}
+                columns={columns}
+                initialState={{ pagination: { paginationModel } }}
+                pageSizeOptions={[5, 10]}
+                checkboxSelection
+                sx={{ border: 0 }}
+            />
 
         </div>
     );

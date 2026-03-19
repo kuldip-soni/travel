@@ -76,7 +76,7 @@ const putlocation = async (req, res) => {
 
         res.status(200).json({
             sucess: true,
-            data: req.body,
+            data:{ city, state, country, image, id:locationId} ,
             message: "location is update sucessfuly"
 
         })
