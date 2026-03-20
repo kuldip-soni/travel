@@ -1,4 +1,7 @@
+const { error } = require("console");
 const pool = require("../db/mysql");
+const fs = require('fs');
+
 
 
 const getlocation = async (req, res) => {
@@ -30,17 +33,19 @@ const getlocation = async (req, res) => {
 const addlocation = async (req, res) => {
     try {
         console.log("req.body");
+        console.log(req.file.path);
+
         const { city, state, country, image } = req.body;
         console.log(city, state, country, image);
 
         const [rows, fields, result] = await pool.query("INSERT INTO location (city,state,country,image) VALUES(?,?,?,?)",
-            [city, state, country, image]
+            [city, state, country, req.file.path]
 
         )
 
         res.status(200).json({
             sucess: true,
-            data: { ...req.body, id: rows.insertId },
+            data: { ...req.body, id: rows.insertId, image: req.file.path },
             message: "location is add sucessfuly"
         })
 
@@ -66,23 +71,36 @@ const putlocation = async (req, res) => {
 
         console.log("req.body");
         const { city, state, country, image } = req.body;
-        const locationId =req.params.id;
-        console.log(city, state, country, image,locationId);
-        
-        const [rows, fields, result] = await pool.query("UPDATE  location  SET  city=?,state=?,country=?,image=? WHERE id=?",
-            [city, state, country, image,locationId]
+        const locationId = req.params.id;
+        console.log(city, state, country, image, locationId);
 
+        const [rows] = await pool.query(`SELECT * FROM location WHERE id=${locationId}`);
+        let fileimg = '';
+
+        if (req.file) {
+
+            fs.unlinkSync(rows[0].image, (error) => {
+                console.log(error);
+
+            })
+            fileimg = req.file.path;
+        } else {
+            fileimg = rows[0].image
+        }
+
+        await pool.query("UPDATE  location  SET  city=?,state=?,country=?,image=? WHERE id=?",
+            [city, state, country, fileimg, locationId]
         )
 
         res.status(200).json({
             sucess: true,
-            data:{ city, state, country, image, id:locationId} ,
+            data: { id: locationId, city, state, country, image: fileimg },
             message: "location is update sucessfuly"
 
         })
 
     } catch (error) {
-         console.log(error);
+        console.log(error);
         res.status(500).json({
             sucess: false,
             data: null,
@@ -94,14 +112,21 @@ const putlocation = async (req, res) => {
 
 }
 
-const dellocation = async(req, res) => {
+const dellocation = async (req, res) => {
     try {
 
         // const { city, state, country, image } = req.body;
-        const locationId =req.params.id;
-        console.log(locationId);
-        
-        const [rows, fields, result] = await pool.query("DELETE FROM location WHERE id=?",
+        const locationId = req.params.id;
+        // console.log(locationId);
+
+        const [rows] = await pool.query(`SELECT * FROM location WHERE id=${locationId}`);
+
+        fs.unlinkSync(rows[0].image, (error) => {
+            console.log(error);
+
+        })
+
+        await pool.query("DELETE FROM location WHERE id=?",
             [locationId]
 
         )
@@ -112,8 +137,8 @@ const dellocation = async(req, res) => {
             message: "location is deleated sucessfuly"
 
         })
-        
-        
+
+
 
     } catch (error) {
         console.log(error);

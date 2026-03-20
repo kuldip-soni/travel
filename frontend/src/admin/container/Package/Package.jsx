@@ -17,8 +17,10 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
 import { addPackage, delpackage, getpackage, putpackage } from '../../../redux/slice/package.slice';
+import { getlocation } from '../../../redux/slice/location.slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
+
 
 
 
@@ -82,6 +84,7 @@ function Package(props) {
     const [update, setupdate] = useState(false);
 
     const packagedata = useSelector(state => state.package);
+    const location=useSelector(state =>state.location)
     console.log(packagedata);
 
     const dispatch = useDispatch();
@@ -89,6 +92,7 @@ function Package(props) {
     useEffect(() => {
 
         dispatch(getpackage());
+        dispatch(getlocation());
 
     }, []);
 
@@ -226,9 +230,10 @@ function Package(props) {
                                 value={formik.values.Location}
                                 helperText={formik.errors.Location && formik.touched.Location ? formik.errors.Location : ''}
                             >
-                                {location.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
+                                <option value="">--Select location--</option>
+                                {location.location.map((v) => (
+                                    <option key={v.id} value={v.id}>
+                                        {v.city}
                                     </option>
                                 ))}
                             </TextField>

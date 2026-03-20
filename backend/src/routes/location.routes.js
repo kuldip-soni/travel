@@ -7,7 +7,7 @@ router.get('/getlocation', getlocation)
 
 router.post('/addlocation',upload.single('image'), addlocation)
 
-router.put('/putlocation/:id', putlocation)
+router.put('/putlocation/:id',upload.single('image'), putlocation)
 
 router.delete('/dellocation/:id', dellocation)
 

@@ -92,19 +92,19 @@ function Location(props) {
             state: '',
             country: '',
             image: '',
-            
-            
+
+
         },
         validationSchema: locationschema,
 
 
         onSubmit: (values, { resetForm }) => {
             console.log(values);
-            if(update){
+            if (update) {
                 console.log("update data");
                 dispatch(putlocation(values));
 
-            }else{
+            } else {
 
                 dispatch(addlocation(values));
             }
@@ -135,6 +135,14 @@ function Location(props) {
         { field: 'city', headerName: 'City', width: 130 },
         { field: 'state', headerName: 'State', width: 130 },
         { field: 'country', headerName: 'Country', width: 130 },
+        {
+            field: 'image',
+            headerName: 'image',
+            width: 130,
+            renderCell:(params)=>(
+                <img src={"http://localhost:4000/" +  params.row.image}  width={'50px'} height={'50px'} />
+            )
+        },
         {
             headerName: 'Action', width: 130,
             renderCell: (parms) => (
@@ -246,12 +254,16 @@ function Location(props) {
                                     type="file"
                                     name='image'
 
-                                   
-                                   // onChange={(event) => console.log(event.target.files)}
-                                   onChange={(event)=>formik.setFieldValue("image",event.target.files[0])}
+
+                                    // onChange={(event) => console.log(event.target.files)}
+                                    onChange={(event) => formik.setFieldValue("image", event.target.files[0])}
                                     onBlur={formik.handleBlur}
                                 />
                             </Button>
+                            <img src={typeof formik.values.image=='string'?
+                            "http://localhost:4000/" + formik.values.image: 
+                            URL.createObjectURL(formik.values.image)}  
+                            width={'50px'} height={'50px'} />
                             <br />
 
                             {formik.errors.image && formik.touched.image ?

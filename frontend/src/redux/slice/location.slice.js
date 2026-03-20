@@ -58,8 +58,15 @@ export const putlocation = createAsyncThunk(
 
         try {
 
+             const formData=new FormData();
+             formData.append("id",data.id);
+            formData.append("city",data.city);
+            formData.append("state",data.state);
+            formData.append("country",data.country);
+            formData.append("image",data.image);
+
             console.log(data);
-            const response = await axios.put(`http://localhost:4000/location/putlocation/${data.id}`, data);
+            const response = await axios.put(`http://localhost:4000/location/putlocation/${data.id}`, formData);
             console.log(response.data.data);
             return response.data.data;
         } catch (error) {
