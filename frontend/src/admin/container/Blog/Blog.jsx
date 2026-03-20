@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,10 +8,16 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { mixed, object, string } from 'yup';
+import { date, mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux'
+import { addblog, delblog, getblog, putblog } from '../../../redux/slice/blog.slice';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -28,6 +34,19 @@ const VisuallyHiddenInput = styled('input')({
 
 function Blog(props) {
   const [open, setOpen] = React.useState(false);
+  const [update, setupdate] = useState(false);
+
+  const blogdata = useSelector(state => state.blog);
+  console.log(blogdata);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+
+    dispatch(getblog());
+
+  }, []);
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -48,7 +67,7 @@ function Blog(props) {
 
   let Blogschema = object({
 
-    Blog_img: mixed().required('please upload Blog image'),
+    Blog_img: mixed().required('please upload Blog Blog_img'),
     Title: string().required('please enter Title'),
     Date: string().required('please select Date'),
     Description: string().required('please enter Description'),
@@ -69,11 +88,64 @@ function Blog(props) {
     },
     validationSchema: Blogschema,
 
-    onSubmit: values => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
+      if (update) {
+        console.log("update data");
+        dispatch(putblog(values));
+
+      } else {
+
+        dispatch(addblog(values));
+      }
+
+
+      handleClose();
+      resetForm();
+
 
     },
   });
+
+  const handleEdit = (data) => {
+    console.log(data);
+    handleClickOpen();
+    formik.setValues(data);
+    setupdate(true);
+
+  }
+  const columns = [
+
+    { field: 'title', headerName: 'title', width: 130 },
+    { field: 'date', headerName: 'date', width: 130 },
+    { field: 'description', headerName: 'description', width: 130 },
+    {
+      field: 'Blog_img',
+      headerName: 'Blog_img',
+      width: 130,
+      renderCell: (params) => (
+        <img src={"http://localhost:4000/" + params.row.Blog_img} width={'50px'} height={'50px'} />
+      )
+    },
+    {
+      headerName: 'Action', width: 130,
+      renderCell: (parms) => (
+        <>
+          <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => dispatch(delblog(parms.row.id))}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    },
+
+
+  ];
+
+
+  const paginationModel = { page: 0, pageSize: 5 };
 
   console.log(formik.errors, formik.touched);
   return (
@@ -153,20 +225,23 @@ function Blog(props) {
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
               >
-                Upload  Blog image
+                Upload  Blog Blog_img
                 <VisuallyHiddenInput
                   error={formik.errors.Blog_img && formik.touched.Blog_img}
                   type="file"
                   name='Blog_img'
 
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.Blog_img}
+                  onChange={(event) => formik.setFieldValue("Blog_img", event.target.files[0])}
 
-                  //onChange={(event) => console.log(event.target.files)}
-                  multiple
+                  onBlur={formik.handleBlur}
+                //onChange={(event) => console.log(event.target.files)}
+
                 />
               </Button>
+              <img src={typeof formik.values.Blog_img == 'string' ?
+                "http://localhost:4000/" + formik.values.Blog_img :
+                URL.createObjectURL(formik.values.Blog_img)}
+                width={'50px'} height={'50px'} />
               <br />
 
               {formik.errors.Blog_img && formik.touched.Blog_img ?
@@ -186,6 +261,15 @@ function Blog(props) {
           </DialogActions>
         </Dialog>
       </React.Fragment>
+
+      <DataGrid
+        rows={blogdata.blog}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
 
     </div>
   );
