@@ -16,10 +16,11 @@ import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
-import { addPackage, delpackage, getpackage, putpackage } from '../../../redux/slice/package.slice';
 import { getlocation } from '../../../redux/slice/location.slice';
+import { getitineary } from '../../../redux/slice/itineary.slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
+import { addPackage, delpackage, getpackage, putpackage } from '../../../redux/slice/package.slice';
 
 
 
@@ -45,10 +46,10 @@ const location = [
     },
 ];
 
-const iteneary = [
+const itineary_id = [
     {
         value: '',
-        label: '--select iteneary--',
+        label: '--select itineary_id--',
     },
     {
         value: 'ind',
@@ -84,7 +85,8 @@ function Package(props) {
     const [update, setupdate] = useState(false);
 
     const packagedata = useSelector(state => state.package);
-    const location=useSelector(state =>state.location)
+    const location = useSelector(state => state.location);
+    const itineary = useSelector(state => state.itineary);
     console.log(packagedata);
 
     const dispatch = useDispatch();
@@ -93,6 +95,7 @@ function Package(props) {
 
         dispatch(getpackage());
         dispatch(getlocation());
+        dispatch(getitineary());
 
     }, []);
 
@@ -117,11 +120,11 @@ function Package(props) {
     };
 
     let packageschema = object({
-        Location: string().required('please select location'),
+        location_id: string().required('please select location'),
         name: string().required('please enter name'),
         duration: string().required('please enter duration'),
         price: string().required('please enter price'),
-        iteneary: string().required('please select iteneary'),
+        itineary_id: string().required('please select itineary_id'),
         image: mixed().required('please upload package image'),
 
 
@@ -133,11 +136,11 @@ function Package(props) {
 
     const formik = useFormik({
         initialValues: {
-            Location: '',
+            location_id: '',
             name: '',
             duration: '',
             price: '',
-            iteneary: '',
+            itineary_id: '',
             image: '',
 
 
@@ -158,7 +161,7 @@ function Package(props) {
         },
     });
 
-     const handleEdit = (data) => {
+    const handleEdit = (data) => {
         console.log(data);
         handleClickOpen();
         formik.setValues(data);
@@ -213,9 +216,9 @@ function Package(props) {
 
                         <form onSubmit={formik.handleSubmit} id="subscription-form">
                             <TextField
-                                error={formik.errors.Location && formik.touched.Location}
+                                error={formik.errors.location_id && formik.touched.location_id}
                                 id="standard-select-currency-native"
-                                name="Location"
+                                name="location_id"
                                 select
                                 fullWidth
 
@@ -227,8 +230,8 @@ function Package(props) {
                                 variant="standard"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.Location}
-                                helperText={formik.errors.Location && formik.touched.Location ? formik.errors.Location : ''}
+                                value={formik.values.location_id}
+                                helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
                             >
                                 <option value="">--Select location--</option>
                                 {location.location.map((v) => (
@@ -285,9 +288,9 @@ function Package(props) {
                             <br /><br />
 
                             <TextField
-                                error={formik.errors.iteneary && formik.touched.iteneary}
+                                error={formik.errors.itineary_id && formik.touched.itineary_id}
                                 id="standard-select-currency-native"
-                                name="iteneary"
+                                name="itineary_id"
                                 select
                                 fullWidth
 
@@ -299,12 +302,12 @@ function Package(props) {
                                 variant="standard"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.iteneary}
-                                helperText={formik.errors.iteneary && formik.touched.iteneary ? formik.errors.iteneary : ''}
+                                value={formik.values.itineary_id}
+                                helperText={formik.errors.itineary_id && formik.touched.itineary_id ? formik.errors.itineary_id : ''}
                             >
-                                {iteneary.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
+                                {itineary.itineary.map((v) => (
+                                    <option key={v.id} value={v.id}>
+                                        {v.title}
                                     </option>
                                 ))}
                             </TextField>
@@ -325,9 +328,9 @@ function Package(props) {
                                     type="file"
                                     name='image'
 
-                                    
-                                   // onChange={(event) => console.log(event.target.files)}
-                                   onChange={(event)=>formik.setFieldValue("image",event.target.files[0])}
+
+                                    // onChange={(event) => console.log(event.target.files)}
+                                    onChange={(event) => formik.setFieldValue("image", event.target.files[0])}
                                     onBlur={formik.handleBlur}
                                 />
 

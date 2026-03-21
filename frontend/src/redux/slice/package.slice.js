@@ -31,9 +31,11 @@ export const addPackage = createAsyncThunk(
             console.log("addPackage", data);
 
             const formData = new FormData();
+            formData.append("location_id", data.location_id);
             formData.append("name", data.name);
             formData.append("duration", data.duration);
             formData.append("price", data.price);
+            formData.append("itineary_id", data.itineary_id);
             formData.append("image", data.image);
 
             const response = await axios.post('http://localhost:4000/package/addpackage', formData);
@@ -52,8 +54,18 @@ export const putpackage = createAsyncThunk(
 
         try {
 
+            const formData = new FormData();
+
+            formData.append("id", data.id);
+            formData.append("location_id", data.location_id);
+            formData.append("name", data.name);
+            formData.append("duration", data.duration);
+            formData.append("price", data.price);
+            formData.append("itineary_id", data.itineary_id);
+            formData.append("image", data.image);
+
             console.log(data);
-            const response = await axios.put(`http://localhost:4000/package/putpackage/${data.id}`, data);
+            const response = await axios.put(`http://localhost:4000/package/putpackage/${data.id}`, formData);
             console.log(response.data.data);
             return response.data.data;
         } catch (error) {
@@ -98,6 +110,8 @@ export const packageSlice = createSlice({
         })
 
         builder.addCase(putpackage.fulfilled, (state, action) => {
+            // console.log(id);
+
 
             const index = state.package.findIndex(v => v.id == action.payload.id);
             state.package[index] = action.payload;

@@ -54,6 +54,7 @@ function Blog(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setupdate(false)
   };
 
   const handleSubmit = (event) => {
@@ -67,10 +68,10 @@ function Blog(props) {
 
   let Blogschema = object({
 
-    Blog_img: mixed().required('please upload Blog Blog_img'),
-    Title: string().required('please enter Title'),
-    Date: string().required('please select Date'),
-    Description: string().required('please enter Description'),
+    blog_img: mixed().required('please upload Blog blog_img'),
+    title: string().required('please enter title'),
+    date: string().required('please select date'),
+    description: string().required('please enter description'),
 
 
 
@@ -80,10 +81,10 @@ function Blog(props) {
   const formik = useFormik({
     initialValues: {
 
-      Blog_img: '',
-      Title: '',
-      Date: '',
-      Description: '',
+      blog_img: '',
+      title: '',
+      date: '',
+      description: '',
 
     },
     validationSchema: Blogschema,
@@ -120,11 +121,11 @@ function Blog(props) {
     { field: 'date', headerName: 'date', width: 130 },
     { field: 'description', headerName: 'description', width: 130 },
     {
-      field: 'Blog_img',
-      headerName: 'Blog_img',
+      field: 'blog_img',
+      headerName: 'blog_img',
       width: 130,
       renderCell: (params) => (
-        <img src={"http://localhost:4000/" + params.row.Blog_img} width={'50px'} height={'50px'} />
+        <img src={"http://localhost:4000/" + params.row.blog_img} width={'50px'} height={'50px'} />
       )
     },
     {
@@ -168,42 +169,42 @@ function Blog(props) {
 
               <TextField
 
-                error={formik.errors.Title && formik.touched.Title}
+                error={formik.errors.title && formik.touched.title}
                 margin="dense"
-                id="Title"
-                name="Title"
-                label="Title"
+                id="title"
+                name="title"
+                label="title"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Title}
-                helperText={formik.errors.Title && formik.touched.Title ? formik.errors.Title : ''}
+                value={formik.values.title}
+                helperText={formik.errors.title && formik.touched.title ? formik.errors.title : ''}
               />
 
               <TextField
 
-                error={formik.errors.Date && formik.touched.Date}
+                error={formik.errors.date && formik.touched.date}
                 margin="dense"
-                id="Date"
-                name="Date"
+                id="date"
+                name="date"
                 type="date"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Date}
-                helperText={formik.errors.Date && formik.touched.Date ? formik.errors.Date : ''}
+                value={formik.values.date}
+                helperText={formik.errors.date && formik.touched.date ? formik.errors.date : ''}
               />
 
               <TextField
 
-                error={formik.errors.Description && formik.touched.Description}
+                error={formik.errors.description && formik.touched.description}
                 margin="dense"
-                id="Description"
-                name="Description"
-                label="Description"
+                id="description"
+                name="description"
+                label="description"
                 type="text"
                 multiline
                 rows={4}
@@ -211,8 +212,8 @@ function Blog(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Description}
-                helperText={formik.errors.Description && formik.touched.Description ? formik.errors.Description : ''}
+                value={formik.values.description}
+                helperText={formik.errors.description && formik.touched.description ? formik.errors.description : ''}
               />
 
               <br /><br />
@@ -225,27 +226,27 @@ function Blog(props) {
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
               >
-                Upload  Blog Blog_img
+                Upload  Blog blog_img
                 <VisuallyHiddenInput
-                  error={formik.errors.Blog_img && formik.touched.Blog_img}
+                  error={formik.errors.blog_img && formik.touched.blog_img}
                   type="file"
-                  name='Blog_img'
+                  name='blog_img'
 
-                  onChange={(event) => formik.setFieldValue("Blog_img", event.target.files[0])}
+                  onChange={(event) => formik.setFieldValue("blog_img", event.target.files[0])}
 
                   onBlur={formik.handleBlur}
                 //onChange={(event) => console.log(event.target.files)}
 
                 />
               </Button>
-              <img src={typeof formik.values.Blog_img == 'string' ?
-                "http://localhost:4000/" + formik.values.Blog_img :
-                URL.createObjectURL(formik.values.Blog_img)}
+              <img src={typeof formik.values.blog_img == 'string' ?
+                "http://localhost:4000/" + formik.values.blog_img :
+                URL.createObjectURL(formik.values.blog_img)}
                 width={'50px'} height={'50px'} />
               <br />
 
-              {formik.errors.Blog_img && formik.touched.Blog_img ?
-                <span className='error'>{formik.errors.Blog_img}</span> :
+              {formik.errors.blog_img && formik.touched.blog_img ?
+                <span className='error'>{formik.errors.blog_img}</span> :
                 ''}
 
 

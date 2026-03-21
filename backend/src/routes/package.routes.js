@@ -8,7 +8,7 @@ router.get('/getpackage', getpackage)
 
 router.post('/addpackage',upload.single('image'), addpackage)
 
-router.put('/putpackage/:id', putpackage)
+router.put('/putpackage/:id',upload.single('image'), putpackage)
 
 router.delete('/delpackage/:id', delpackage)
 

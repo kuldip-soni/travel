@@ -34,7 +34,7 @@ const getblog = async (req, res) => {
 const addblog = async (req, res) => {
     try {
         console.log("req.body");
-        console.log(req.file.path);
+        console.log("dddddd",req.body, req.file.path);
 
         const { title, date, description, blog_img } = req.body;
         console.log(title, date, description, blog_img);
@@ -60,7 +60,7 @@ const addblog = async (req, res) => {
         res.status(500).json({
             sucess: false,
             data: null,
-            message: "internal server error (getblog)" + error
+            message: "internal server error (getblog)" + error.message
         })
 
     }
