@@ -51,8 +51,36 @@ const service = [
   },
 ];
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 function Restaurant(props) {
   const [open, setOpen] = React.useState(false);
+      const [update, setupdate] = useState(false);
+  
+      const restaurantdata = useSelector(state => state.restaurant);
+    const vendor = useSelector(state => state.vendor);
+    const  service = useSelector(state => state.service);
+    console.log(restaurantdata);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+
+        dispatch(getrestaurant());
+        dispatch(getvendor());
+        dispatch(getservice());
+
+    }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -78,7 +106,8 @@ function Restaurant(props) {
     meals: string().required('please enter no of meals'),
     Passenger: string().required('please enter Passenger'),
     Amount: string().required('please enter Amount'),
-
+        restaurant_img: mixed().required('please upload restaurant image'),
+    
 
   });
   const formik = useFormik({
@@ -89,17 +118,76 @@ function Restaurant(props) {
       meals: '',
       Passenger: '',
       Amount: '',
+      restaurant_img:'',
 
     },
 
 
     validationSchema: Restaurantschema,
 
-    onSubmit: values => {
-      console.log(values);
-
-    },
+    onSubmit: (values, { resetForm }) => {
+         console.log(values);
+         if (update) {
+           console.log("update data");
+           dispatch(putrestaurant(values));
+         } else {
+           dispatch(addrestaurant(values));
+   
+         }
+         resetForm();
+         handleClose()
+       },
   });
+
+  const handleEdit = (data) => {
+    console.log(data);
+    handleClickOpen();
+    formik.setValues(data);
+    setupdate(true);
+
+  }
+
+  const columns = [
+
+    { field: 'from', headerName: 'from', width: 130 },
+    { field: 'to', headerName: 'to', width: 130 },
+    { field: 'datetime', headerName: 'datetime', width: 130 },
+    { field: 'passenger', headerName: 'passenger', width: 130 },
+    { field: 'amount', headerName: 'amount', width: 130 },
+    { field: 'passenger', headerName: 'passenger', width: 130 },
+    {
+      field: 'restaurant_img',
+      headerName: 'restaurant_img',
+      width: 130,
+      renderCell: (params) => (
+        <img src={"http://localhost:4000/" + params.row.restaurant_img} width={'50px'} height={'50px'} />
+      )
+    },
+
+
+
+
+    {
+      headerName: 'Action', width: 130,
+      renderCell: (parms) => (
+        <>
+          <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => dispatch(delrestaurant(parms.row.id))}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    },
+  ];
+
+  console.log(formik.errors);
+
+
+
+
+  const paginationModel = { page: 0, pageSize: 5 };
 
   console.log(formik.errors, formik.touched);
 
@@ -137,9 +225,10 @@ function Restaurant(props) {
                 value={formik.values.vendor}
                 helperText={formik.errors.vendor && formik.touched.vendor ? formik.errors.vendor : ''}
               >
-                {vendor.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                <option value="">--Select vendor--</option>
+                {vendor.vendor.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.type}
                   </option>
                 ))}
               </TextField>
@@ -162,9 +251,10 @@ function Restaurant(props) {
                 value={formik.values.service}
                 helperText={formik.errors.service && formik.touched.service ? formik.errors.service : ''}
               >
-                {service.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                 <option value="">--Select service--</option>
+                {service.service.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.city}
                   </option>
                 ))}
               </TextField>
@@ -234,6 +324,38 @@ function Restaurant(props) {
                 helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
               />
 
+              <Button
+
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload  Blog restaurant_img
+                <VisuallyHiddenInput
+                  error={formik.errors.restaurant_img && formik.touched.restaurant_img}
+                  type="file"
+                  name='restaurant_img'
+
+                  onChange={(event) => formik.setFieldValue("restaurant_img", event.target.files[0])}
+
+                  onBlur={formik.handleBlur}
+                //onChange={(event) => console.log(event.target.files)}
+
+                />
+              </Button>
+              <img src={typeof formik.values.restaurant_img == 'string' ?
+                "http://localhost:4000/" + formik.values.restaurant_img :
+                URL.createObjectURL(formik.values.restaurant_img)}
+                width={'50px'} height={'50px'} />
+              <br />
+
+              {formik.errors.restaurant_img && formik.touched.restaurant_img ?
+                <span className='error'>{formik.errors.restaurant_img}</span> :
+                ''}
+
+
 
             </form>
           </DialogContent>
@@ -245,6 +367,15 @@ function Restaurant(props) {
           </DialogActions>
         </Dialog>
       </React.Fragment>
+
+      <DataGrid
+              rows={restaurantdata.restaurant}
+              columns={columns}
+              initialState={{ pagination: { paginationModel } }}
+              pageSizeOptions={[5, 10]}
+              checkboxSelection
+              sx={{ border: 0 }}
+            />
 
     </div>
   );

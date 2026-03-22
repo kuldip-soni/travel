@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,12 +8,19 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { addservice, getservice, putservice } from '../../../redux/slice/service.slice';
+import { getvendor } from '../../../redux/slice/vendor.slice';
 
-const vendor = [
+const vendor_id = [
   {
     value: '',
     label: '--select Vendor--',
@@ -32,8 +39,38 @@ const vendor = [
   },
 ];
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
+
 function Service(props) {
   const [open, setOpen] = React.useState(false);
+  const [update, setupdate] = useState(false);
+
+  const servicedata = useSelector(state => state.service);
+  const vendor = useSelector(state => state.vendor);
+
+  console.log(servicedata);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+
+    dispatch(getservice());
+    dispatch(getvendor());
+
+  }, []);
+
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -41,6 +78,8 @@ function Service(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setupdate(false);
+
   };
 
   const handleSubmit = (event) => {
@@ -53,10 +92,10 @@ function Service(props) {
   };
 
   let Serviceschema = object({
-    vendor: string().required('please select vendor'),
-    Name: string().required('please enter Name'),
-    Description: string().required('please enter Description'),
-    Amount: string().required('please enter Amount'),
+    vendor_id: string().required('please select vendor_id'),
+    name: string().required('please enter name'),
+    description: string().required('please enter description'),
+    amount: string().required('please enter amount'),
 
 
 
@@ -64,10 +103,11 @@ function Service(props) {
   });
   const formik = useFormik({
     initialValues: {
-      vendor: '',
-      Name: '',
-      Description: '',
-      Amount: '',
+      vendor_id: '',
+      name: '',
+      description: '',
+      amount: '',
+      service_img: ''
 
 
 
@@ -75,12 +115,66 @@ function Service(props) {
     },
     validationSchema: Serviceschema,
 
-    onSubmit: values => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
+      if (update) {
+        console.log("update data");
+        dispatch(putservice(values));
+
+      } else {
+
+        dispatch(addservice(values));
+      }
+
+
+      handleClose();
+      resetForm();
+
 
     },
   });
 
+  const handleEdit = (data) => {
+    console.log(data);
+    handleClickOpen();
+    formik.setValues(data);
+    setupdate(true);
+
+  }
+  const columns = [
+
+    { field: 'vendor_id', headerName: 'vendor_id', width: 130 },
+    { field: 'description', headerName: 'description', width: 130 },
+    { field: 'amount', headerName: 'amount', width: 130 },
+    { field: 'service_img', headerName: 'service_img', width: 130 },
+
+    {
+      field: 'service_img',
+      headerName: 'service_img',
+      width: 130,
+      renderCell: (params) => (
+        <img src={"http://localhost:4000/" + params.row.service_img} width={'50px'} height={'50px'} />
+      )
+    },
+    {
+      headerName: 'Action', width: 130,
+      renderCell: (parms) => (
+        <>
+          <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => dispatch(delservice(parms.row.id))}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    },
+
+
+  ];
+
+
+  const paginationModel = { page: 0, pageSize: 5 };
   console.log(formik.errors, formik.touched);
 
   return (
@@ -101,9 +195,9 @@ function Service(props) {
             <form onSubmit={formik.handleSubmit} id="subscription-form">
 
               <TextField
-                error={formik.errors.vendor && formik.touched.vendor}
+                error={formik.errors.vendor_id && formik.touched.vendor_id}
                 id="standard-select-currency-native"
-                name="vendor"
+                name="vendor_id"
                 select
                 fullWidth
 
@@ -115,39 +209,40 @@ function Service(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.vendor}
-                helperText={formik.errors.vendor && formik.touched.vendor ? formik.errors.vendor : ''}
+                value={formik.values.vendor_id}
+                helperText={formik.errors.vendor_id && formik.touched.vendor_id ? formik.errors.vendor_id : ''}
               >
-                {vendor.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                 <option>---vendor---</option>
+                {vendor.vendor.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.type}
                   </option>
                 ))}
               </TextField>
 
               <TextField
 
-                error={formik.errors.Name && formik.touched.Name}
+                error={formik.errors.name && formik.touched.name}
                 margin="dense"
-                id="Name"
-                name="Name"
-                label="Name"
+                id="description"
+                name="description"
+                label="description"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Name}
-                helperText={formik.errors.Name && formik.touched.Name ? formik.errors.Name : ''}
+                value={formik.values.description}
+                helperText={formik.errors.description && formik.touched.description ? formik.errors.description : ''}
               />
 
               <TextField
 
-                error={formik.errors.Description && formik.touched.Description}
+                error={formik.errors.amount && formik.touched.amount}
                 margin="dense"
-                id="Description"
-                name="Description"
-                label="Description"
+                id="amount"
+                name="amount"
+                label="amount"
                 type="text"
                 fullWidth
                 multiline
@@ -155,26 +250,58 @@ function Service(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Description}
-                helperText={formik.errors.Description && formik.touched.Description ? formik.errors.Description : ''}
+                value={formik.values.amount}
+                helperText={formik.errors.amount && formik.touched.amount ? formik.errors.amount : ''}
 
               />
 
               <TextField
 
-                error={formik.errors.Amount && formik.touched.Amount}
+                error={formik.errors.amount && formik.touched.amount}
                 margin="dense"
-                id="Amount"
-                name="Amount"
-                label="Amount"
+                id="service_img"
+                name="service_img"
+                label="service_img"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Amount}
-                helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
+                value={formik.values.service_img}
+                helperText={formik.errors.service_img && formik.touched.service_img ? formik.errors.service_img : ''}
               />
+              <br /><br />
+
+              <Button
+
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload  Blog service_img
+                <VisuallyHiddenInput
+                  error={formik.errors.service_img && formik.touched.service_img}
+                  type="file"
+                  name='service_img'
+
+                  onChange={(event) => formik.setFieldValue("service_img", event.target.files[0])}
+
+                  onBlur={formik.handleBlur}
+                //onChange={(event) => console.log(event.target.files)}
+
+                />
+              </Button>
+              <img src={typeof formik.values.service_img == 'string' ?
+                "http://localhost:4000/" + formik.values.service_img :
+                URL.createObjectURL(formik.values.service_img)}
+                width={'50px'} height={'50px'} />
+              <br />
+
+              {formik.errors.service_img && formik.touched.service_img ?
+                <span classname='error'>{formik.errors.service_img}</span> :
+                ''}
 
 
 
@@ -189,6 +316,15 @@ function Service(props) {
           </DialogActions>
         </Dialog>
       </React.Fragment>
+
+      <DataGrid
+        rows={servicedata.service}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
 
     </div>
   );

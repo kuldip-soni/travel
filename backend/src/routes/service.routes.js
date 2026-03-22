@@ -4,9 +4,9 @@ const router = express.Router();
 
 router.get('/getservice', getservice)
 
-router.post('/addservice', addservice)
+router.post('/addservice',upload.single('vendor_img'), addservice)
 
-router.put('/putservice/:id', putservice)
+router.put('/putservice/:id',upload.single('vendor_img'), putservice)
 
 router.delete('/delservice/:id', delservice)
 

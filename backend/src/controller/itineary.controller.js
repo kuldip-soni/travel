@@ -1,4 +1,8 @@
+const { error } = require("console");
 const pool  = require("../db/mysql");
+const fs = require('fs');
+
+
 
 
 const getitineary = async(req, res) => {
@@ -29,25 +33,26 @@ const getitineary = async(req, res) => {
 
 const additineary = async(req,res) => {
     try {
-        console.log("req.body");
-       const {title,description}=req.body;
-       console.log(title,description);
-       
-        const [rows,fields,result] = await pool.query("INSERT INTO itineary (title,description) VALUES(?,?)", 
-        [title,description]
+         console.log("req.body");
+        console.log("dddddd",req.body, req.file.path);
 
-    )
-       
-      res.status(200).json({
-             sucess: true,
-             data: {...req.body, id: rows.insertId},
-             message: "itineary is add sucessfuly"
-        }) 
+        const { package_id, title, description, itineary_img } = req.body;
+        console.log(title, description, itineary_img);
 
-        
+        const [rows, fields, result] = await pool.query("INSERT INTO itineary (package_id,title,description,itineary_img) VALUES(?,?,?,?)",
+            [package_id, title, description, req.file.path]
 
-        console.log(rows,fields,result);
- 
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: { ...req.body, id: rows.insertId,itineary_img: req.file.path },
+            message: "itineary is add sucessfuly"
+        })
+
+
+
+        console.log(rows, fields, result);
         
     } catch (error) {
         console.log(error);
@@ -64,23 +69,34 @@ const additineary = async(req,res) => {
 const putitineary = async(req,res) => {
     try {
         console.log("req.body");
-        const { title,description } = req.body;
-        const itinearyId =req.params.id;
-        console.log(title,description,itinearyId);
-        
-        const [rows, fields, result] = await pool.query("UPDATE  itineary  SET  title=?, description=? WHERE id=?",
-            [title,description,itinearyId]
+        const { package_id, title, description, itineary_img } = req.body;
+        const itinearyId = req.params.id;
+        console.log(package_id, title, description, itineary_img, itinearyId);
 
+        const [rows] = await pool.query(`SELECT * FROM itineary WHERE id=${itinearyId}`);
+        let fileimg = '';
+
+        if (req.file) {
+
+            fs.unlinkSync(rows[0].itineary_img, (error) => {
+                console.log(error);
+
+            })
+            fileimg = req.file.path;
+        } else {
+            fileimg = rows[0].itineary_img
+        }
+
+        await pool.query("UPDATE  itineary  SET  package_id=?,title=?,description=?,itineary_img=? WHERE id=?",
+            [package_id, title, description, fileimg, itinearyId]
         )
 
         res.status(200).json({
             sucess: true,
-            data: {title,description,id:itinearyId},
+            data: { id: itinearyId, package_id, title, description, itineary_img: fileimg },
             message: "itineary is update sucessfuly"
 
         })
-        console.log(fields, result);
-
        
         
     } catch (error) {
@@ -97,11 +113,20 @@ const putitineary = async(req,res) => {
 
 const delitineary = async(req,res) => {
     try {
-        const  itinearyId =req.params.id;
-        console.log( itinearyId);
-        
-        const [rows, fields, result] = await pool.query("DELETE FROM itineary WHERE id=?",
-            [ itinearyId]
+       console.log("delitineary");
+         // const { city, state, country, itineary_img } = req.body;
+        const itinearyId = req.params.id;
+        // console.log(itinearyId);
+
+        const [rows] = await pool.query(`SELECT * FROM itineary WHERE id=${itinearyId}`);
+
+        fs.unlinkSync(rows[0].itineary_img, (error) => {
+            console.log(error);
+
+        })
+
+        await pool.query("DELETE FROM itineary WHERE id=?",
+            [itinearyId]
 
         )
 
@@ -111,7 +136,6 @@ const delitineary = async(req,res) => {
             message: "itineary is deleated sucessfuly"
 
         })
-        
         
         
     } catch (error) {

@@ -1,4 +1,8 @@
+const { error } = require("console");
 const pool  = require("../db/mysql");
+const fs = require('fs');
+
+
 
 
 const getservice = async(req, res) => {
@@ -28,56 +32,119 @@ const getservice = async(req, res) => {
 
 const addservice = async(req,res) => {
     try {
-        console.log("req.body");
-       const {description,amount}=req.body;
-       console.log(description,amount);
-       
-        const [rows,fields,result] = await pool.query("INSERT INTO service (description,amount) VALUES(?,?)", 
-        [description,amount]
+      console.log("req.body");
+        console.log("dddddd",req.body, req.file.path);
 
-    )
-       
-      res.status(200).json({
-             sucess: true,
-             data: {...req.body, id: rows.insertId},
-             message: "service is add sucessfuly"
-        }) 
+        const { vendor_id, description, amount, service_img } = req.body;
+        console.log( description, amount, service_img);
 
-        
+        const [rows, fields, result] = await pool.query("INSERT INTO service (vendor_id,description,amount,service_img) VALUES(?,?,?,?)",
+            [vendor_id, description, amount, req.file.path]
 
-        console.log(rows,fields,result);
- 
-        
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: { ...req.body, id: rows.insertId,service_img: req.file.path },
+            message: "service is add sucessfuly"
+        })
+
+
+
+        console.log(rows, fields, result);
+
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
-             sucess: false,
-             data: null,
-             message: "internal server error (getservice)" +error
-        }) 
+            sucess: false,
+            data: null,
+            message: "internal server error (getservice)" + error.message
+        })
         
     }
     
 }
 
-const putservice = () => {
-    try {
-       console.log("putservice");
-        
+const putservice =async () => {
+   try {
+        console.log("req.body");
+        const { vendor_id, description, amount, service_img } = req.body;
+        const serviceId = req.params.id;
+        console.log(description, amount, service_img, serviceId);
+
+        const [rows] = await pool.query(`SELECT * FROM service WHERE id=${serviceId}`);
+        let fileimg = '';
+
+        if (req.file) {
+
+            fs.unlinkSync(rows[0].service_img, (error) => {
+                console.log(error);
+
+            })
+            fileimg = req.file.path;
+        } else {
+            fileimg = rows[0].service_img
+        }
+
+        await pool.query("UPDATE  service  SET  vendor_id=?,description=?,amount=?,service_img=? WHERE id=?",
+            [vendor_id, description, amount, fileimg, serviceId]
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: { id: serviceId, title, date, description, service_img: fileimg },
+            message: "service is update sucessfuly"
+
+        })
+
     } catch (error) {
-        
+         console.log(error);
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (putservice)" + error
+        })
+
     }
     
 }
 
-const delservice = () => {
-    try {
+const delservice = async() => {
+ try {
         console.log("delservice");
-        
+         // const { city, state, country, service_img } = req.body;
+        const serviceId = req.params.id;
+        // console.log(serviceId);
+
+        const [rows] = await pool.query(`SELECT * FROM service WHERE id=${serviceId}`);
+
+        fs.unlinkSync(rows[0].service_img, (error) => {
+            console.log(error);
+
+        })
+
+        await pool.query("DELETE FROM service WHERE id=?",
+            [serviceId]
+
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: null,
+            message: "service is deleated sucessfuly"
+
+        })
+
     } catch (error) {
-        
-    }
-    
+        console.log(error);
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (delservice)" + error
+        })
+
+    }    
 }
 
 module.exports = {

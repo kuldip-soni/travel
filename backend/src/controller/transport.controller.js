@@ -1,4 +1,7 @@
+const { error } = require("console");
 const pool  = require("../db/mysql");
+const fs = require('fs');
+
 
 
 const gettransport = async(req, res) => {
@@ -29,20 +32,21 @@ const gettransport = async(req, res) => {
 
 const addtransport = async(req,res) => {
     try {
-        console.log("req.body");
-       const {from,to,datetime,passenger,amount}=req.body;
-       console.log(from,to,datetime,passenger,amount);
-       
-        const [rows,fields,result] = await pool.query("INSERT INTO transport (`from`,`to`,datetime,passenger,amount) VALUES (?,?,?,?,?)", 
-        [from,to,datetime,passenger,amount]
+        // console.log("req.body");
+        //console.log("dddddd",req.body, req.file.path);
+        const { vendor_id, service_id, from, to, datetime,passenger,amount, transport_img } = req.body;
+        console.log( from, to, datetime,passenger,amount);
 
-    )
-       
-      res.status(200).json({
-             sucess: true,
-             data: {...req.body, id: rows.insertId},
-             message: "transport is add sucessfuly"
-        }) 
+        const [rows, fields, result] = await pool.query("INSERT INTO transport (vendor_id,service_id,from,to,datetime,passenger,amount,transport_img) VALUES(?,?,?,?,?,?)",
+            [vendor_id, service_id, from, to, datetime,passenger,amount, req.file.path]
+
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: { ...req.body, id: rows.insertId, transport_img: req.file.path },
+            message: "transport is add sucessfuly"
+        })
 
         
 
@@ -61,21 +65,88 @@ const addtransport = async(req,res) => {
     
 }
 
-const puttransport = () => {
+const puttransport = async() => {
     try {
-       console.log("puttransport");
+        console.log("req.body");
+        // console.log(req.body, req.file.path);
+
+        const { vendor_id, service_id, from, to, datetime,passenger,amount} = req.body;
+        const transportId = req.params.id;
+        console.log(from, to, datetime,passenger,amount, transportId);
+
+        const [rows] = await pool.query(`SELECT * FROM transport WHERE id=${transportId}`);
+        let fileimg = '';
+
+        if (req.file) {
+
+            fs.unlinkSync(rows[0].image, (error) => {
+                console.log(error);
+
+            })
+            fileimg = req.file.path;
+        } else {
+            fileimg = rows[0].image
+        }
+
+
+        await pool.query("UPDATE  transport  SET location_id=?, name=?, duration=?, price=?, itineary_id=?, image=? WHERE id=?",
+            [vendor_id, service_id, from, to, datetime,passenger,amount,fileimg, transportId]
+
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: {  vendor_id, service_id, from, to, datetime,passenger,amount, image: fileimg, id: transportId },
+            message: "transport is update sucessfuly"
+
+        })
+        console.log(fields, result);
+
         
     } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (puttransport)" + error
+        })
         
     }
     
 }
 
-const deltransport = () => {
+const deltransport = async() => {
     try {
-        console.log("deltransport");
+       // const { city, state, country, image } = req.body;
+        const transportId = req.params.id;
+        // console.log(transportId);
+
+        const [rows] = await pool.query(`SELECT * FROM transport WHERE id=${transportId}`);
+
+        fs.unlinkSync(rows[0].image, (error) => {
+            console.log(error);
+
+        })
+
+        await pool.query("DELETE FROM transport WHERE id=?",
+            [transportId]
+
+        )
+
+        res.status(200).json({
+            sucess: true,
+            data: null,
+            message: "transport is deleated sucessfuly"
+
+        })
         
     } catch (error) {
+         console.log(error);
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (deltransport)" + error
+        })
         
     }
     

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -10,15 +10,18 @@ import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
-import { additineary, delitineary, getitineary } from '../../../redux/slice/itineary.slice';
+import { additineary, delitineary, getitineary, putitineary } from '../../../redux/slice/itineary.slice';
 import { useDispatch, useSelector } from 'react-redux';
+import { getpackage } from '../../../redux/slice/package.slice';
 
-const Package = [
+
+const package_id = [
   {
     value: '',
     label: '--select package--',
@@ -37,12 +40,28 @@ const Package = [
   },
 ];
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 
 function Itineary(props) {
   const [open, setOpen] = React.useState(false);
+  const [update, setupdate] = useState(false);
+
 
   const itinearydata = useSelector(state => state.itineary);
-    console.log(itinearydata);
+  const Package = useSelector(state => state.package);
+
+  console.log(itinearydata);
 
 
   const dispatch = useDispatch();
@@ -50,6 +69,9 @@ function Itineary(props) {
   useEffect(() => {
 
     dispatch(getitineary());
+    dispatch(getpackage());
+
+
 
   }, []);
 
@@ -59,6 +81,8 @@ function Itineary(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setupdate(false)
+
   };
 
   const handleSubmit = (event) => {
@@ -71,7 +95,8 @@ function Itineary(props) {
   };
 
   let itinearyschema = object({
-    Package: string().required('please select  package'),
+    itineary_img: mixed().required('please upload itineary itineary_img'),
+    package_id: string().required('please select  package'),
     title: string().required('please enter title'),
     description: string().required('please enter description'),
 
@@ -79,7 +104,8 @@ function Itineary(props) {
 
   const formik = useFormik({
     initialValues: {
-      Package: '',
+      itineary_img: '',
+      package_id: '',
       title: '',
       description: '',
 
@@ -88,35 +114,66 @@ function Itineary(props) {
     },
     validationSchema: itinearyschema,
 
-   onSubmit: (values, { resetForm }) => {
-               console.log(values);
-   
-   
-   
-               dispatch(additineary(values));
-               handleClose();
-               resetForm();
-   
-   
-           },
+    onSubmit: (values, { resetForm }) => {
+      console.log(values);
+      if (update) {
+        console.log("update data");
+        dispatch(putitineary(values));
+        dispatch((values));
+
+      } else {
+
+        dispatch(additineary(values));
+      }
+
+
+      handleClose();
+      resetForm();
+
+
+    },
   });
+
+  const handleEdit = (data) => {
+    console.log(data);
+    handleClickOpen();
+    formik.setValues(data);
+    setupdate(true);
+
+  }
 
 
   const columns = [
 
+    { field: 'package_id', headerName: 'package_id', width: 130 },
     { field: 'title', headerName: 'title', width: 130 },
     { field: 'description', headerName: 'description', width: 130 },
+
+    {
+      field: 'itineary_img',
+      headerName: 'itineary_img',
+      width: 130,
+      renderCell: (params) => (
+        <img src={"http://localhost:4000/" + params.row.itineary_img} width={'50px'} height={'50px'} />
+      )
+    },
     {
       headerName: 'Action', width: 130,
       renderCell: (parms) => (
-        <IconButton aria-label="delete" onClick={() => dispatch(delitineary(parms.row.id))}>
-          <DeleteIcon />
-        </IconButton>
+        <>
+          <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+            <EditIcon />
+          </IconButton>
+
+          <IconButton aria-label="delete" onClick={() => dispatch(delitineary(parms.row.id))}>
+            <DeleteIcon />
+          </IconButton>
+        </>
       )
     },
   ];
 
-  
+
 
   const paginationModel = { page: 0, pageSize: 5 };
 
@@ -145,9 +202,9 @@ function Itineary(props) {
 
             <form onSubmit={formik.handleSubmit} id="subscription-form">
               <TextField
-                error={formik.errors.Package && formik.touched.Package}
+                error={formik.errors.package_id && formik.touched.package_id}
                 id="standard-select-currency-native"
-                name="Package"
+                name="package_id"
                 select
                 fullWidth
 
@@ -159,12 +216,13 @@ function Itineary(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Package}
-                helperText={formik.errors.Package && formik.touched.Package ? formik.errors.Package : ''}
+                value={formik.values.package_id}
+                helperText={formik.errors.package_id && formik.touched.package_id ? formik.errors.package_id : ''}
               >
-                {Package.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                <option>---package---</option>
+                {Package.package.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.name}
                   </option>
                 ))}
               </TextField>
@@ -202,6 +260,38 @@ function Itineary(props) {
                 value={formik.values.description}
                 helperText={formik.errors.description && formik.touched.description ? formik.errors.description : ''}
               />
+
+              <Button
+
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload  Blog itineary_img
+                <VisuallyHiddenInput
+                  error={formik.errors.itineary_img && formik.touched.itineary_img}
+                  type="file"
+                  name='itineary_img'
+
+                  onChange={(event) => formik.setFieldValue("itineary_img", event.target.files[0])}
+
+                  onBlur={formik.handleBlur}
+                //onChange={(event) => console.log(event.target.files)}
+
+                />
+              </Button>
+              <img src={typeof formik.values.itineary_img == 'string' ?
+                "http://localhost:4000/" + formik.values.itineary_img :
+                URL.createObjectURL(formik.values.itineary_img)}
+                width={'50px'} height={'50px'} />
+              <br />
+
+              {formik.errors.itineary_img && formik.touched.itineary_img ?
+                <span className='error'>{formik.errors.itineary_img}</span> :
+                ''}
+
             </form>
           </DialogContent>
           <DialogActions>

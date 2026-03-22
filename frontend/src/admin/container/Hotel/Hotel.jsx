@@ -52,8 +52,37 @@ const service = [
   },
 ];
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 function Hotel(props) {
   const [open, setOpen] = React.useState(false);
+      const [update, setupdate] = useState(false);
+
+      const hoteldata = useSelector(state => state.hotel);
+    const vendor = useSelector(state => state.vendor);
+    const  service = useSelector(state => state.service);
+    console.log(hoteldata);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+
+        dispatch(gethotel());
+        dispatch(getvendor());
+        dispatch(getservice());
+
+    }, []);
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -80,6 +109,7 @@ function Hotel(props) {
     Datetime: string().required('please select Datetime'),
     Passenger: string().required('please enter Passenger'),
     Amount: string().required('please enter Amount'),
+    hotel_img: mixed().required('please upload hotel image'),
 
 
 
@@ -94,18 +124,77 @@ function Hotel(props) {
       Datetime: '',
       Passenger: '',
       Amount: '',
+      hotel_img:'',
+
 
     },
 
 
     validationSchema: Hotelschema,
 
-    onSubmit: values => {
+ onSubmit: (values, { resetForm }) => {
       console.log(values);
+      if (update) {
+        console.log("update data");
+        dispatch(puthotel(values));
+      } else {
+        dispatch(addhotel(values));
 
+      }
+      resetForm();
+      handleClose()
     },
   });
 
+  const handleEdit = (data) => {
+    console.log(data);
+    handleClickOpen();
+    formik.setValues(data);
+    setupdate(true);
+
+  }
+
+  const columns = [
+
+    { field: 'from', headerName: 'from', width: 130 },
+    { field: 'to', headerName: 'to', width: 130 },
+    { field: 'datetime', headerName: 'datetime', width: 130 },
+    { field: 'passenger', headerName: 'passenger', width: 130 },
+    { field: 'amount', headerName: 'amount', width: 130 },
+    { field: 'passenger', headerName: 'passenger', width: 130 },
+    {
+      field: 'hotel_img',
+      headerName: 'hotel_img',
+      width: 130,
+      renderCell: (params) => (
+        <img src={"http://localhost:4000/" + params.row.hotel_img} width={'50px'} height={'50px'} />
+      )
+    },
+
+
+
+
+    {
+      headerName: 'Action', width: 130,
+      renderCell: (parms) => (
+        <>
+          <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => dispatch(delhotel(parms.row.id))}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    },
+  ];
+
+  console.log(formik.errors);
+
+
+
+
+  const paginationModel = { page: 0, pageSize: 5 };
   console.log(formik.errors, formik.touched);
 
   return (
@@ -142,9 +231,10 @@ function Hotel(props) {
                 value={formik.values.vendor}
                 helperText={formik.errors.vendor && formik.touched.vendor ? formik.errors.vendor : ''}
               >
-                {vendor.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                 <option value="">--Select vendor--</option>
+                {vendor.vendor.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.type}
                   </option>
                 ))}
               </TextField>
@@ -167,9 +257,10 @@ function Hotel(props) {
                 value={formik.values.service}
                 helperText={formik.errors.service && formik.touched.service ? formik.errors.service : ''}
               >
-                {service.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                                <option value="">--Select service--</option>
+                {service.service.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.city}
                   </option>
                 ))}
               </TextField>
@@ -253,6 +344,37 @@ function Hotel(props) {
                 value={formik.values.Amount}
                 helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
               />
+                            <Button
+
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload  Blog hotel_img
+                <VisuallyHiddenInput
+                  error={formik.errors.hotel_img && formik.touched.hotel_img}
+                  type="file"
+                  name='hotel_img'
+
+                  onChange={(event) => formik.setFieldValue("hotel_img", event.target.files[0])}
+
+                  onBlur={formik.handleBlur}
+                //onChange={(event) => console.log(event.target.files)}
+
+                />
+              </Button>
+              <img src={typeof formik.values.hotel_img == 'string' ?
+                "http://localhost:4000/" + formik.values.hotel_img :
+                URL.createObjectURL(formik.values.hotel_img)}
+                width={'50px'} height={'50px'} />
+              <br />
+
+              {formik.errors.hotel_img && formik.touched.hotel_img ?
+                <span className='error'>{formik.errors.hotel_img}</span> :
+                ''}
+
 
 
             </form>
@@ -266,6 +388,14 @@ function Hotel(props) {
         </Dialog>
       </React.Fragment>
 
+      <DataGrid
+        rows={hoteldata.hotel}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
     </div>
   );
 }

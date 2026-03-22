@@ -6,9 +6,9 @@ const router = express.Router();
 
 router.get('/getrestaurant', getrestaurant)
 
-router.post('/addrestaurant', addrestaurant)
+router.post('/addrestaurant',upload.single('restaurant_img'), addrestaurant)
 
-router.put('/putrestaurant/:id', putrestaurant)
+router.put('/putrestaurant/:id',upload.single('restaurant_img'), putrestaurant)
 
 router.delete('/delrestaurant/:id', delrestaurant)
 

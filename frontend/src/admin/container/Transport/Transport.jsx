@@ -7,16 +7,29 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { DataGrid } from '@mui/x-data-grid';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
+import { getvendor } from '../../../redux/slice/vendor.slice';
+import { getservice } from '../../../redux/slice/service.slice';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { addtransport, deltransport, gettransport, puttransport } from '../../../redux/slice/transport.slice';
+
+
+
 
 const vendor = [
   {
     value: '',
-    label: '--select vendor--',
+    label: '--select vendor_id--',
   },
   {
     value: 'ind',
@@ -35,7 +48,7 @@ const vendor = [
 const service = [
   {
     value: '',
-    label: '--select service--',
+    label: '--select service_id--',
   },
   {
     value: 'ind',
@@ -51,8 +64,36 @@ const service = [
   },
 ];
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 function Transport(props) {
   const [open, setOpen] = React.useState(false);
+    const [update, setupdate] = useState(false);
+
+    const transportdata = useSelector(state => state.transport);
+    const vendor = useSelector(state => state.vendor);
+    const  service = useSelector(state => state.service);
+    console.log(transportdata);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+
+        dispatch(gettransport());
+        dispatch(getvendor());
+        dispatch(getservice());
+
+    }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -72,13 +113,14 @@ function Transport(props) {
   };
 
   let Transportschema = object({
-    vendor: string().required('please select vendor'),
-    service: string().required('please select service'),
+    vendor_id: string().required('please select vendor_id'),
+    service_id: string().required('please select service_id'),
     From: string().required('please enter From'),
     To: string().required('please enter To'),
     DateTime: string().required('please enter Date & Time'),
     Passenger: string().required('please enter Passenger'),
     Amount: string().required('please enter Amount'),
+    transport_img: mixed().required('please upload transport image'),
 
 
 
@@ -86,24 +128,82 @@ function Transport(props) {
 
   const formik = useFormik({
     initialValues: {
-      vendor: '',
-      service: '',
-      From:'',
-      To:'',
-      DateTime:'',
-      Passenger:'',
-      Amount:'',
-
+      vendor_id: '',
+      service_id: '',
+      From: '',
+      To: '',
+      DateTime: '',
+      Passenger: '',
+      Amount: '',
+     transport_img:'',
 
 
     },
     validationSchema: Transportschema,
 
-    onSubmit: values => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
+      if (update) {
+        console.log("update data");
+        dispatch(puttransport(values));
+      } else {
+        dispatch(addtransport(values));
 
+      }
+      resetForm();
+      handleClose()
     },
   });
+
+  const handleEdit = (data) => {
+    console.log(data);
+    handleClickOpen();
+    formik.setValues(data);
+    setupdate(true);
+
+  }
+
+  const columns = [
+
+    { field: 'from', headerName: 'from', width: 130 },
+    { field: 'to', headerName: 'to', width: 130 },
+    { field: 'datetime', headerName: 'datetime', width: 130 },
+    { field: 'passenger', headerName: 'passenger', width: 130 },
+    { field: 'amount', headerName: 'amount', width: 130 },
+    { field: 'passenger', headerName: 'passenger', width: 130 },
+    {
+      field: 'transport_img',
+      headerName: 'transport_img',
+      width: 130,
+      renderCell: (params) => (
+        <img src={"http://localhost:4000/" + params.row.transport_img} width={'50px'} height={'50px'} />
+      )
+    },
+
+
+
+
+    {
+      headerName: 'Action', width: 130,
+      renderCell: (parms) => (
+        <>
+          <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => dispatch(deltransport(parms.row.id))}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    },
+  ];
+
+  console.log(formik.errors);
+
+
+
+
+  const paginationModel = { page: 0, pageSize: 5 };
 
   console.log(formik.errors, formik.touched);
 
@@ -125,9 +225,9 @@ function Transport(props) {
 
             <form onSubmit={formik.handleSubmit} id="subscription-form">
               <TextField
-                error={formik.errors.vendor && formik.touched.vendor}
+                error={formik.errors.vendor_id && formik.touched.vendor_id}
                 id="standard-select-currency-native"
-                name="vendor"
+                name="vendor_id"
                 select
                 fullWidth
 
@@ -139,21 +239,22 @@ function Transport(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.vendor}
-                helperText={formik.errors.vendor && formik.touched.vendor ? formik.errors.vendor : ''}
+                value={formik.values.vendor_id}
+                helperText={formik.errors.vendor_id && formik.touched.vendor_id ? formik.errors.vendor_id : ''}
               >
-                {vendor.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                 <option value="">--Select vendor--</option>
+                {vendor.vendor.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.type}
                   </option>
                 ))}
               </TextField>
               <br /><br />
 
               <TextField
-                error={formik.errors.service && formik.touched.service}
+                error={formik.errors.service_id && formik.touched.service_id}
                 id="standard-select-currency-native"
-                name="service"
+                name="service_id"
                 select
                 fullWidth
 
@@ -165,12 +266,13 @@ function Transport(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.service}
-                helperText={formik.errors.service && formik.touched.service ? formik.errors.service : ''}
+                value={formik.values.service_id}
+                helperText={formik.errors.service_id && formik.touched.service_id ? formik.errors.service_id : ''}
               >
-                {service.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                <option value="">--Select service--</option>
+                {service.service.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.city}
                   </option>
                 ))}
               </TextField>
@@ -178,61 +280,61 @@ function Transport(props) {
               <TextField
                 error={formik.errors.From && formik.touched.From}
                 margin="dense"
-                id="From"
-                name="From"
-                label="From"
+                id="from"
+                name="from"
+                label="from"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.From}
-                helperText={formik.errors.From && formik.touched.From ? formik.errors.From : ''}
+                value={formik.values.from}
+                helperText={formik.errors.from && formik.touched.from ? formik.errors.From : ''}
               />
 
               <TextField
-               error={formik.errors.To && formik.touched.To}
+                error={formik.errors.To && formik.touched.To}
                 margin="dense"
-                id="To"
-                name="To"
-                label="To"
+                id="to"
+                name="to"
+                label="to"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.To}
-                helperText={formik.errors.To && formik.touched.To ? formik.errors.To : ''}
+                value={formik.values.to}
+                helperText={formik.errors.to && formik.touched.to ? formik.errors.To : ''}
               />
 
               <TextField
-               error={formik.errors.DateTime && formik.touched.DateTime}
+                error={formik.errors.DateTime && formik.touched.DateTime}
                 margin="dense"
-                id="DateTime"
-                name="DateTime"
-                
+                id="datetime"
+                name="datetime"
+
                 type="datetime-local"
                 fullWidth
                 variant="standard"
-                 onChange={formik.handleChange}
+                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.DateTime}
-                helperText={formik.errors.DateTime && formik.touched.DateTime ? formik.errors.DateTime : ''}
+                value={formik.values.datetime}
+                helperText={formik.errors.datetime && formik.touched.datetime ? formik.errors.DateTime : ''}
               />
 
               <TextField
                 error={formik.errors.Passenger && formik.touched.Passenger}
                 margin="dense"
-                id="Passenger"
-                name="Passenger"
-                label="Passenger"
+                id="passenger"
+                name="passenger"
+                label="passenger"
                 type="number"
                 fullWidth
                 variant="standard"
-                 onChange={formik.handleChange}
+                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Passenger}
-                helperText={formik.errors.Passenger && formik.touched.Passenger ? formik.errors.Passenger : ''}
+                value={formik.values.passenger}
+                helperText={formik.errors.passenger && formik.touched.passenger ? formik.errors.Passenger : ''}
               />
 
               <TextField
@@ -244,12 +346,43 @@ function Transport(props) {
                 type="number"
                 fullWidth
                 variant="standard"
-                 onChange={formik.handleChange}
+                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.Amount}
                 helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
               />
-              
+
+              <Button
+
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload  Blog transport_img
+                <VisuallyHiddenInput
+                  error={formik.errors.transport_img && formik.touched.transport_img}
+                  type="file"
+                  name='transport_img'
+
+                  onChange={(event) => formik.setFieldValue("transport_img", event.target.files[0])}
+
+                  onBlur={formik.handleBlur}
+                //onChange={(event) => console.log(event.target.files)}
+
+                />
+              </Button>
+              <img src={typeof formik.values.transport_img == 'string' ?
+                "http://localhost:4000/" + formik.values.transport_img :
+                URL.createObjectURL(formik.values.transport_img)}
+                width={'50px'} height={'50px'} />
+              <br />
+
+              {formik.errors.transport_img && formik.touched.transport_img ?
+                <span className='error'>{formik.errors.transport_img}</span> :
+                ''}
+
 
 
             </form>
@@ -262,6 +395,15 @@ function Transport(props) {
           </DialogActions>
         </Dialog>
       </React.Fragment>
+
+      <DataGrid
+        rows={transportdata.transport}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
 
     </div>
   );

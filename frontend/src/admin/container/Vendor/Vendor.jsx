@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,13 +8,46 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { addvendor, delvendor, getvendor, putvendor } from '../../../redux/slice/vendor.slice';
+
+
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 function Vendor(props) {
   const [open, setOpen] = React.useState(false);
+  const [update, setupdate] = useState(false);
+
+  const vendordata = useSelector(state => state.vendor);
+  console.log(vendordata);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+
+    dispatch(getvendor());
+
+  }, []);
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -22,6 +55,8 @@ function Vendor(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setupdate(false)
+
   };
 
   const handleSubmit = (event) => {
@@ -34,13 +69,14 @@ function Vendor(props) {
   };
 
   let Vendorschema = object({
-    Name: string().required('please enter Name'),
-    Phoneno: string().required('please enter Phoneno'),
-    GSTno: string().required('please enter GSTno'),
-    Email: string().required('please enter Email'),
-    Type: string().required('please enter Type'),
-    Company_name: string().required('please enter Company_name'),
-    Status: string().required('please enter Status'),
+    name: string().required('please enter name'),
+    phoneno: string().required('please enter phoneno'),
+    gstno: string().required('please enter gstno'),
+    email: string().required('please enter email'),
+    type: string().required('please enter type'),
+    company_name: string().required('please enter company_name'),
+    status: string().required('please enter status'),
+    vendor_img: mixed().required('pleaser upload image'),
 
 
 
@@ -52,14 +88,14 @@ function Vendor(props) {
 
   const formik = useFormik({
     initialValues: {
-      Name: '',
-      Phoneno: '',
-      GSTno: '',
-      Email: '',
-      Type: '',
-      Company_name: '',
-      Status: '',
-
+      name: '',
+      phoneno: '',
+      gstno: '',
+      email: '',
+      type: '',
+      company_name: '',
+      status: '',
+      vendor_img: '',
 
 
 
@@ -68,11 +104,71 @@ function Vendor(props) {
 
     validationSchema: Vendorschema,
 
-    onSubmit: values => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
+      if (update) {
+        console.log("update data");
+        dispatch(putvendor(values));
+
+      } else {
+
+        dispatch(addvendor(values));
+      }
+
+
+      handleClose();
+      resetForm();
+
 
     },
   });
+
+  const handleEdit = (data) => {
+    console.log(data);
+    handleClickOpen();
+    formik.setValues(data);
+    setupdate(true);
+
+  }
+  const columns = [
+
+    { field: 'name', headername: 'name', width: 130 },
+    { field: 'phoneno', headername: 'phoneno', width: 130 },
+    { field: 'gstno', headername: 'gstno', width: 130 },
+    { field: 'email', headername: 'email', width: 130 },
+    { field: 'type', headername: 'type', width: 130 },
+    { field: 'company_name', headername: 'company_name', width: 130 },
+    { field: 'status', headername: 'status', width: 130 },
+
+
+
+    {
+      field: 'vendor_img',
+      headername: 'vendor_img',
+      width: 130,
+      renderCell: (params) => (
+        <img src={"http://localhost:4000/" + params.row.vendor_img} width={'50px'} height={'50px'} />
+      )
+    },
+    {
+      headername: 'Action', width: 130,
+      renderCell: (parms) => (
+        <>
+          <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => dispatch(delvendor(parms.row.id))}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    },
+
+
+  ];
+
+
+  const paginationModel = { page: 0, pageSize: 5 };
 
   console.log(formik.errors, formik.touched);
 
@@ -96,116 +192,149 @@ function Vendor(props) {
 
               <TextField
 
-                error={formik.errors.Name && formik.touched.Name}
+                error={formik.errors.name && formik.touched.name}
                 margin="dense"
-                id="Name"
-                name="Name"
-                label="Name"
+                id="name"
+                name="name"
+                label="name"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Name}
-                helperText={formik.errors.Name && formik.touched.Name ? formik.errors.Name : ''}
+                value={formik.values.name}
+                helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
               />
 
               <TextField
 
-                error={formik.errors.Phoneno && formik.touched.Phoneno}
+                error={formik.errors.phoneno && formik.touched.phoneno}
                 margin="dense"
-                id="Phoneno"
-                name="Phoneno"
+                id="phoneno"
+                name="phoneno"
                 label="Phone no"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Phoneno}
-                helperText={formik.errors.Phoneno && formik.touched.Phoneno ? formik.errors.Phoneno : ''}
+                value={formik.values.phoneno}
+                helperText={formik.errors.phoneno && formik.touched.phoneno ? formik.errors.phoneno : ''}
 
               />
 
               <TextField
 
-                error={formik.errors.GSTno && formik.touched.GSTno}
+                error={formik.errors.gstno && formik.touched.gstno}
                 margin="dense"
-                id="GSTno"
-                name="GSTno"
+                id="gstno"
+                name="gstno"
                 label="GST no"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.GSTno}
-                helperText={formik.errors.GSTno && formik.touched.GSTno ? formik.errors.GSTno : ''}
+                value={formik.values.gstno}
+                helperText={formik.errors.gstno && formik.touched.gstno ? formik.errors.gstno : ''}
               />
 
               <TextField
 
-                error={formik.errors.Email && formik.touched.Email}
+                error={formik.errors.email && formik.touched.email}
                 margin="dense"
-                id="Email"
-                name="Email"
-                label="Email"
-                type="Email"
+                id="email"
+                name="email"
+                label="email"
+                type="email"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Email}
-                helperText={formik.errors.Email && formik.touched.Email ? formik.errors.Email : ''}
+                value={formik.values.email}
+                helperText={formik.errors.email && formik.touched.email ? formik.errors.email : ''}
               />
 
               <TextField
 
-                error={formik.errors.Type && formik.touched.Type}
+                error={formik.errors.type && formik.touched.type}
                 margin="dense"
-                id="Type"
-                name="Type"
-                label="Type"
+                id="type"
+                name="type"
+                label="type"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Type}
-                helperText={formik.errors.Type && formik.touched.Type ? formik.errors.Type : ''}
+                value={formik.values.type}
+                helperText={formik.errors.type && formik.touched.type ? formik.errors.type : ''}
               />
 
               <TextField
 
-                error={formik.errors.Company_name && formik.touched.Company_name}
+                error={formik.errors.company_name && formik.touched.company_name}
                 margin="dense"
-                id="Company_name"
-                name="Company_name"
-                label="Company_name"
+                id="company_name"
+                name="company_name"
+                label="company_name"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Company_name}
-                helperText={formik.errors.Company_name && formik.touched.Company_name ? formik.errors.Company_name : ''}
+                value={formik.values.company_name}
+                helperText={formik.errors.company_name && formik.touched.company_name ? formik.errors.company_name : ''}
               />
 
               <TextField
 
-                error={formik.errors.Status && formik.touched.Status}
+                error={formik.errors.status && formik.touched.status}
                 margin="dense"
-                id="Status"
-                name="Status"
-                label="Status"
+                id="status"
+                name="status"
+                label="status"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Status}
-                helperText={formik.errors.Status && formik.touched.Status ? formik.errors.Status : ''}
+                value={formik.values.status}
+                helperText={formik.errors.status && formik.touched.status ? formik.errors.status : ''}
               />
+              <br /><br />
+
+              <Button
+
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload  Blog vendor_img
+                <VisuallyHiddenInput
+                  error={formik.errors.vendor_img && formik.touched.vendor_img}
+                  type="file"
+                  name='vendor_img'
+
+                  onChange={(event) => formik.setFieldValue("vendor_img", event.target.files[0])}
+
+                  onBlur={formik.handleBlur}
+                //onChange={(event) => console.log(event.target.files)}
+
+                />
+              </Button>
+              <img src={typeof formik.values.vendor_img == 'string' ?
+                "http://localhost:4000/" + formik.values.vendor_img :
+                URL.createObjectURL(formik.values.vendor_img)}
+                width={'50px'} height={'50px'} />
+              <br />
+
+              {formik.errors.vendor_img && formik.touched.vendor_img ?
+                <span classname='error'>{formik.errors.vendor_img}</span> :
+                ''}
+
 
 
             </form>
@@ -218,6 +347,15 @@ function Vendor(props) {
           </DialogActions>
         </Dialog>
       </React.Fragment>
+
+      <DataGrid
+              rows={vendordata.vendor}
+              columns={columns}
+              initialState={{ pagination: { paginationModel } }}
+              pageSizeOptions={[5, 10]}
+              checkboxSelection
+              sx={{ border: 0 }}
+            />
 
     </div>
   );

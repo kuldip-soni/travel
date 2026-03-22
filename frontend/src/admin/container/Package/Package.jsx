@@ -174,7 +174,14 @@ function Package(props) {
         { field: 'name', headerName: 'name', width: 130 },
         { field: 'duration', headerName: 'duration', width: 130 },
         { field: 'price', headerName: 'price', width: 130 },
-        { field: 'image', headerName: 'image', width: 130 },
+        {
+            field: 'image',
+            headerName: 'image',
+            width: 130,
+            renderCell: (params) => (
+                <img src={"http://localhost:4000/" + params.row.image} width={'50px'} height={'50px'} />
+            )
+        },
         {
             headerName: 'Action', width: 130,
             renderCell: (parms) => (
@@ -305,6 +312,7 @@ function Package(props) {
                                 value={formik.values.itineary_id}
                                 helperText={formik.errors.itineary_id && formik.touched.itineary_id ? formik.errors.itineary_id : ''}
                             >
+                                <option >---itineary</option>
                                 {itineary.itineary.map((v) => (
                                     <option key={v.id} value={v.id}>
                                         {v.title}
@@ -335,6 +343,10 @@ function Package(props) {
                                 />
 
                             </Button>
+                            <img src={typeof formik.values.image == 'string' ?
+                                "http://localhost:4000/" + formik.values.image :
+                                URL.createObjectURL(formik.values.image)}
+                                width={'50px'} height={'50px'} />
                             <br />
 
                             {formik.errors.image && formik.touched.image ?
