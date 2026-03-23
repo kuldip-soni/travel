@@ -7,6 +7,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -14,7 +17,7 @@ import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { DataGrid } from '@mui/x-data-grid';
-import { addroom, getroom } from '../../../redux/slice/room.slice';
+import { addroom, delroom, getroom, putroom } from '../../../redux/slice/room.slice';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -64,9 +67,9 @@ function Room(props) {
   };
 
   let Roomschema = object({
-    Name: string().required('please enter Name'),
-    Description: string().required('please enter Description'),
-    Price: string().required('please enter Price'),
+    name: string().required('please enter name'),
+    description: string().required('please enter description'),
+    price: string().required('please enter price'),
     room_img: mixed().required('please upload room image')
 
 
@@ -75,9 +78,9 @@ function Room(props) {
   });
   const formik = useFormik({
     initialValues: {
-      Name: '',
-      Description: '',
-      Price: '',
+      name: '',
+      description: '',
+      price: '',
       room_img: '',
 
 
@@ -116,19 +119,19 @@ function Room(props) {
   }
   const columns = [
 
-    { field: 'name', headerName: 'name', width: 130 },
-    { field: 'description', headerName: 'description', width: 130 },
-    { field: 'price', headerName: 'price', width: 130 },
+    { field: 'name', headername: 'name', width: 130 },
+    { field: 'description', headername: 'description', width: 130 },
+    { field: 'price', headername: 'price', width: 130 },
     {
       field: 'room_img',
-      headerName: 'room_img',
+      headername: 'room_img',
       width: 130,
       renderCell: (params) => (
         <img src={"http://localhost:4000/" + params.row.room_img} width={'50px'} height={'50px'} />
       )
     },
     {
-      headerName: 'Action', width: 130,
+      headername: 'Action', width: 130,
       renderCell: (parms) => (
         <>
           <IconButton aria-label="Edit" onClick={() => handleEdit(parms.row)}>
@@ -170,50 +173,50 @@ function Room(props) {
 
               <TextField
 
-                error={formik.errors.Name && formik.touched.Name}
+                error={formik.errors.name && formik.touched.name}
                 margin="dense"
-                id="Name"
-                name="Name"
-                label="Name"
+                id="name"
+                name="name"
+                label="name"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Name}
-                helperText={formik.errors.Name && formik.touched.Name ? formik.errors.Name : ''}
+                value={formik.values.name}
+                helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
               />
 
               <TextField
 
-                error={formik.errors.Description && formik.touched.Description}
+                error={formik.errors.description && formik.touched.description}
                 margin="dense"
-                id="Description"
-                name="Description"
-                label="Description"
+                id="description"
+                name="description"
+                label="description"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Description}
-                helperText={formik.errors.Description && formik.touched.Description ? formik.errors.Description : ''}
+                value={formik.values.description}
+                helperText={formik.errors.description && formik.touched.description ? formik.errors.description : ''}
               />
 
               <TextField
 
-                error={formik.errors.Price && formik.touched.Price}
+                error={formik.errors.price && formik.touched.price}
                 margin="dense"
-                id="Price"
-                name="Price"
-                label="Price"
+                id="price"
+                name="price"
+                label="price"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Price}
-                helperText={formik.errors.Price && formik.touched.Price ? formik.errors.Price : ''}
+                value={formik.values.price}
+                helperText={formik.errors.price && formik.touched.price ? formik.errors.price : ''}
               />
 
               <br /><br />
@@ -246,7 +249,7 @@ function Room(props) {
               <br />
 
               {formik.errors.room_img && formik.touched.room_img ?
-                <span className='error'>{formik.errors.room_img}</span> :
+                <span classname='error'>{formik.errors.room_img}</span> :
                 ''}
 
 

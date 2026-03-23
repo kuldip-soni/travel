@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -7,17 +7,26 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { DataGrid } from '@mui/x-data-grid';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { getvendor } from '../../../redux/slice/vendor.slice';
+import { getservice } from '../../../redux/slice/service.slice';
+import { addhotel, delhotel, gethotel, puthotel } from '../../../redux/slice/hotel.slice';
 
 
-const vendor = [
+
+const vendor_id = [
   {
     value: '',
-    label: '--select vendor--',
+    label: '--select vendor_id--',
   },
   {
     value: 'ind',
@@ -33,10 +42,10 @@ const vendor = [
   },
 ];
 
-const service = [
+const service_id = [
   {
     value: '',
-    label: '--select service--',
+    label: '--select service_id--',
   },
   {
     value: 'ind',
@@ -66,23 +75,23 @@ const VisuallyHiddenInput = styled('input')({
 
 function Hotel(props) {
   const [open, setOpen] = React.useState(false);
-      const [update, setupdate] = useState(false);
+  const [update, setupdate] = useState(false);
 
-      const hoteldata = useSelector(state => state.hotel);
-    const vendor = useSelector(state => state.vendor);
-    const  service = useSelector(state => state.service);
-    console.log(hoteldata);
+  const hoteldata = useSelector(state => state.hotel);
+  const vendor = useSelector(state => state.vendor);
+  const service = useSelector(state => state.service);
+  console.log(hoteldata);
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
+  useEffect(() => {
 
-        dispatch(gethotel());
-        dispatch(getvendor());
-        dispatch(getservice());
+    dispatch(gethotel());
+    dispatch(getvendor());
+    dispatch(getservice());
 
-    }, []);
-  
+  }, []);
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -90,6 +99,8 @@ function Hotel(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setupdate(false);
+
   };
 
   const handleSubmit = (event) => {
@@ -102,13 +113,13 @@ function Hotel(props) {
   };
 
   let Hotelschema = object({
-    vendor: string().required('please select vendor'),
-    service: string().required('please select service'),
-    Checkin: string().required('please enter Checkin'),
-    Checkout: string().required('please enter Checkout'),
-    Datetime: string().required('please select Datetime'),
-    Passenger: string().required('please enter Passenger'),
-    Amount: string().required('please enter Amount'),
+    vendor_id: string().required('please select vendor_id'),
+    service_id: string().required('please select service_id'),
+    checkin: string().required('please enter checkin'),
+    checkout: string().required('please enter checkout'),
+    datetime: string().required('please select datetime'),
+    passenger: string().required('please enter passenger'),
+    amount: string().required('please enter amount'),
     hotel_img: mixed().required('please upload hotel image'),
 
 
@@ -117,14 +128,14 @@ function Hotel(props) {
   });
   const formik = useFormik({
     initialValues: {
-      vendor: '',
-      service: '',
-      Checkin: '',
-      Checkout: '',
-      Datetime: '',
-      Passenger: '',
-      Amount: '',
-      hotel_img:'',
+      vendor_id: '',
+      service_id: '',
+      checkin: '',
+      checkout: '',
+      datetime: '',
+      passenger: '',
+      amount: '',
+      hotel_img: '',
 
 
     },
@@ -132,7 +143,7 @@ function Hotel(props) {
 
     validationSchema: Hotelschema,
 
- onSubmit: (values, { resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
       if (update) {
         console.log("update data");
@@ -156,12 +167,14 @@ function Hotel(props) {
 
   const columns = [
 
-    { field: 'from', headerName: 'from', width: 130 },
-    { field: 'to', headerName: 'to', width: 130 },
+    { field: 'vendor_id', headerName: 'vendor_id', width: 130 },
+    { field: 'service_id', headerName: 'service_id', width: 130 },
+    { field: 'checkin', headerName: 'checkin', width: 130 },
+    { field: 'checkout', headerName: 'checkout', width: 130 },
     { field: 'datetime', headerName: 'datetime', width: 130 },
     { field: 'passenger', headerName: 'passenger', width: 130 },
     { field: 'amount', headerName: 'amount', width: 130 },
-    { field: 'passenger', headerName: 'passenger', width: 130 },
+
     {
       field: 'hotel_img',
       headerName: 'hotel_img',
@@ -214,9 +227,9 @@ function Hotel(props) {
             <form onSubmit={formik.handleSubmit} id="subscription-form">
 
               <TextField
-                error={formik.errors.vendor && formik.touched.vendor}
+                error={formik.errors.vendor_id && formik.touched.vendor_id}
                 id="standard-select-currency-native"
-                name="vendor"
+                name="vendor_id"
                 select
                 fullWidth
 
@@ -228,21 +241,21 @@ function Hotel(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.vendor}
-                helperText={formik.errors.vendor && formik.touched.vendor ? formik.errors.vendor : ''}
+                value={formik.values.vendor_id}
+                helperText={formik.errors.vendor_id && formik.touched.vendor_id ? formik.errors.vendor_id : ''}
               >
-                 <option value="">--Select vendor--</option>
+                <option value="">--Select vendor--</option>
                 {vendor.vendor.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.type}
+                    {v.name}
                   </option>
                 ))}
               </TextField>
               <br /><br />
               <TextField
-                error={formik.errors.service && formik.touched.service}
+                error={formik.errors.service_id && formik.touched.service_id}
                 id="standard-select-currency-native"
-                name="service"
+                name="service_id"
                 select
                 fullWidth
 
@@ -254,97 +267,97 @@ function Hotel(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.service}
-                helperText={formik.errors.service && formik.touched.service ? formik.errors.service : ''}
+                value={formik.values.service_id}
+                helperText={formik.errors.service_id && formik.touched.service_id ? formik.errors.service_id : ''}
               >
-                                <option value="">--Select service--</option>
+                <option value="">--Select service--</option>
                 {service.service.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.city}
+                    {v.name}
                   </option>
                 ))}
               </TextField>
 
               <TextField
-                error={formik.errors.Checkin && formik.touched.Checkin}
+                error={formik.errors.checkin && formik.touched.checkin}
                 margin="dense"
-                id="Checkin"
-                name="Checkin"
-                label="Checkin"
+                id="checkin"
+                name="checkin"
+                label="checkin"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Checkin}
-                helperText={formik.errors.Checkin && formik.touched.Checkin ? formik.errors.Checkin : ''}
+                value={formik.values.checkin}
+                helperText={formik.errors.checkin && formik.touched.checkin ? formik.errors.checkin : ''}
 
               />
 
               <TextField
-                error={formik.errors.Checkout && formik.touched.Checkout}
+                error={formik.errors.checkout && formik.touched.checkout}
                 margin="dense"
-                id="Checkout"
-                name="Checkout"
-                label="Checkout"
+                id="checkout"
+                name="checkout"
+                label="checkout"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Checkout}
-                helperText={formik.errors.Checkout && formik.touched.Checkout ? formik.errors.Checkout : ''}
+                value={formik.values.checkout}
+                helperText={formik.errors.checkout && formik.touched.checkout ? formik.errors.checkout : ''}
 
               />
 
               <TextField
-                error={formik.errors.Datetime && formik.touched.Datetime}
+                error={formik.errors.datetime && formik.touched.datetime}
                 margin="dense"
-                id="Datetime"
-                name="Datetime"
+                id="datetime"
+                name="datetime"
                 type="datetime-local"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Datetime}
-                helperText={formik.errors.Datetime && formik.touched.Datetime ? formik.errors.Datetime : ''}
+                value={formik.values.datetime}
+                helperText={formik.errors.datetime && formik.touched.datetime ? formik.errors.datetime : ''}
 
               />
 
 
               <TextField
 
-                error={formik.errors.Passenger && formik.touched.Passenger}
+                error={formik.errors.passenger && formik.touched.passenger}
                 margin="dense"
-                id="Passenger"
-                name="Passenger"
-                label="Passenger"
+                id="passenger"
+                name="passenger"
+                label="passenger"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Passenger}
-                helperText={formik.errors.Passenger && formik.touched.Passenger ? formik.errors.Passenger : ''}
+                value={formik.values.passenger}
+                helperText={formik.errors.passenger && formik.touched.passenger ? formik.errors.passenger : ''}
               />
 
               <TextField
 
-                error={formik.errors.Amount && formik.touched.Amount}
+                error={formik.errors.amount && formik.touched.amount}
                 margin="dense"
-                id="Amount"
-                name="Amount"
-                label="Amount"
+                id="amount"
+                name="amount"
+                label="amount"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Amount}
-                helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
+                value={formik.values.amount}
+                helperText={formik.errors.amount && formik.touched.amount ? formik.errors.amount : ''}
               />
-                            <Button
+              <Button
 
                 component="label"
                 role={undefined}
@@ -352,7 +365,7 @@ function Hotel(props) {
                 tabIndex={-1}
                 startIcon={<CloudUploadIcon />}
               >
-                Upload  Blog hotel_img
+                Upload   hotel_img
                 <VisuallyHiddenInput
                   error={formik.errors.hotel_img && formik.touched.hotel_img}
                   type="file"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -7,11 +7,19 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { DataGrid } from '@mui/x-data-grid';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { addrestaurant, delrestaurant, getrestaurant, putrestaurant } from '../../../redux/slice/restaurant.slice';
+import { getvendor } from '../../../redux/slice/vendor.slice';
+import { getservice } from '../../../redux/slice/service.slice';
 
 const vendor = [
   {
@@ -65,22 +73,22 @@ const VisuallyHiddenInput = styled('input')({
 
 function Restaurant(props) {
   const [open, setOpen] = React.useState(false);
-      const [update, setupdate] = useState(false);
-  
-      const restaurantdata = useSelector(state => state.restaurant);
-    const vendor = useSelector(state => state.vendor);
-    const  service = useSelector(state => state.service);
-    console.log(restaurantdata);
+  const [update, setupdate] = useState(false);
 
-    const dispatch = useDispatch();
+  const restaurantdata = useSelector(state => state.restaurant);
+  const vendor = useSelector(state => state.vendor);
+  const service = useSelector(state => state.service);
+  console.log(restaurantdata);
 
-    useEffect(() => {
+  const dispatch = useDispatch();
 
-        dispatch(getrestaurant());
-        dispatch(getvendor());
-        dispatch(getservice());
+  useEffect(() => {
 
-    }, []);
+    dispatch(getrestaurant());
+    dispatch(getvendor());
+    dispatch(getservice());
+
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -88,6 +96,8 @@ function Restaurant(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setupdate(false);
+
   };
 
   const handleSubmit = (event) => {
@@ -100,25 +110,25 @@ function Restaurant(props) {
   };
 
   let Restaurantschema = object({
-    vendor: string().required('please select vendor'),
-    service: string().required('please select service'),
-    Datetime: string().required('please select Datetime'),
+    vendor_id: string().required('please select vendor_id'),
+    service_id: string().required('please select service_id'),
+    datetime: string().required('please select datetime'),
     meals: string().required('please enter no of meals'),
-    Passenger: string().required('please enter Passenger'),
-    Amount: string().required('please enter Amount'),
-        restaurant_img: mixed().required('please upload restaurant image'),
-    
+    passenger: string().required('please enter passenger'),
+    amount: string().required('please enter amount'),
+    restaurant_img: mixed().required('please upload restaurant image'),
+
 
   });
   const formik = useFormik({
     initialValues: {
-      vendor: '',
-      service: '',
-      Datetime: '',
+      vendor_id: '',
+      service_id: '',
+      datetime: '',
       meals: '',
-      Passenger: '',
-      Amount: '',
-      restaurant_img:'',
+      passenger: '',
+      amount: '',
+      restaurant_img: '',
 
     },
 
@@ -126,17 +136,17 @@ function Restaurant(props) {
     validationSchema: Restaurantschema,
 
     onSubmit: (values, { resetForm }) => {
-         console.log(values);
-         if (update) {
-           console.log("update data");
-           dispatch(putrestaurant(values));
-         } else {
-           dispatch(addrestaurant(values));
-   
-         }
-         resetForm();
-         handleClose()
-       },
+      console.log(values);
+      if (update) {
+        console.log("update data");
+        dispatch(putrestaurant(values));
+      } else {
+        dispatch(addrestaurant(values));
+
+      }
+      resetForm();
+      handleClose()
+    },
   });
 
   const handleEdit = (data) => {
@@ -148,13 +158,13 @@ function Restaurant(props) {
   }
 
   const columns = [
-
-    { field: 'from', headerName: 'from', width: 130 },
-    { field: 'to', headerName: 'to', width: 130 },
+    { field: 'vendor_id', headerName: 'vendor_id', width: 130 },
+    { field: 'service_id', headerName: 'service_id', width: 130 },
     { field: 'datetime', headerName: 'datetime', width: 130 },
+    { field: 'meals', headerName: 'meals', width: 130 },
     { field: 'passenger', headerName: 'passenger', width: 130 },
     { field: 'amount', headerName: 'amount', width: 130 },
-    { field: 'passenger', headerName: 'passenger', width: 130 },
+    
     {
       field: 'restaurant_img',
       headerName: 'restaurant_img',
@@ -208,9 +218,9 @@ function Restaurant(props) {
             <form onSubmit={formik.handleSubmit} id="subscription-form">
 
               <TextField
-                error={formik.errors.vendor && formik.touched.vendor}
+                error={formik.errors.vendor_id && formik.touched.vendor_id}
                 id="standard-select-currency-native"
-                name="vendor"
+                name="vendor_id"
                 select
                 fullWidth
 
@@ -222,8 +232,8 @@ function Restaurant(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.vendor}
-                helperText={formik.errors.vendor && formik.touched.vendor ? formik.errors.vendor : ''}
+                value={formik.values.vendor_id}
+                helperText={formik.errors.vendor_id && formik.touched.vendor_id ? formik.errors.vendor_id : ''}
               >
                 <option value="">--Select vendor--</option>
                 {vendor.vendor.map((v) => (
@@ -234,9 +244,9 @@ function Restaurant(props) {
               </TextField>
               <br /><br />
               <TextField
-                error={formik.errors.service && formik.touched.service}
+                error={formik.errors.service_id && formik.touched.service_id}
                 id="standard-select-currency-native"
-                name="service"
+                name="service_id"
                 select
                 fullWidth
 
@@ -248,13 +258,13 @@ function Restaurant(props) {
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.service}
-                helperText={formik.errors.service && formik.touched.service ? formik.errors.service : ''}
+                value={formik.values.service_id}
+                helperText={formik.errors.service_id && formik.touched.service_id ? formik.errors.service_id : ''}
               >
-                 <option value="">--Select service--</option>
+                <option value="">--Select service--</option>
                 {service.service.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.city}
+                    {v.name}
                   </option>
                 ))}
               </TextField>
@@ -262,17 +272,17 @@ function Restaurant(props) {
 
               <TextField
 
-                error={formik.errors.Datetime && formik.touched.Datetime}
+                error={formik.errors.datetime && formik.touched.datetime}
                 margin="dense"
-                id="Datetime"
-                name="Datetime"
+                id="datetime"
+                name="datetime"
                 type="datetime-local"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Datetime}
-                helperText={formik.errors.Datetime && formik.touched.Datetime ? formik.errors.Datetime : ''}
+                value={formik.values.datetime}
+                helperText={formik.errors.datetime && formik.touched.datetime ? formik.errors.datetime : ''}
 
               />
 
@@ -294,34 +304,34 @@ function Restaurant(props) {
 
               <TextField
 
-                error={formik.errors.Passenger && formik.touched.Passenger}
+                error={formik.errors.passenger && formik.touched.passenger}
                 margin="dense"
-                id="Passenger"
-                name="Passenger"
-                label="Passenger"
+                id="passenger"
+                name="passenger"
+                label="passenger"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Passenger}
-                helperText={formik.errors.Passenger && formik.touched.Passenger ? formik.errors.Passenger : ''}
+                value={formik.values.passenger}
+                helperText={formik.errors.passenger && formik.touched.passenger ? formik.errors.passenger : ''}
               />
 
               <TextField
 
-                error={formik.errors.Amount && formik.touched.Amount}
+                error={formik.errors.amount && formik.touched.amount}
                 margin="dense"
-                id="Amount"
-                name="Amount"
-                label="Amount"
+                id="amount"
+                name="amount"
+                label="amount"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Amount}
-                helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
+                value={formik.values.amount}
+                helperText={formik.errors.amount && formik.touched.amount ? formik.errors.amount : ''}
               />
 
               <Button
@@ -369,13 +379,13 @@ function Restaurant(props) {
       </React.Fragment>
 
       <DataGrid
-              rows={restaurantdata.restaurant}
-              columns={columns}
-              initialState={{ pagination: { paginationModel } }}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection
-              sx={{ border: 0 }}
-            />
+        rows={restaurantdata.restaurant}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
 
     </div>
   );

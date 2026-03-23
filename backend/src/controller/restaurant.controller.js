@@ -33,15 +33,15 @@ const addrestaurant = async (req, res) => {
     try {
         // console.log("req.body");
         //console.log("dddddd",req.body, req.file.path);
-        const { vendor_id, service_id, datetime, meals, passenger, amount
-            , restaurant_img } = req.body;
-        console.log(datetime,meals,passenger,amount
-);
+                const { vendor_id, service_id, datetime, meals, passenger, amount } = req.body;
 
-        const [rows, fields, result] = await pool.query("INSERT INTO restaurant (vendor_id,service_id,datetime,meals,passenger,amount,restaurant_img) VALUES(?,?,?,?,?,?)",
-            [vendor_id, service_id, datetime, meals, passenger, amount, req.file.path]
+        console.log(  vendor_id, service_id, datetime, meals, passenger, amount
+        );
+       const [rows] = await pool.query(
+            "INSERT INTO restaurant (vendor_id, service_id, datetime, meals, passenger, amount, restaurant_img) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [vendor_id, service_id, datetime, meals, passenger, amount,req.file.path ]
+        );
 
-        )
 
         res.status(200).json({
             sucess: true,
@@ -59,51 +59,59 @@ const addrestaurant = async (req, res) => {
         res.status(500).json({
             sucess: false,
             data: null,
-            message: "internal server error (getrestaurant)" + error
+            message: "internal server error (getrestaurant)" + error.message
         })
 
     }
 
 }
 
-const putrestaurant = async() => {
+const putrestaurant = async (req, res) => {
     try {
-       console.log("req.body");
+        console.log("req.body");
         // console.log(req.body, req.file.path);
 
-        const { vendor_id, service_id, datetime,meals,passenger,amount} = req.body;
+        const { vendor_id, service_id, datetime, meals, passenger, amount } = req.body;
         const restaurantId = req.params.id;
-        console.log(datetime,meals,passenger,amount, restaurantId);
+        console.log(vendor_id, service_id, datetime, meals, passenger, amount , restaurantId);
 
-        const [rows] = await pool.query(`SELECT * FROM restaurant WHERE id=${restaurantId}`);
+                const [rows] = await pool.query(
+            "SELECT * FROM restaurant WHERE id=?",
+            [restaurantId]
+        );
+
         let fileimg = '';
 
         if (req.file) {
 
-            fs.unlinkSync(rows[0].image, (error) => {
+            fs.unlinkSync(rows[0].restaurant_img, (error) => {
                 console.log(error);
 
             })
             fileimg = req.file.path;
         } else {
-            fileimg = rows[0].image
+            fileimg = rows[0].restaurant_img
         }
 
 
-        await pool.query("UPDATE  restaurant  SET location_id=?, service_id=?, datetime=?, meals=?, passenger=?, amount=? restaurant_img=? WHERE id=?",
-            [vendor_id, service_id, datetime,meals,passenger,amount,fileimg, restaurantId]
+await pool.query(
+            "UPDATE restaurant SET vendor_id=?, service_id=?, datetime=?, meals=?, passenger=?, amount=?, restaurant_img=? WHERE id=?",
+            [vendor_id, service_id, datetime, meals, passenger, amount, fileimg, restaurantId]
+        );
 
-        )
+
+
 
         res.status(200).json({
             sucess: true,
-            data: {  vendor_id, service_id, from, to, datetime,passenger,amount, image: fileimg, id: restaurantId },
+
+            data: { id: restaurantId, vendor_id, service_id, datetime, meals, passenger, amount, restaurant_img: fileimg },
             message: "restaurant is update sucessfuly"
 
         })
         console.log(fields, result);
 
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -111,20 +119,20 @@ const putrestaurant = async() => {
             data: null,
             message: "internal server error (putrestaurant)" + error
         })
-        
+
     }
 
 }
 
-const delrestaurant =async () => {
+const delrestaurant = async (req, res) => {
     try {
-               // const { city, state, country, image } = req.body;
+        // const { city, state, country, restaurant_img } = req.body;
         const restaurantId = req.params.id;
         // console.log(restaurantId);
 
         const [rows] = await pool.query(`SELECT * FROM restaurant WHERE id=${restaurantId}`);
 
-        fs.unlinkSync(rows[0].image, (error) => {
+        fs.unlinkSync(rows[0].restaurant_img, (error) => {
             console.log(error);
 
         })
@@ -140,15 +148,15 @@ const delrestaurant =async () => {
             message: "restaurant is deleated sucessfuly"
 
         })
-        
+
     } catch (error) {
-         console.log(error);
+        console.log(error);
         res.status(500).json({
             sucess: false,
             data: null,
             message: "internal server error (delrestaurant)" + error
         })
-        
+
     }
 }
 

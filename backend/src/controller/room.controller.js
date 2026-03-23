@@ -1,4 +1,7 @@
+const { error } = require("console");
 const pool  = require("../db/mysql");
+const fs = require('fs');
+
 
 
 const getroom = async(req, res) => {
@@ -60,7 +63,7 @@ const addroom = async(req,res) => {
     
 }
 
-const putroom = async() => {
+const putroom = async(req,res) => {
     try {
 console.log("req.body");
         const { name,description,price,room_img } = req.body;
@@ -105,7 +108,7 @@ console.log("req.body");
     
 }
 
-const delroom =async () => {
+const delroom =async (req,res) => {
     try {
  console.log("delroom");
          // const { city, state, country, room_img } = req.body;
