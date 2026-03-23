@@ -139,7 +139,7 @@ function Vendor(props) {
     { field: 'type', headername: 'type', width: 130 },
     { field: 'company_name', headername: 'company_name', width: 130 },
     { field: 'status', headername: 'status', width: 130 },
-
+ 
 
 
     {

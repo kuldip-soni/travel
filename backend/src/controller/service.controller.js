@@ -35,11 +35,11 @@ const addservice = async(req,res) => {
       console.log("req.body");
         console.log("dddddd",req.body, req.file.path);
 
-        const { vendor_id, description, amount, service_img } = req.body;
-        console.log( description, amount, service_img);
+        const { vendor_id,name, description, amount, service_img } = req.body;
+        console.log( name,description, amount, service_img);
 
-        const [rows, fields, result] = await pool.query("INSERT INTO service (vendor_id,description,amount,service_img) VALUES(?,?,?,?)",
-            [vendor_id, description, amount, req.file.path]
+        const [rows, fields, result] = await pool.query("INSERT INTO service (vendor_id,name,description,amount,service_img) VALUES(?,?,?,?,?)",
+            [vendor_id,name, description, amount, req.file.path]
 
         )
 
@@ -66,12 +66,12 @@ const addservice = async(req,res) => {
     
 }
 
-const putservice =async () => {
+const putservice =async (req,res) => {
    try {
         console.log("req.body");
-        const { vendor_id, description, amount, service_img } = req.body;
+        const { vendor_id,name, description, amount, service_img } = req.body;
         const serviceId = req.params.id;
-        console.log(description, amount, service_img, serviceId);
+        console.log(name,description, amount, service_img, serviceId);
 
         const [rows] = await pool.query(`SELECT * FROM service WHERE id=${serviceId}`);
         let fileimg = '';
@@ -87,13 +87,13 @@ const putservice =async () => {
             fileimg = rows[0].service_img
         }
 
-        await pool.query("UPDATE  service  SET  vendor_id=?,description=?,amount=?,service_img=? WHERE id=?",
-            [vendor_id, description, amount, fileimg, serviceId]
+        await pool.query("UPDATE  service  SET  vendor_id=?,name=?,description=?,amount=?,service_img=? WHERE id=?",
+            [vendor_id,name, description, amount, fileimg, serviceId]
         )
 
         res.status(200).json({
             sucess: true,
-            data: { id: serviceId, title, date, description, service_img: fileimg },
+            data: { id: serviceId, name,description, amount, service_img: fileimg },
             message: "service is update sucessfuly"
 
         })

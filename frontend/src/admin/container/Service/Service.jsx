@@ -17,7 +17,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { addservice, getservice, putservice } from '../../../redux/slice/service.slice';
+import { addservice, delservice, getservice, putservice } from '../../../redux/slice/service.slice';
 import { getvendor } from '../../../redux/slice/vendor.slice';
 
 const vendor_id = [
@@ -96,7 +96,7 @@ function Service(props) {
     name: string().required('please enter name'),
     description: string().required('please enter description'),
     amount: string().required('please enter amount'),
-
+   service_img:mixed().required('upload service_img image')
 
 
 
@@ -143,10 +143,10 @@ function Service(props) {
   }
   const columns = [
 
-    { field: 'vendor_id', headerName: 'vendor_id', width: 130 },
+    { field: 'name', headerName: 'name', width: 130 },
     { field: 'description', headerName: 'description', width: 130 },
     { field: 'amount', headerName: 'amount', width: 130 },
-    { field: 'service_img', headerName: 'service_img', width: 130 },
+    
 
     {
       field: 'service_img',
@@ -224,6 +224,22 @@ function Service(props) {
 
                 error={formik.errors.name && formik.touched.name}
                 margin="dense"
+                id="name"
+                name="name"
+                label="name"
+                type="text"
+                fullWidth
+                variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+                helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
+              />
+
+              <TextField
+
+                error={formik.errors.description && formik.touched.description}
+                margin="dense"
                 id="description"
                 name="description"
                 label="description"
@@ -255,21 +271,7 @@ function Service(props) {
 
               />
 
-              <TextField
-
-                error={formik.errors.amount && formik.touched.amount}
-                margin="dense"
-                id="service_img"
-                name="service_img"
-                label="service_img"
-                type="number"
-                fullWidth
-                variant="standard"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.service_img}
-                helperText={formik.errors.service_img && formik.touched.service_img ? formik.errors.service_img : ''}
-              />
+            
               <br /><br />
 
               <Button

@@ -64,7 +64,7 @@ const addvendor = async(req,res) => {
     
 }
 
-const putvendor = async() => {
+const putvendor = async(req,res) => {
     try {
  console.log("req.body");
         const { name,phoneno,gstno,email,type,company_name,status,vendor_img} = req.body;
@@ -86,7 +86,7 @@ const putvendor = async() => {
         }
 
         await pool.query("UPDATE  vendor  SET  name=?,phoneno=?,gstno=?,email=?,type=?,company_name=?,status=?,vendor_img=? WHERE id=?",
-            [title, date, description, fileimg, vendorId]
+            [name,phoneno,gstno,email,type,company_name,status, fileimg, vendorId]
         )
 
         res.status(200).json({
@@ -108,7 +108,7 @@ const putvendor = async() => {
     
 }
 
-const delvendor = async() => {
+const delvendor = async(req,res) => {
     try {
         console.log("delvendor");
          // const { city, state, country, vendor_img } = req.body;

@@ -1,4 +1,5 @@
 const express = require("express");
+const upload = require("../middleware/upload");
 
 const { getrestaurant, addrestaurant, putrestaurant, delrestaurant } = require("../controller/restaurant.controller");
 

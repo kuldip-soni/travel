@@ -78,22 +78,22 @@ const VisuallyHiddenInput = styled('input')({
 
 function Transport(props) {
   const [open, setOpen] = React.useState(false);
-    const [update, setupdate] = useState(false);
+  const [update, setupdate] = useState(false);
 
-    const transportdata = useSelector(state => state.transport);
-    const vendor = useSelector(state => state.vendor);
-    const  service = useSelector(state => state.service);
-    console.log(transportdata);
+  const transportdata = useSelector(state => state.transport);
+  const vendor = useSelector(state => state.vendor);
+  const service = useSelector(state => state.service);
+  console.log(transportdata);
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
+  useEffect(() => {
 
-        dispatch(gettransport());
-        dispatch(getvendor());
-        dispatch(getservice());
+    dispatch(gettransport());
+    dispatch(getvendor());
+    dispatch(getservice());
 
-    }, []);
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -101,6 +101,8 @@ function Transport(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setupdate(false);
+
   };
 
   const handleSubmit = (event) => {
@@ -115,11 +117,11 @@ function Transport(props) {
   let Transportschema = object({
     vendor_id: string().required('please select vendor_id'),
     service_id: string().required('please select service_id'),
-    From: string().required('please enter From'),
-    To: string().required('please enter To'),
-    DateTime: string().required('please enter Date & Time'),
-    Passenger: string().required('please enter Passenger'),
-    Amount: string().required('please enter Amount'),
+    from: string().required('please enter From'),
+    to: string().required('please enter To'),
+    datetime: string().required('please enter Date & Time'),
+    passenger: string().required('please enter Passenger'),
+    amount: string().required('please enter Amount'),
     transport_img: mixed().required('please upload transport image'),
 
 
@@ -130,12 +132,12 @@ function Transport(props) {
     initialValues: {
       vendor_id: '',
       service_id: '',
-      From: '',
-      To: '',
-      DateTime: '',
-      Passenger: '',
-      Amount: '',
-     transport_img:'',
+      from: '',
+      to: '',
+      datetime: '',
+      passenger: '',
+      amount: '',
+      transport_img: '',
 
 
     },
@@ -170,7 +172,7 @@ function Transport(props) {
     { field: 'datetime', headerName: 'datetime', width: 130 },
     { field: 'passenger', headerName: 'passenger', width: 130 },
     { field: 'amount', headerName: 'amount', width: 130 },
-    { field: 'passenger', headerName: 'passenger', width: 130 },
+
     {
       field: 'transport_img',
       headerName: 'transport_img',
@@ -242,7 +244,7 @@ function Transport(props) {
                 value={formik.values.vendor_id}
                 helperText={formik.errors.vendor_id && formik.touched.vendor_id ? formik.errors.vendor_id : ''}
               >
-                 <option value="">--Select vendor--</option>
+                <option value="">--Select vendor--</option>
                 {vendor.vendor.map((v) => (
                   <option key={v.id} value={v.id}>
                     {v.type}
@@ -272,13 +274,13 @@ function Transport(props) {
                 <option value="">--Select service--</option>
                 {service.service.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.city}
+                    {v.description}
                   </option>
                 ))}
               </TextField>
 
               <TextField
-                error={formik.errors.From && formik.touched.From}
+                error={formik.errors.from && formik.touched.from}
                 margin="dense"
                 id="from"
                 name="from"
@@ -293,7 +295,7 @@ function Transport(props) {
               />
 
               <TextField
-                error={formik.errors.To && formik.touched.To}
+                error={formik.errors.to && formik.touched.to}
                 margin="dense"
                 id="to"
                 name="to"
@@ -308,7 +310,7 @@ function Transport(props) {
               />
 
               <TextField
-                error={formik.errors.DateTime && formik.touched.DateTime}
+                error={formik.errors.datetime && formik.touched.datetime}
                 margin="dense"
                 id="datetime"
                 name="datetime"
@@ -323,7 +325,7 @@ function Transport(props) {
               />
 
               <TextField
-                error={formik.errors.Passenger && formik.touched.Passenger}
+                error={formik.errors.passenger && formik.touched.passenger}
                 margin="dense"
                 id="passenger"
                 name="passenger"
@@ -338,18 +340,18 @@ function Transport(props) {
               />
 
               <TextField
-                error={formik.errors.Amount && formik.touched.Amount}
+                error={formik.errors.amount && formik.touched.amount}
                 margin="dense"
-                id="Amount"
-                name="Amount"
-                label="Amount"
+                id="amount"
+                name="amount"
+                label="amount"
                 type="number"
                 fullWidth
                 variant="standard"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.Amount}
-                helperText={formik.errors.Amount && formik.touched.Amount ? formik.errors.Amount : ''}
+                value={formik.values.amount}
+                helperText={formik.errors.amount && formik.touched.amount ? formik.errors.amount : ''}
               />
 
               <Button

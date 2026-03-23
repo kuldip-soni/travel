@@ -14,7 +14,7 @@ export const getservice = createAsyncThunk(
         try {
             console.log("getserviceredux");
 
-            const response = await axios.get('http://localhost:4000/service/getBlog');
+            const response = await axios.get('http://localhost:4000/service/getservice');
             console.log(response.data.data);
             return response.data.data;
         } catch (error) {
@@ -35,14 +35,12 @@ export const addservice = createAsyncThunk(
             console.log(data);
 
             const formData = new FormData();
+            formData.append("vendor_id", data.vendor_id);
             formData.append("name", data.name);
-            formData.append("phoneno", data.phoneno);
-            formData.append("gstno", data.gstno);
-            formData.append("email", data.email);
-            formData.append("type", data.type);
-            formData.append("company_name", data.company_name);
-            formData.append("status", data.status);
-            formData.append("vendor_img", data.vendor_img);
+            formData.append("description", data.description);
+            formData.append("amount", data.amount);
+            formData.append("service_img", data.service_img);
+           
 
 
             const response = await axios.post('http://localhost:4000/service/addservice', formData);
@@ -65,15 +63,11 @@ export const putservice = createAsyncThunk(
 
             const formData = new FormData();
             formData.append("id", data.id);
+           formData.append("vendor_id", data.vendor_id);
             formData.append("name", data.name);
-            formData.append("phoneno", data.phoneno);
-            formData.append("gstno", data.gstno);
-            formData.append("email", data.email);
-            formData.append("type", data.type);
-            formData.append("company_name", data.company_name);
-            formData.append("status", data.status);
-            formData.append("vendor_img", data.vendor_img);
-
+            formData.append("description", data.description);
+            formData.append("amount", data.amount);
+            formData.append("service_img", data.service_img);
 
             console.log(data);
             const response = await axios.put(`http://localhost:4000/service/putservice/${data.id}`, formData);

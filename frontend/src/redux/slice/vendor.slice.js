@@ -14,7 +14,7 @@ export const getvendor = createAsyncThunk(
         try {
             console.log("getvendorredux");
 
-            const response = await axios.get('http://localhost:4000/vendor/getBlog');
+            const response = await axios.get('http://localhost:4000/vendor/getvendor');
             console.log(response.data.data);
             return response.data.data;
         } catch (error) {
@@ -66,7 +66,7 @@ export const putvendor = createAsyncThunk(
 
             const formData = new FormData();
             formData.append("id", data.id);
-             formData.append("name", data.name);
+            formData.append("name", data.name);
             formData.append("phoneno", data.phoneno);
             formData.append("gstno", data.gstno);
             formData.append("email", data.email);

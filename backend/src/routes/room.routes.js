@@ -1,6 +1,7 @@
 const express = require("express");
 const { getroom, addroom, putroom, delroom } = require("../controller/room.controller");
 const router = express.Router();
+const upload = require("../middleware/upload");
 
 router.get('/getroom', getroom)
 
