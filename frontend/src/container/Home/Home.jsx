@@ -1,5 +1,4 @@
-import React from "react";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import { useFormik } from 'formik';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -18,6 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getlocation } from '../../redux/slice/location.slice';
 import { getblog } from '../../redux/slice/blog.slice';
 import { getpackage } from '../../redux/slice/package.slice';
+import { addcontect, putcontect } from '../../redux/slice/contect.slice';
+import { object, string } from 'yup';
 
 function Home(props) {
 
@@ -39,6 +40,61 @@ function Home(props) {
 
     const packagedata = useSelector(State => State.package);
     console.log(packagedata.package);
+
+
+    const [update, setupdate] = useState(false);
+
+    const handleClose = () => { };
+    const handleClickOpen = () => { };
+
+    
+
+    let contectschema = object({
+        name: string().required('please enter name'),
+        email: string().required('please enter email'),
+        subject: string().required('please enter subject'),
+        message: string().required('please select message'),
+
+
+
+    });
+
+    const formik = useFormik({
+        initialValues: {
+
+            name: '',
+            email: '',
+            subject: '',
+            message: '',
+
+
+
+        },
+        validationSchema: contectschema,
+
+        onSubmit: (values, { resetForm }) => {
+            console.log(values);
+            if (update) {
+                console.log("update data");
+                dispatch(putcontect(values));
+            } else {
+                dispatch(addcontect(values));
+
+            }
+            resetForm();
+            handleClose()
+        },
+    });
+
+    const handleEdit = (data) => {
+        console.log(data);
+        handleClickOpen();
+        formik.setValues(data);
+        setupdate(true);
+
+    }
+
+    console.log(formik.errors, formik.touched);
 
     return (
         <main>
@@ -454,71 +510,69 @@ function Home(props) {
                     <div className="row all-Contact">
                         <div className="col-lg-5">
 
-                            <React.Fragment>
-                                <form onSubmit={formik.handleSubmit} id="contect-form">
-                                    <TextField
+                            <form onSubmit={formik.handleSubmit} id="contect-form">
+                                <TextField
 
-                                        error={formik.errors.name && formik.touched.name}
-                                        margin="dense"
-                                        id="name"
-                                        name="name"
-                                        label="name"
-                                        type="text"
-                                        fullWidth
-                                        variant="standard"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        value={formik.values.name}
-                                        helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
-                                    />
-                                    <TextField
+                                    error={formik.errors.name && formik.touched.name}
+                                    margin="dense"
+                                    id="name"
+                                    name="name"
+                                    label="name"
+                                    type="text"
+                                    fullWidth
+                                    variant="standard"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.name}
+                                    helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
+                                />
+                                <TextField
 
-                                        error={formik.errors.email && formik.touched.email}
-                                        margin="dense"
-                                        id="email"
-                                        name="email"
-                                        label="email"
-                                        type="email"
-                                        fullWidth
-                                        variant="standard"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        value={formik.values.email}
-                                        helperText={formik.errors.email && formik.touched.email ? formik.errors.email : ''}
-                                    />
-                                    <TextField
+                                    error={formik.errors.email && formik.touched.email}
+                                    margin="dense"
+                                    id="email"
+                                    name="email"
+                                    label="email"
+                                    type="email"
+                                    fullWidth
+                                    variant="standard"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.email}
+                                    helperText={formik.errors.email && formik.touched.email ? formik.errors.email : ''}
+                                />
+                                <TextField
 
-                                        error={formik.errors.subject && formik.touched.subject}
-                                        margin="dense"
-                                        id="subject"
-                                        name="subject"
-                                        label="subject"
-                                        type="text"
-                                        fullWidth
-                                        variant="standard"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        value={formik.values.subject}
-                                        helperText={formik.errors.subject && formik.touched.subject ? formik.errors.subject : ''}
-                                    />
-                                    <TextField
+                                    error={formik.errors.subject && formik.touched.subject}
+                                    margin="dense"
+                                    id="subject"
+                                    name="subject"
+                                    label="subject"
+                                    type="text"
+                                    fullWidth
+                                    variant="standard"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.subject}
+                                    helperText={formik.errors.subject && formik.touched.subject ? formik.errors.subject : ''}
+                                />
+                                <TextField
 
-                                        error={formik.errors.message && formik.touched.message}
-                                        margin="dense"
-                                        id="message"
-                                        name="message"
-                                        label="message"
-                                        type="text"
-                                        fullWidth
-                                        variant="standard"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        value={formik.values.message}
-                                        helperText={formik.errors.message && formik.touched.message ? formik.errors.message : ''}
-                                    />                                   
-                                      <input type="submit" defaultValue="Send Message" className="btn" />
-                                </form>
-                            </React.Fragment>
+                                    error={formik.errors.message && formik.touched.message}
+                                    margin="dense"
+                                    id="message"
+                                    name="message"
+                                    label="message"
+                                    type="text"
+                                    fullWidth
+                                    variant="standard"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.message}
+                                    helperText={formik.errors.message && formik.touched.message ? formik.errors.message : ''}
+                                />
+                                <input type="submit" defaultValue="Send Message" className="btn" />
+                            </form>
 
 
                         </div>
