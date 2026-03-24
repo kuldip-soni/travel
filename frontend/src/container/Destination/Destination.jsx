@@ -1,8 +1,8 @@
 import React from 'react';
 
 function Destination(props) {
-    return (
-         <main>
+  return (
+    <main>
       <section id="hero-about">
         <div class="container">
           <div class="hero-about-size">
@@ -280,7 +280,7 @@ function Destination(props) {
         </div>
       </section>
     </main>
-    );
+  );
 }
 
 export default Destination;

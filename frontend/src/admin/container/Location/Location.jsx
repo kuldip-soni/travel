@@ -43,7 +43,7 @@ function Location(props) {
 
 
 
-    const locationdata = useSelector(state => state.location);
+    const locationdata = useSelector(State => State.location);
     console.log(locationdata);
 
     const dispatch = useDispatch();
@@ -78,9 +78,8 @@ function Location(props) {
     let locationschema = object({
 
         image: mixed().required('please upload location image'),
-        city: string().required('please enter city'),
-        state: string().required('please enter state'),
-        country: string().required('please enter country'),
+        name: string().required('please enter name'),
+        description: string().required('please enter description'),
 
     });
 
@@ -88,9 +87,8 @@ function Location(props) {
     const formik = useFormik({
         initialValues: {
 
-            city: '',
-            state: '',
-            country: '',
+            name: '',
+            description: '',
             image: '',
 
 
@@ -132,15 +130,14 @@ function Location(props) {
     }
     const columns = [
 
-        { field: 'city', headerName: 'City', width: 130 },
-        { field: 'state', headerName: 'State', width: 130 },
-        { field: 'country', headerName: 'Country', width: 130 },
+        { field: 'name', headerName: 'name', width: 130 },
+        { field: 'description', headerName: 'description', width: 130 },
         {
             field: 'image',
             headerName: 'image',
             width: 130,
-            renderCell:(params)=>(
-                <img src={"http://localhost:4000/" +  params.row.image}  width={'50px'} height={'50px'} />
+            renderCell: (params) => (
+                <img src={"http://localhost:4000/" + params.row.image} width={'50px'} height={'50px'} />
             )
         },
         {
@@ -188,55 +185,43 @@ function Location(props) {
 
 
                             <TextField
-                                error={formik.errors.city && formik.touched.city}
+                                error={formik.errors.name && formik.touched.name}
 
 
                                 margin="dense"
-                                id="city"
-                                name="city"
-                                label="city"
+                                id="name"
+                                name="name"
+                                label="name"
                                 type="text"
                                 fullWidth
                                 variant="standard"
 
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.city}
-                                helperText={formik.errors.city && formik.touched.city ? formik.errors.city : ''}
+                                value={formik.values.name}
+                                helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
 
                             />
 
                             <TextField
 
-                                error={formik.errors.state && formik.touched.state}
+                                error={formik.errors.description && formik.touched.description}
                                 margin="dense"
-                                id="state"
-                                name="state"
-                                label="state"
+                                id="description"
+                                name="description"
+                                label="description"
                                 type="text"
                                 fullWidth
+                                multiline
+                                rows={4}
                                 variant="standard"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.state}
-                                helperText={formik.errors.state && formik.touched.state ? formik.errors.state : ''}
+                                value={formik.values.description}
+                                helperText={formik.errors.description && formik.touched.description ? formik.errors.description : ''}
                             />
 
-                            <TextField
 
-                                error={formik.errors.country && formik.touched.country}
-                                margin="dense"
-                                id="country"
-                                name="country"
-                                label="country"
-                                type="text"
-                                fullWidth
-                                variant="standard"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.country}
-                                helperText={formik.errors.country && formik.touched.country ? formik.errors.country : ''}
-                            />
 
                             <br /><br />
 
@@ -260,10 +245,10 @@ function Location(props) {
                                     onBlur={formik.handleBlur}
                                 />
                             </Button>
-                            <img src={typeof formik.values.image=='string'?
-                            "http://localhost:4000/" + formik.values.image: 
-                            URL.createObjectURL(formik.values.image)}  
-                            width={'50px'} height={'50px'} />
+                            <img src={typeof formik.values.image == 'string' ?
+                                "http://localhost:4000/" + formik.values.image :
+                                URL.createObjectURL(formik.values.image)}
+                                width={'50px'} height={'50px'} />
                             <br />
 
                             {formik.errors.image && formik.touched.image ?

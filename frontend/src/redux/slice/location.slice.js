@@ -34,11 +34,11 @@ export const addlocation = createAsyncThunk(
 
             console.log(data);
 
-            const formData=new FormData();
-            formData.append("city",data.city);
-            formData.append("state",data.state);
-            formData.append("country",data.country);
-            formData.append("image",data.image);
+            const formData = new FormData();
+            formData.append("name", data.name);
+            formData.append("description", data.description);
+            formData.append("image", data.image);
+
 
             const response = await axios.post('http://localhost:4000/location/addLocation', formData);
             console.log(response.data.data);
@@ -58,12 +58,11 @@ export const putlocation = createAsyncThunk(
 
         try {
 
-             const formData=new FormData();
-             formData.append("id",data.id);
-            formData.append("city",data.city);
-            formData.append("state",data.state);
-            formData.append("country",data.country);
-            formData.append("image",data.image);
+            const formData = new FormData();
+            formData.append("id", data.id);
+            formData.append("name", data.name);
+            formData.append("description", data.description);
+            formData.append("image", data.image);
 
             console.log(data);
             const response = await axios.put(`http://localhost:4000/location/putlocation/${data.id}`, formData);
@@ -115,7 +114,7 @@ export const locationSlice = createSlice({
 
         builder.addCase(putlocation.fulfilled, (state, action) => {
 
-             const index = state.location.findIndex(v => v.id == action.payload.id);
+            const index = state.location.findIndex(v => v.id == action.payload.id);
             state.location[index] = action.payload;
 
 
@@ -126,7 +125,7 @@ export const locationSlice = createSlice({
             const index = state.location.findIndex(v => v.id === action.payload);
             state.location.splice(index, 1);
 
-           
+
 
 
         })

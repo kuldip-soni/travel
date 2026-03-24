@@ -9,6 +9,7 @@ import  serviceSlice  from './slice/service.slice'
 import  roomSlice  from './slice/room.slice'
 import hotelSlice from './slice/hotel.slice'
 import restaurantSlice  from './slice/restaurant.slice'
+import contectSlice  from './slice/contect.slice'
 
 
 
@@ -24,6 +25,7 @@ export const store = configureStore({
     room:roomSlice,
     hotel:hotelSlice,
     restaurant:restaurantSlice,
+    contect:contectSlice
 
   },
 })

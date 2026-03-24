@@ -1,6 +1,45 @@
-import React from 'react';
+import React from "react";
+import React, { useEffect } from 'react';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import { useFormik } from 'formik';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import TextField from '@mui/material/TextField';
+
+
+
+
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import { useDispatch, useSelector } from 'react-redux';
+import { getlocation } from '../../redux/slice/location.slice';
+import { getblog } from '../../redux/slice/blog.slice';
+import { getpackage } from '../../redux/slice/package.slice';
 
 function Home(props) {
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+
+        dispatch(getlocation());
+        dispatch(getblog());
+        dispatch(getpackage());
+
+    }, []);
+
+    const locationdata = useSelector(State => State.location);
+    console.log(locationdata.location);
+
+    const blogdata = useSelector(State => State.blog);
+    console.log(blogdata.blog);
+
+    const packagedata = useSelector(State => State.package);
+    console.log(packagedata.package);
+
     return (
         <main>
             <section id="hero">
@@ -127,186 +166,43 @@ function Home(props) {
                         </div>
                     </div>
                     <div className="row card">
-                        <div className="col-lg-4 col-md-6">
-                            <div className="card-data resultImg">
-                                <div className="pckImg">
-                                    <img src="./assets/image/Paris.avif" alt="Paris-img" />
-                                </div>
-                                <div className="Packages-data">
-                                    <div className="day-price">
-                                        <h4>Paris</h4>
-                                        <p>$299.00/2days</p>
-                                    </div>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consect adipiscing elit, sed do
-                                        eiusmod tempor incididunt ut labore et dolore incididunt ut
-                                        labore et dolore
-                                    </p>
-                                    <div className="row price">
-                                        <div>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="btn">Booking now</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-4 col-md-6">
-                            <div className="card-data resultImg">
-                                <div className="pckImg">
-                                    <img src="./assets/image/Swiss.avif" alt="Swiss-img" />
-                                </div>
-                                <div className="Packages-data">
-                                    <div className="day-price">
-                                        <h4>Swiss</h4>
-                                        <p>$299.00/3days</p>
-                                    </div>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consect adipiscing elit, sed do
-                                        eiusmod tempor incididunt ut labore et dolore incididunt ut
-                                        labore et dolore
-                                    </p>
-                                    <div className="row price">
-                                        <div>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="btn">Booking now</a>
+                        {
+                            packagedata.package?.map((v2) => (
+                                <div className="col-lg-4 col-md-6">
+                                    <div className="card-data resultImg">
+                                        <div className="pckImg">
+                                            <img src={"http://localhost:4000/" + v2.image} />                                        </div>
+                                        <div className="Packages-data">
+                                            <div className="day-price">
+
+
+                                                <h4>{v2.name}</h4>
+                                                <p>{v2.price}</p>
+                                            </div>
+                                            <p>
+                                                {v2.duration}
+                                            </p>
+                                            <div className="row price">
+                                                <div>
+                                                    <span><i className="fa-solid fa-star" /></span>
+                                                    <span><i className="fa-solid fa-star" /></span>
+                                                    <span><i className="fa-solid fa-star" /></span>
+                                                    <span><i className="fa-solid fa-star" /></span>
+                                                    <span><i className="fa-solid fa-star" /></span>
+                                                </div>
+                                                <div>
+                                                    <a href="#" className="btn">Booking now</a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-4 col-md-6">
-                            <div className="card-data resultImg">
-                                <div className="pckImg">
-                                    <img src="./assets/image/Thailand.avif" alt="Thailand-img" />
-                                </div>
-                                <div className="Packages-data">
-                                    <div className="day-price">
-                                        <h4>Thailand</h4>
-                                        <p>$299.00/3days</p>
-                                    </div>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consect adipiscing elit, sed do
-                                        eiusmod tempor incididunt ut labore et dolore incididunt ut
-                                        labore et dolore
-                                    </p>
-                                    <div className="row price">
-                                        <div>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="btn">Booking now</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-4 col-md-6">
-                            <div className="card-data resultImg">
-                                <div className="pckImg">
-                                    <img src="./assets/image/Taiwan.avif" alt="Taiwan-img" />
-                                </div>
-                                <div className="Packages-data">
-                                    <div className="day-price">
-                                        <h4>Taiwan</h4>
-                                        <p>$299.00/4days</p>
-                                    </div>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consect adipiscing elit, sed do
-                                        eiusmod tempor incididunt ut labore et dolore incididunt ut
-                                        labore et dolore
-                                    </p>
-                                    <div className="row price">
-                                        <div>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="btn">Booking now</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-4 col-md-6">
-                            <div className="card-data resultImg">
-                                <div className="pckImg">
-                                    <img src="./assets/image/Indonesi.avif" alt="Indonesi-img" />
-                                </div>
-                                <div className="Packages-data">
-                                    <div className="day-price">
-                                        <h4>Indonesi</h4>
-                                        <p>$299.00/3days</p>
-                                    </div>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consect adipiscing elit, sed do
-                                        eiusmod tempor incididunt ut labore et dolore incididunt ut
-                                        labore et dolore
-                                    </p>
-                                    <div className="row price">
-                                        <div>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="btn">Booking now</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-4 col-md-6">
-                            <div className="card-data resultImg">
-                                <div className="pckImg">
-                                    <img src="./assets/image/Singapore.avif" alt="Singapore-img" />
-                                </div>
-                                <div className="Packages-data">
-                                    <div className="day-price">
-                                        <h4>Singapore</h4>
-                                        <p>$299.00/3days</p>
-                                    </div>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, consect adipiscing elit, sed do
-                                        eiusmod tempor incididunt ut labore et dolore incididunt ut
-                                        labore et dolore
-                                    </p>
-                                    <div className="row price">
-                                        <div>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                            <span><i className="fa-solid fa-star" /></span>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="btn">Booking now</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+                            )
+                            )
+
+                        };
+
                     </div>
                 </div>
             </section>
@@ -317,7 +213,48 @@ function Home(props) {
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                         eiusmod tempor incididunt ut labore et dolore magna aliqua.
                     </p>
-                    <div className="swiper products-slider">
+
+                    <Swiper
+                        // install Swiper modules
+                        modules={[Navigation, Pagination, Scrollbar, A11y]}
+                        spaceBetween={50}
+                        slidesPerView={3}
+                        navigation
+                        pagination={{ clickable: true }}
+                        // scrollbar={{ draggable: true }}
+                        onSwiper={(swiper) => console.log(swiper)}
+                        onSlideChange={() => console.log('slide change')}
+
+
+                    >
+                        {
+                            locationdata.location?.map((v) => (
+
+                                <SwiperSlide><div className="all-data">
+                                    <div className="slider-img">
+                                        <img src={"http://localhost:4000/" + v.image} />
+                                    </div>
+                                    <div className="slide-data">
+                                        <div className="slide-data1">“</div>
+                                        <h4>{v.name}</h4>
+                                        <p>
+                                            {v.description}
+                                        </p>
+                                    </div>
+                                </div></SwiperSlide>
+                            ))
+                        };
+
+
+
+
+
+
+                    </Swiper>
+
+                    {/* <div className="swiper products-slider">
+                       
+
                         <div className="swiper-wrapper">
                             <div className="swiper-slide">
                                 <div className="all-data">
@@ -439,10 +376,10 @@ function Home(props) {
                                     </div>
                                 </div>
                             </div>
+                            <div className="swiper-button-prev" />
+                            <div className="swiper-button-next" />
                         </div>
-                        <div className="swiper-button-prev" />
-                        <div className="swiper-button-next" />
-                    </div>
+                    </div> */}
                 </div>
             </section>
             <section id="Blog">
@@ -453,20 +390,29 @@ function Home(props) {
                         eiusmod tempor incididunt ut labore et dolore magna aliqua.
                     </p>
                     <div className="row all-blog">
-                        <div className="col-lg-5 col-md-12">
-                            <div className="row Blog-left-all">
-                                <div className="col-sm-12 col-lg-12 col-md-6">
+
+
+
+
+                        {
+                            blogdata.blog?.map((v1) => (
+                                <div className="col-sm-12 col-lg-4 col-md-6">
                                     <div className="Blog-left">
-                                        <h5>Perfect | Tips</h5>
-                                        <h4>9 Popular Travel Destintion on Sale in 2022 -</h4>
+                                        <h5>{new Date(v1.date).toLocaleDateString()}</h5>
+                                        <img src={"http://localhost:4000/" + v1.blog_img} className='blog_img' />
+                                        <h4>{v1.title}</h4>
                                         <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                            sed do eiusmod tempor incididunt ut labore et dolore magna
+                                            {v1.description}
                                         </p>
+
                                         <a href="#" className="btn">Read More</a>
                                     </div>
                                 </div>
-                                <div className="col-sm-12 col-lg-12 col-md-6">
+                            ))
+                        };
+
+
+                        {/* <div className="col-sm-12 col-lg-12 col-md-6">
                                     <div className="Blog-left">
                                         <h5>Tips | Travel</h5>
                                         <h4>How Are We Going Travel in 2022 -</h4>
@@ -476,10 +422,10 @@ function Home(props) {
                                         </p>
                                         <a href="#" className="btn">Read More</a>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-7">
+                                </div> */}
+
+
+                        {/* <div className="col-lg-7">
                             <div className="Blog-right">
                                 <div className="Blog-img">
                                     <img src="./assets/image/Travel.jpg" alt="Travel-img" />
@@ -494,7 +440,7 @@ function Home(props) {
                                     <a href="#" className="btn">Read More</a>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </section>
@@ -507,13 +453,74 @@ function Home(props) {
                     </p>
                     <div className="row all-Contact">
                         <div className="col-lg-5">
-                            <form action="#" className="Contact-form">
-                                <input type="text" placeholder="Your Name" />
-                                <input type="email" placeholder="Your EMail" />
-                                <input type="text" placeholder="Subject" />
-                                <textarea name id cols={30} rows={10} placeholder="Your Message" defaultValue={""} />
-                                <input type="submit" defaultValue="Send Message" className="btn" />
-                            </form>
+
+                            <React.Fragment>
+                                <form onSubmit={formik.handleSubmit} id="contect-form">
+                                    <TextField
+
+                                        error={formik.errors.name && formik.touched.name}
+                                        margin="dense"
+                                        id="name"
+                                        name="name"
+                                        label="name"
+                                        type="text"
+                                        fullWidth
+                                        variant="standard"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.name}
+                                        helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
+                                    />
+                                    <TextField
+
+                                        error={formik.errors.email && formik.touched.email}
+                                        margin="dense"
+                                        id="email"
+                                        name="email"
+                                        label="email"
+                                        type="email"
+                                        fullWidth
+                                        variant="standard"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.email}
+                                        helperText={formik.errors.email && formik.touched.email ? formik.errors.email : ''}
+                                    />
+                                    <TextField
+
+                                        error={formik.errors.subject && formik.touched.subject}
+                                        margin="dense"
+                                        id="subject"
+                                        name="subject"
+                                        label="subject"
+                                        type="text"
+                                        fullWidth
+                                        variant="standard"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.subject}
+                                        helperText={formik.errors.subject && formik.touched.subject ? formik.errors.subject : ''}
+                                    />
+                                    <TextField
+
+                                        error={formik.errors.message && formik.touched.message}
+                                        margin="dense"
+                                        id="message"
+                                        name="message"
+                                        label="message"
+                                        type="text"
+                                        fullWidth
+                                        variant="standard"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.message}
+                                        helperText={formik.errors.message && formik.touched.message ? formik.errors.message : ''}
+                                    />                                   
+                                      <input type="submit" defaultValue="Send Message" className="btn" />
+                                </form>
+                            </React.Fragment>
+
+
                         </div>
                         <div className="col-lg-7 Contact-data">
                             <h2 className="main-title">Get In Touch</h2>

@@ -169,7 +169,7 @@ header nav a {
   padding: 0 1rem;
 }
 
-header nav > ul > li {
+header nav>ul>li {
   position: relative;
   display: inline-grid;
 }
@@ -177,6 +177,7 @@ header nav > ul > li {
 header nav ul li a:hover {
   color: var(--theme_color);
 }
+
 header nav ul li a:hover i {
   transform: rotate(180deg);
 }
@@ -193,7 +194,7 @@ header nav ul li a:hover i {
   min-width: 257px;
 }
 
-header nav ul li:hover > .Products-items {
+header nav ul li:hover>.Products-items {
   display: block;
 }
 
@@ -260,6 +261,7 @@ header nav ul li:hover > .Products-items {
   border-radius: 4rem;
   box-shadow: 0 2rem 3.5rem 0 rgba(0, 0, 0, 0.3);
 }
+
 .hero-form select {
   border: none;
   outline: none;
@@ -305,6 +307,7 @@ header nav ul li:hover > .Products-items {
   color: var(--secondary_color);
   text-align: center;
 }
+
 /*******************work end********************/
 
 /*******************siti********************/
@@ -332,6 +335,7 @@ header nav ul li:hover > .Products-items {
   color: var(--primary_color);
   text-align: left;
 }
+
 .siti-data p {
   font-size: 1.8rem;
   font-weight: 500;
@@ -348,6 +352,7 @@ header nav ul li:hover > .Products-items {
   align-items: end;
   margin-top: 8rem;
 }
+
 .Popular-data h2 {
   text-align: left;
   font-size: 6rem;
@@ -385,6 +390,7 @@ header nav ul li:hover > .Products-items {
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   margin: 0 9px;
 }
+
 .card-data img {
   width: 100%;
   height: 250px;
@@ -452,16 +458,19 @@ header nav ul li:hover > .Products-items {
   justify-content: space-between;
   align-items: center;
 }
+
 .price span {
   font-size: 2.4rem;
   font-weight: 600;
   color: rgb(165, 165, 86);
 }
+
 /*********************slide menu bar********************/
 .swiper {
   width: 100%;
   height: 100%;
 }
+
 .products-slider .swiper-wrapper {
   padding-top: 19.1rem;
   margin-top: 1rem;
@@ -613,6 +622,7 @@ header nav ul li:hover > .Products-items {
   font-weight: 300;
   padding-bottom: 7.5rem;
 }
+
 /********************* Blog end********************/
 
 /********************* Contact ********************/
@@ -673,6 +683,7 @@ textarea {
 .Contact-data1 span {
   margin: 0 2.3rem 0 0;
 }
+
 /********************* Contact end********************/
 
 /******************* Subcribe ********************/
@@ -702,6 +713,7 @@ textarea {
 .Subcribe-size h2 {
   color: #ffffff;
 }
+
 .Subcribe-size p {
   color: #dfdfdf;
 }
@@ -725,6 +737,7 @@ textarea {
 .email {
   max-width: 100%;
 }
+
 .Subcribe-form input {
   border: none;
   outline: none;
@@ -893,6 +906,7 @@ footer a {
   top: 0;
   right: 0;
 }
+
 /******************* about-img end *********************/
 /******************* Gallery *********************/
 
@@ -959,11 +973,13 @@ footer a {
 .Gallery-4 {
   margin-left: 1rem;
 }
+
 .Gallery-4 img {
   width: 100%;
   height: 32.8rem;
   border-radius: 2rem;
 }
+
 /******************* Gallery end *********************/
 /******************* Popular-img end *********************/
 
@@ -1193,11 +1209,7 @@ footer a {
   padding-bottom: 4rem;
 }
 
-.Related-Images
-  .swiper-pagination
-  .swiper-pagination-clickable
-  .swiper-pagination-bullets
-  .swiper-pagination-horizontal {
+.Related-Images .swiper-pagination .swiper-pagination-clickable .swiper-pagination-bullets .swiper-pagination-horizontal {
   bottom: -1.5rem;
   z-index: 88888;
   position: relative;
@@ -1317,7 +1329,7 @@ footer a {
 /******************* Testimonial End  *********************/
 
 @media screen and (max-width: 1000px) {
-  header nav > ul {
+  header nav>ul {
     display: block;
     position: fixed;
     top: 0;
@@ -1334,10 +1346,12 @@ footer a {
     margin: 10px;
     color: black;
   }
+
   header nav ul li {
     display: block;
     width: 200px;
   }
+
   header nav ul li img {
     display: none;
   }
@@ -1372,4 +1386,13 @@ footer a {
   .menubars {
     color: white;
   }
+}
+
+.swiper-button-next:after, .swiper-button-prev:after {
+  font-size: 0;
+}
+
+.blog_img{
+  width: 100%;
+  height: 300px
 }

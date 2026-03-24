@@ -243,7 +243,7 @@ function Package(props) {
                                 <option value="">--Select location--</option>
                                 {location.location.map((v) => (
                                     <option key={v.id} value={v.id}>
-                                        {v.city}
+                                        {v.name}
                                     </option>
                                 ))}
                             </TextField>

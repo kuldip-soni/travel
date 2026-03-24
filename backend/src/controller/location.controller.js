@@ -35,11 +35,11 @@ const addlocation = async (req, res) => {
         console.log("req.body");
         console.log(req.file.path);
 
-        const { city, state, country, image } = req.body;
-        console.log(city, state, country, image);
+        const { name, description,  image } = req.body;
+        console.log(name, description, image);
 
-        const [rows, fields, result] = await pool.query("INSERT INTO location (city,state,country,image) VALUES(?,?,?,?)",
-            [city, state, country, req.file.path]
+        const [rows, fields, result] = await pool.query("INSERT INTO location (name,description,image) VALUES(?,?,?)",
+            [name, description,  req.file.path]
 
         )
 
@@ -70,9 +70,9 @@ const putlocation = async (req, res) => {
     try {
 
         console.log("req.body");
-        const { city, state, country, image } = req.body;
+        const { name, description, image } = req.body;
         const locationId = req.params.id;
-        console.log(city, state, country, image, locationId);
+        console.log(name, description,  image, locationId);
 
         const [rows] = await pool.query(`SELECT * FROM location WHERE id=${locationId}`);
         let fileimg = '';
@@ -88,13 +88,13 @@ const putlocation = async (req, res) => {
             fileimg = rows[0].image
         }
 
-        await pool.query("UPDATE  location  SET  city=?,state=?,country=?,image=? WHERE id=?",
-            [city, state, country, fileimg, locationId]
+        await pool.query("UPDATE  location  SET  name=?,description=?,image=? WHERE id=?",
+            [name, description, fileimg, locationId]
         )
 
         res.status(200).json({
             sucess: true,
-            data: { id: locationId, city, state, country, image: fileimg },
+            data: { id: locationId, name, description,  image: fileimg },
             message: "location is update sucessfuly"
 
         })
@@ -115,7 +115,7 @@ const putlocation = async (req, res) => {
 const dellocation = async (req, res) => {
     try {
 
-        // const { city, state, country, image } = req.body;
+        // const { name, description,  image } = req.body;
         const locationId = req.params.id;
         // console.log(locationId);
 
