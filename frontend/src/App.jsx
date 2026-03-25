@@ -4,7 +4,7 @@ import Footer from './component/Footer/Footer';
 import Home from './container/Home/Home';
 import { Route, Routes } from 'react-router-dom';
 import About from './container/About/About';
-import Destination from './container/Destination/Destination';
+import Location from './container/Location/Location';
 import Button from '@mui/material/Button';
 import UserRoutes from './Routes/UserRoutes';
 import AdminRoutes from './Routes/AdminRoutes';

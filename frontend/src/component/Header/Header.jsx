@@ -9,12 +9,12 @@ function Header(props) {
                     <img src="./assets/image/Logo.png" alt="logo" />
                 </a>
                 <nav className="nav-bar">
-                    <i className="fa-solid fa-bars menubars" onclick="handleMenu()" />
+                    <i className="fa-solid fa-bars menubars" onClick="handleMenu()" />
                     <ul id="menu">
-                        <i className="fa-solid fa-xmark xmarkbar" onclick="handleMenu()" />
+                        <i className="fa-solid fa-xmark xmarkbar" onClick="handleMenu()" />
                         <li><NavLink to='/'>Home</NavLink></li>
                         <li><NavLink to='/about'>About Us</NavLink></li>
-                        <li><NavLink to='/destination'>Destination</NavLink></li>
+                        <li><NavLink to='/location'>Location</NavLink></li>
                         <li>
                             <a href="./Package.html">Package <i className="fa-solid fa-chevron-down" /></a>
                             <ul className="Products-items">
@@ -24,15 +24,7 @@ function Header(props) {
                                 <li><a href="#">Package</a></li>
                             </ul>
                         </li>
-                        <li>
-                            <a href="#">Destination <i className="fa-solid fa-chevron-down" /></a>
-                            <ul className="Products-items">
-                                <li><a href="#">Destination</a></li>
-                                <li><a href="#">Destintion detail</a></li>
-                                <li><a href="#">Destination</a></li>
-                                <li><a href="#">Destintion detail</a></li>
-                            </ul>
-                        </li>
+                       
                         <li>
                             <a href="#">Blog <i className="fa-solid fa-chevron-down" /></a>
                             <ul className="Products-items">
