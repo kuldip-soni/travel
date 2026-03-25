@@ -25,39 +25,40 @@ const gender = [
   },
 ];
 
-let registerschema = object({
-  name: string().required('please enter name'),
-  email: string().required('please enter email'),
-  phone_number: string().required('please enter subject'),
-  password: string().required('please select message'),
-  dob: string().required('please select message'),
-  gender: string().required('please select message'),
-  address: string().required('please select message'),
-
-});
-
- const formik = useFormik({
-    initialValues: {
-      name: '',
-      email: '',
-      phone_number: '',
-      password: '',
-      dob: '',
-      gender: '',
-      address: '',
-    },
-    validationSchema: registerschema,
-    onSubmit: (values) => {
-      console.log(values);
-    }
-  });
-
 
 
 
 
 
 function Register(props) {
+  let registerschema = object({
+    name: string().required('please enter name'),
+    email: string().required('please enter email'),
+    phone_number: string().required('please enter phone_number'),
+    password: string().required('please enter password'),
+    dob: string().required('please enter dob'),
+    gender: string().required('please select gender'),
+    address: string().required('please enter address'),
+  
+  });
+  
+   const formik = useFormik({
+      initialValues: {
+        name: '',
+        email: '',
+        phone_number: '',
+        password: '',
+        dob: '',
+        gender: '',
+        address: '',
+      },
+      validationSchema: registerschema,
+      onSubmit: (values) => {
+        console.log(values);
+      }
+    });
+  
+    console.log(formik.errors, formik.touched);
   return (
     <main>
       <section>
@@ -141,7 +142,6 @@ function Register(props) {
                         margin="dense"
                         id="dob"
                         name="dob"
-                        label="dob"
                         type="date"
                         fullWidth
                         variant="standard"
@@ -170,7 +170,6 @@ function Register(props) {
                         value={formik.values.gender}
                         helperText={formik.errors.gender && formik.touched.gender ? formik.errors.gender : ''}
                       >
-                        <option>---package---</option>
                         {gender.map((option) => (
                           <option key={option.value} value={option.value}>
                             {option.label}
