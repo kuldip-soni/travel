@@ -15,29 +15,15 @@ function Header(props) {
                         <li><NavLink to='/'>Home</NavLink></li>
                         <li><NavLink to='/about'>About Us</NavLink></li>
                         <li><NavLink to='/location'>Location</NavLink></li>
-                        <li>
-                            <a href="./Package.html">Package <i className="fa-solid fa-chevron-down" /></a>
-                            <ul className="Products-items">
-                                <li><a href="./Package-Detial.html">Package Detial</a></li>
-                                <li><a href="./Package.html">Package</a></li>
-                                <li><a href="#">Package Detial</a></li>
-                                <li><a href="#">Package</a></li>
-                            </ul>
-                        </li>
-                       
-                        <li>
-                            <a href="#">Blog <i className="fa-solid fa-chevron-down" /></a>
-                            <ul className="Products-items">
-                                <li><a href="#">Single Blog</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">Single Blog</a></li>
-                                <li><a href="#">Blog</a></li>
-                            </ul>
-                        </li>
+
+
+                        
                         <li><a href="#">Contact</a></li>
                         <li>
                             <a href="#"><i className="fa-solid fa-magnifying-glass" /></a>
                         </li>
+                        <li><NavLink to='/register'>Register</NavLink></li>
+                        <li><NavLink to='/login'>Login</NavLink></li>
                     </ul>
                 </nav>
             </div>

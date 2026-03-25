@@ -6,6 +6,8 @@ import Home from '../container/Home/Home';
 import About from '../container/About/About';
 import Location from '../container/Location/Location';
 import LocationDetails from '../container/LocationDetails/LocationDetails';
+import Register from '../admin/container/Register/Register';
+import Login from '../admin/container/Login/Login';
 
 
 function UserRoutes(props) {
@@ -17,7 +19,11 @@ function UserRoutes(props) {
                 <Route path='/' element={<Home />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/location' element={<Location />} />
-                 <Route path='/locationdetails/:id' element={<LocationDetails/>} /> 
+                <Route path='/locationdetails/:id' element={<LocationDetails/>} /> 
+                <Route path='/register' element={<Register />} />
+                <Route path='/login' element={<Login />} />
+
+
             </Routes>
             <Footer />
         </div>
