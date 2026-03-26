@@ -8,6 +8,8 @@ import Location from '../container/Location/Location';
 import LocationDetails from '../container/LocationDetails/LocationDetails';
 import Register from '../admin/container/Register/Register';
 import Login from '../admin/container/Login/Login';
+import Package from '../container/Package/Package';
+import PackageDetails from '../container/PackageDetails/PackageDetails';
 
 
 function UserRoutes(props) {
@@ -19,9 +21,12 @@ function UserRoutes(props) {
                 <Route path='/' element={<Home />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/location' element={<Location />} />
-                <Route path='/locationdetails/:id' element={<LocationDetails/>} /> 
+                <Route path='/locationdetails/:id' element={<LocationDetails />} />
+                <Route path='/package' element={<Package/>} />
+                <Route path='/packagedetails/:id' element={<PackageDetails />} />
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
+
 
 
             </Routes>

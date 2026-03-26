@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/slice/auth.slice';
 
 function Header(props) {
-const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
 
     console.log(auth);
-    
+
 
     return (
         <header>
@@ -24,9 +24,12 @@ const dispatch = useDispatch();
                         <li><NavLink to='/'>Home</NavLink></li>
                         <li><NavLink to='/about'>About Us</NavLink></li>
                         <li><NavLink to='/location'>Location</NavLink></li>
+                        <li><NavLink to='/package'>Package</NavLink></li>
 
 
-                        
+
+
+
                         <li><a href="#">Contact</a></li>
                         <li>
                             <a href="#"><i className="fa-solid fa-magnifying-glass" /></a>
@@ -34,10 +37,10 @@ const dispatch = useDispatch();
                         <li>
                             {
                                 auth.user ? <a onClick={() => dispatch(logout())}>Logout</a> :
-                                <NavLink to='/login'>Login</NavLink>
+                                    <NavLink to='/login'>Login</NavLink>
                             }
-                            
-                            </li>
+
+                        </li>
                     </ul>
                 </nav>
             </div>
