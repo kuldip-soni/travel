@@ -2,7 +2,8 @@ import React from 'react';
 import { useFormik } from 'formik';
 import TextField from '@mui/material/TextField';
 import { object, string } from 'yup';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../../../redux/slice/auth.slice';
 
 
 
@@ -31,6 +32,10 @@ const gender = [
 
 
 function Register(props) {
+  const dispatch = useDispatch();
+
+
+
   let registerschema = object({
     name: string().required('please enter name'),
     email: string().required('please enter email'),
@@ -54,7 +59,8 @@ function Register(props) {
       },
       validationSchema: registerschema,
       onSubmit: (values) => {
-        console.log(values);
+        dispatch(register(values))
+        
       }
     });
   
@@ -110,7 +116,7 @@ function Register(props) {
                         margin="dense"
                         id="phone_number"
                         name="phone_number"
-                        label="phone_number"
+                        label="phone number"
                         type="number"
                         fullWidth
                         variant="standard"
@@ -150,6 +156,7 @@ function Register(props) {
                         value={formik.values.dob}
                         helperText={formik.errors.dob && formik.touched.dob ? formik.errors.dob : ''}
                       />
+                    <br /><br />
                     </div>
                     <div className="col-12">
                       <TextField

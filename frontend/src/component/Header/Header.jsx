@@ -1,12 +1,21 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import logo from '../../../public/assets/image/Logo.png'
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../redux/slice/auth.slice';
 
 function Header(props) {
+const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth);
+
+    console.log(auth);
+    
+
     return (
         <header>
             <div className="container header-container">
                 <a href="./index.html" className="logo">
-                    <img src="./assets/image/Logo.png" alt="logo" />
+                    <img src={logo} alt="logo" />
                 </a>
                 <nav className="nav-bar">
                     <i className="fa-solid fa-bars menubars" onClick="handleMenu()" />
@@ -22,8 +31,13 @@ function Header(props) {
                         <li>
                             <a href="#"><i className="fa-solid fa-magnifying-glass" /></a>
                         </li>
-                        <li><NavLink to='/register'>Register</NavLink></li>
-                        <li><NavLink to='/login'>Login</NavLink></li>
+                        <li>
+                            {
+                                auth.user ? <a onClick={() => dispatch(logout())}>Logout</a> :
+                                <NavLink to='/login'>Login</NavLink>
+                            }
+                            
+                            </li>
                     </ul>
                 </nav>
             </div>

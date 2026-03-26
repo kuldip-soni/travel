@@ -11,6 +11,8 @@ const serviceRoutes=require("./service.routes");
 const roomRoutes=require("./room.routes");
 const blogRoutes=require("./blog.routes");
 
+const userRoutes = require("./user.routes")
+
 router.use("/location",locationRoutes);
 router.use("/package",packageRoutes);
 router.use("/itineary",itinearyRoutes);
@@ -21,5 +23,7 @@ router.use("/vendor",vendorRoutes);
 router.use("/service",serviceRoutes);
 router.use("/room",roomRoutes);
 router.use("/blog",blogRoutes);
+
+router.use("/user",userRoutes);
 
 module.exports = router; 

@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from '../../../public/assets/image/Logo (1).png'
 
 
 function Footer(props) {
@@ -8,7 +9,7 @@ function Footer(props) {
     <div className="row footer">
       <div className="col-lg-4 col-md-5 col-sm-5 col-12">
         <div className="footer-logo">
-          <img src="./assets/image/Logo (1).png" alt="logo" />
+          <img src={logo} alt="logo" />
         </div>
         <p className="sub-title">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
