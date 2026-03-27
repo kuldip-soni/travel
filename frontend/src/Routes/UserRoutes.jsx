@@ -10,6 +10,7 @@ import Register from '../admin/container/Register/Register';
 import Login from '../admin/container/Login/Login';
 import Package from '../container/Package/Package';
 import PackageDetails from '../container/PackageDetails/PackageDetails';
+import BookPackage from '../container/BookPackage/BookPackage';
 
 
 function UserRoutes(props) {
@@ -26,6 +27,8 @@ function UserRoutes(props) {
                 <Route path='/packagedetails/:id' element={<PackageDetails />} />
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
+                <Route path='/bookpackage' element={<BookPackage />} />
+
 
 
 

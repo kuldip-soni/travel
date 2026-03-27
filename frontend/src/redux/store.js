@@ -59,6 +59,7 @@ import hotelSlice from './slice/hotel.slice'
 import restaurantSlice from './slice/restaurant.slice'
 import contectSlice from './slice/contect.slice'
 import authSlice from './slice/auth.slice'
+import bookingSlice from './slice/booking.slice';
 
 const reducers = combineReducers({
   location: locationSlice,
@@ -72,7 +73,8 @@ const reducers = combineReducers({
   hotel: hotelSlice,
   restaurant: restaurantSlice,
   contect: contectSlice,
-  auth: authSlice
+  auth: authSlice,
+  booking:bookingSlice
 });
 
 const persistConfig = {

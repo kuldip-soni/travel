@@ -41,6 +41,7 @@ function Header(props) {
                             }
 
                         </li>
+                       <li><NavLink to={'/BookPackage'} className="btn btn-1">Book Package</NavLink></li> 
                     </ul>
                 </nav>
             </div>

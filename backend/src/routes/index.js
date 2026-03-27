@@ -10,6 +10,7 @@ const vendorRoutes=require("./vendor.routes");
 const serviceRoutes=require("./service.routes");
 const roomRoutes=require("./room.routes");
 const blogRoutes=require("./blog.routes");
+const bookingRoutes=require("./booking.routes");
 
 const userRoutes = require("./user.routes")
 
@@ -25,5 +26,6 @@ router.use("/room",roomRoutes);
 router.use("/blog",blogRoutes);
 
 router.use("/user",userRoutes);
+router.use("/booking",bookingRoutes);
 
 module.exports = router; 
