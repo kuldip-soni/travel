@@ -145,7 +145,15 @@ function Itineary(props) {
 
   const columns = [
 
-    { field: 'package_id', headerName: 'package_id', width: 130 },
+    { field: 'package_id', 
+      headerName: 'package_id',
+       width: 130,
+       renderCell: (params) => {
+                const d = Package.package?.find(v => v.id == params.row.package_id)?.name
+                console.log(Package.package, params.row.id, d);
+                
+                return d
+             } },
     { field: 'title', headerName: 'title', width: 130 },
     { field: 'description', headerName: 'description', width: 130 },
 

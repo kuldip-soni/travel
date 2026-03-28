@@ -14,6 +14,7 @@ import Service from '../admin/container/Service/Service';
 import Room from '../admin/container/Room/Room';
 import Blog from '../admin/container/Blog/Blog';
 import Bookpackage from '../admin/container/Booking/Bookpackage';
+import Bookpackageedit from '../admin/container/Booking/Bookpackageedit';
 
 
 
@@ -38,7 +39,7 @@ function AdminRoutes(props) {
                     <Route path='/room' element={<Room />} />
                     <Route path='/blog' element={<Blog />} />
                     <Route path='/booking' element={<Bookpackage />} />
-
+                    <Route path='/bookingedit' element={<Bookpackageedit />} />
 
 
 

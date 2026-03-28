@@ -158,8 +158,26 @@ function Restaurant(props) {
   }
 
   const columns = [
-    { field: 'vendor_id', headerName: 'vendor_id', width: 130 },
-    { field: 'service_id', headerName: 'service_id', width: 130 },
+    { field: 'vendor_id',
+       headerName: 'vendor_id',
+        width: 130,
+         renderCell: (params) => {
+                const d = vendor.vendor?.find(v => v.id == params.row.vendor_id)?.name
+                console.log(vendor.vendor, params.row.id, d);
+                
+                return d
+             }
+       },
+    { field: 'service_id',
+       headerName: 'service_id',
+        width: 130,
+        renderCell: (params) => {
+                const d = service.service?.find(v => v.id == params.row.service_id)?.name
+                console.log(service.service, params.row.id, d);
+                
+                return d
+             }
+       },
     { field: 'datetime', headerName: 'datetime', width: 130 },
     { field: 'meals', headerName: 'meals', width: 130 },
     { field: 'passenger', headerName: 'passenger', width: 130 },
@@ -238,7 +256,7 @@ function Restaurant(props) {
                 <option value="">--Select vendor--</option>
                 {vendor.vendor.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.type}
+                    {v.name}
                   </option>
                 ))}
               </TextField>
