@@ -13,6 +13,7 @@ import Vendor from '../admin/container/Vendor/Vendor';
 import Service from '../admin/container/Service/Service';
 import Room from '../admin/container/Room/Room';
 import Blog from '../admin/container/Blog/Blog';
+import Bookpackage from '../admin/container/Booking/Bookpackage';
 
 
 
@@ -36,6 +37,7 @@ function AdminRoutes(props) {
                     <Route path='/service' element={<Service />} />
                     <Route path='/room' element={<Room />} />
                     <Route path='/blog' element={<Blog />} />
+                    <Route path='/booking' element={<Bookpackage />} />
 
 
 

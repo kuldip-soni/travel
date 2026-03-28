@@ -33,9 +33,36 @@ const bookpackage = async (req, res) => {
         })
 
     }
+
+   
+}
+
+const getBooking = async(req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT * FROM booking');        
+        res.status(200).json({
+             sucess: true,
+             data: rows,
+             message: "booking data fetched"
+        })
+
+        
+        
+        
+    } catch (error) {
+        res.status(500).json({
+            sucess: false,
+            data: null,
+            message: "internal server error (getBooking)" +error.message
+
+        })
+        
+    }
+        
+
 }
 
 module.exports = {
-    bookpackage
-    //login
+    bookpackage,
+    getBooking
 }

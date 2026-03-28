@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { object, string } from 'yup';
 import { getlocation } from '../../redux/slice/location.slice';
 import { getpackage } from '../../redux/slice/package.slice';
-import { bookpackage } from '../../redux/slice/booking.slice';
+import { bookpackage } from '../../redux/slice/bookpackage.slice';
 
 function BookPackage(props) {
     const dispatch = useDispatch();

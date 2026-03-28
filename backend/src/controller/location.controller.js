@@ -21,8 +21,7 @@ const getlocation = async (req, res) => {
         res.status(500).json({
             sucess: true,
             data: null,
-            message: "internal server error (getlocation)" + error
-
+            message: "internal server error (getlocation)" + error.message
         })
 
     }

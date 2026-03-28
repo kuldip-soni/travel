@@ -8,11 +8,27 @@ const initialState = {
 
 }
 
+export const getbookpackage = createAsyncThunk(
+    'booking/getbookpackage',
+    async () => {
+        try {
+            console.log("kkkk");
+            
+            const response = await axios.get('http://localhost:4000/booking/getBooking');
+            console.log(response.data.data);
+            return response.data.data;
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
+)
 
 
 
 export const bookpackage = createAsyncThunk(
-    'vendor/bookpackage',
+    'booking/bookpackage',
     async (data) => {
         try {
 
@@ -34,7 +50,13 @@ export const bookingSlice = createSlice({
     initialState,
     extraReducers: (builder) => {
 
-        builder.addCase(bookpackage.fulfilled, (state, action) => {
+        builder.addCase(getbookpackage.fulfilled, (state, action) => {
+            console.log(action.payload);
+            state.booking = action.payload;
+
+        });
+
+         builder.addCase(bookpackage.fulfilled, (state, action) => {
             console.log(action.payload);
             state.booking = action.payload;
 

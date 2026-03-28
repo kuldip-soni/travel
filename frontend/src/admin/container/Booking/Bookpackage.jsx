@@ -7,8 +7,8 @@ import { styled } from '@mui/material/styles';
 import { date, mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux'
-import { getlocation } from '../../../redux/slice/location.slice';
-import { getpackage } from '../../../redux/slice/package.slice';
+import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
+// import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
 
 
 
@@ -26,22 +26,21 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 
-function Booking(props) {
+function Bookpackage(props) {
     const [open, setOpen] = React.useState(false);
     const [update, setupdate] = useState(false);
 
 
     const bookingdata = useSelector(state => state.bookpackage);
     const packagedata = useSelector(state => state.package);
-    const location = useSelector(state => state.location);
-    console.log(packagedata);
+    const locationdata = useSelector(state => state.location);
+    console.log(bookingdata);
+    console.log(locationdata);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
 
-        dispatch(getpackage());
-        dispatch(getlocation());
         dispatch(getbookpackage());
 
 
@@ -68,9 +67,7 @@ function Booking(props) {
         validationSchema: bookpackageschema,
 
         onSubmit: (values, { resetForm }) => {
-            console.log(values);
-            dispatch(bookpackage(values))
-            resetForm();
+
 
         },
     });
@@ -85,7 +82,10 @@ function Booking(props) {
 
     const columns = [
 
-        { field: 'location_id', headerName: 'location_id', width: 130 },
+        { field: 'location_id',
+             headerName: 'location_id', 
+             width: 130,
+             },
         { field: 'package_id', headerName: 'package_id', width: 130 },
         { field: 'travel_date', headerName: 'travel_date', width: 130 },
         { field: 'passenger', headerName: 'passenger', width: 130 },
@@ -106,10 +106,8 @@ function Booking(props) {
     return (
         <div>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h1>Booking</h1>
-                <Button variant="outlined" onClick={handleClickOpen}>
-                    Book Package
-                </Button>
+                <h1>Bookpackage</h1>
+                
             </Box>
 
             <DataGrid
@@ -126,4 +124,4 @@ function Booking(props) {
     );
 }
 
-export default Booking;
+export default Bookpackage;
