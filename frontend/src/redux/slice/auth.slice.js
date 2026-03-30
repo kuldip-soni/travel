@@ -32,6 +32,8 @@ export const login = createAsyncThunk(
             const response = await axios.post('http://localhost:4000/user/login', data);
             console.log(response.data.data);
 
+            localStorage.setItem("user_id", response.data.data.id)
+
             if(!response.data.data){
                 alert(response.data.message);
             }

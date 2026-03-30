@@ -135,6 +135,7 @@ export default function Layout({ children }) {
     { icon: <SensorDoorIcon />, label: 'Room', to: '/admin/room' },
     { icon: <BookIcon />, label: 'Blog', to: '/admin/blog' },
     { icon: <BookOnlineIcon />, label: 'Booking', to: '/admin/booking' },
+    { icon: <BookOnlineIcon />, label: 'Payment', to: '/admin/payment' },
     
 
 

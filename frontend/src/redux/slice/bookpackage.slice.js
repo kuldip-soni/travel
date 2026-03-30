@@ -31,8 +31,9 @@ export const bookpackage = createAsyncThunk(
     'booking/bookpackage',
     async (data) => {
         try {
+            const user_id = parseInt(localStorage.getItem("user_id"));
 
-            const response = await axios.post('http://localhost:4000/booking/bookpackage', data);
+            const response = await axios.post('http://localhost:4000/booking/bookpackage', {...data, user_id: user_id});
             console.log(response.data.data);
             return response.data.data;
         } catch (error) {

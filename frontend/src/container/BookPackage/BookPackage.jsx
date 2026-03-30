@@ -56,7 +56,7 @@ function BookPackage(props) {
             console.log(values);
             dispatch(bookpackage(values))
             resetForm();
-            
+
         },
     });
 
@@ -127,11 +127,14 @@ function BookPackage(props) {
                             </option>
                         ))}
                     </TextField>
+
+                    
+
                     <TextField
 
                         error={formik.errors.travel_date && formik.touched.travel_date}
                         margin="dense"
-                        
+
                         id="travel_date"
                         name="travel_date"
                         type="date"

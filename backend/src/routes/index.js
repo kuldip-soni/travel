@@ -12,7 +12,8 @@ const roomRoutes=require("./room.routes");
 const blogRoutes=require("./blog.routes");
 const bookingRoutes=require("./booking.routes");
 
-const userRoutes = require("./user.routes")
+const userRoutes = require("./user.routes");
+const paymentRoutes = require("./payment.routes");
 
 router.use("/location",locationRoutes);
 router.use("/package",packageRoutes);
@@ -27,5 +28,6 @@ router.use("/blog",blogRoutes);
 
 router.use("/user",userRoutes);
 router.use("/booking",bookingRoutes);
+router.use("/payment", paymentRoutes);
 
 module.exports = router; 
