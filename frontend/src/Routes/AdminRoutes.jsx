@@ -16,6 +16,7 @@ import Blog from '../admin/container/Blog/Blog';
 import Bookpackage from '../admin/container/Booking/Bookpackage';
 import Bookpackageedit from '../admin/container/Booking/Bookpackageedit';
 import Payment from '../admin/container/Payment/Payment';
+import Contact from '../admin/container/Contact/Contact';
 
 
 
@@ -42,6 +43,7 @@ function AdminRoutes(props) {
                     <Route path='/booking' element={<Bookpackage />} />
                     <Route path='/bookingedit' element={<Bookpackageedit />} />
                     <Route path='/payment' element={<Payment />} />
+                    <Route path='/contact' element={<Contact />} />
 
 
 

@@ -11,6 +11,7 @@ import Login from '../admin/container/Login/Login';
 import Package from '../container/Package/Package';
 import PackageDetails from '../container/PackageDetails/PackageDetails';
 import BookPackage from '../container/BookPackage/BookPackage';
+import Contact from '../container/Contact/contact';
 
 
 function UserRoutes(props) {
@@ -23,11 +24,12 @@ function UserRoutes(props) {
                 <Route path='/about' element={<About />} />
                 <Route path='/location' element={<Location />} />
                 <Route path='/locationdetails/:id' element={<LocationDetails />} />
-                <Route path='/package' element={<Package/>} />
+                <Route path='/package' element={<Package />} />
                 <Route path='/packagedetails/:id' element={<PackageDetails />} />
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/bookpackage' element={<BookPackage />} />
+                <Route path='/contact' element={<Contact />} />
 
 
 

@@ -25,12 +25,12 @@ function Header(props) {
                         <li><NavLink to='/about'>About Us</NavLink></li>
                         <li><NavLink to='/location'>Location</NavLink></li>
                         <li><NavLink to='/package'>Package</NavLink></li>
+                        <li><NavLink to='/contact'>contact</NavLink></li>
 
 
 
 
 
-                        <li><a href="#">Contact</a></li>
                         <li>
                             <a href="#"><i className="fa-solid fa-magnifying-glass" /></a>
                         </li>
@@ -41,7 +41,7 @@ function Header(props) {
                             }
 
                         </li>
-                       <li><NavLink to={'/BookPackage'} className="btn btn-1">Book Package</NavLink></li> 
+                        <li><NavLink to={'/BookPackage'} className="btn btn-1">Book Package</NavLink></li>
                     </ul>
                 </nav>
             </div>

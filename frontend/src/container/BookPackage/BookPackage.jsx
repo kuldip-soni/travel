@@ -98,7 +98,8 @@ function BookPackage(props) {
                         onBlur={formik.handleBlur}
                         value={formik.values.location_id}
                         helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
-                    >
+                    >   
+                          <option >---location---</option>
                         {locationdata.location.map((v) => (
                             <option key={v.id} value={v.id}>
                                 {v.name}
@@ -112,6 +113,8 @@ function BookPackage(props) {
                         name="package_id"
                         select
                         fullWidth
+                         inputProps={{ style: { fontSize: 18 } }} // font size of input text
+                        InputLabelProps={{ style: { fontSize: 18 } }} // font size of input text
 
                         slotProps={{
                             select: {
@@ -143,6 +146,8 @@ function BookPackage(props) {
                         name="travel_date"
                         type="date"
                         fullWidth
+                         inputProps={{ style: { fontSize: 18 } }} // font size of input text
+                        InputLabelProps={{ style: { fontSize: 18 } }} // font size of input text
                         variant="standard"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -159,6 +164,8 @@ function BookPackage(props) {
                         label="passenger"
                         type="number"
                         fullWidth
+                         inputProps={{ style: { fontSize: 18 } }} // font size of input text
+                        InputLabelProps={{ style: { fontSize: 18 } }} // font size of input text
                         variant="standard"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}

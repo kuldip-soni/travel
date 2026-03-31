@@ -44,7 +44,7 @@ function LocationDetails(props) {
         <div className="col-md-5">
           <div className="card-body text-center" style={{width:"50%", marginTop: '3rem'}}>
               <h3 className="card-title"style={{fontSize:"20px"}}>{lD?.name}</h3>
-              <p className="card-text">
+              <p className="card-text" style={{fontSize:"15px"}}>
                 {lD?.description}
               </p>
                  
