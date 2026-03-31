@@ -29,6 +29,7 @@ import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import SensorDoorIcon from '@mui/icons-material/SensorDoor';
 import BookIcon from '@mui/icons-material/Book';
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { NavLink } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -135,7 +136,7 @@ export default function Layout({ children }) {
     { icon: <SensorDoorIcon />, label: 'Room', to: '/admin/room' },
     { icon: <BookIcon />, label: 'Blog', to: '/admin/blog' },
     { icon: <BookOnlineIcon />, label: 'Booking', to: '/admin/booking' },
-    { icon: <BookOnlineIcon />, label: 'Payment', to: '/admin/payment' },
+    { icon: <CurrencyRupeeIcon />, label: 'Payment', to: '/admin/payment' },
     
 
 

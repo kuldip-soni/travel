@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { getlocation } from '../../redux/slice/location.slice';
+import { getpackage } from '../../redux/slice/package.slice';
 
 function LocationDetails(props) {
   const dispatch = useDispatch();
@@ -9,14 +10,23 @@ function LocationDetails(props) {
   useEffect(() => {
 
     dispatch(getlocation());
+   dispatch(getpackage());
 
 
   }, []);
 
   const { id } = useParams();
   const locationdata = useSelector(State => State.location);
-  console.log(id, locationdata.location);
+  console.log( locationdata.location);
+  console.log(id);
+  
+  const packagedata = useSelector(State => State.package);
+  console.log(id, packagedata.package);
 
+  
+  const pD=packagedata.package?.filter(v1 =>v1. location_id == id);
+  console.log(pD);
+  
   const lD = locationdata.location?.find((v) => v.id == id);
   console.log(lD);
 
@@ -37,14 +47,47 @@ function LocationDetails(props) {
               <p className="card-text">
                 {lD?.description}
               </p>
+                 
             </div>
         </div>
 
 
       </div>
-    </div>
+
+      
+        <div className="row card">
+                        {
+                            pD?.map((v2) => (
+                                <div className="col-lg-4 col-md-6">
+                                     <NavLink to={`/packagedetails/${v2.id}`}>
+                                    <div className="card-data resultImg">
+                                        <div className="pckImg">
+                                            <img src={"http://localhost:4000/" + v2.image} />                                      
+                                              </div>
+                                        <div className="Packages-data">
+                                            <div className="day-price">
 
 
+                                                <h4>{v2.name}</h4>
+                                                <p>{v2.price}</p>
+                                            </div>
+                                            <p>
+                                                {v2.duration}
+                                            </p>
+                                           
+                                        </div>
+                                    </div>
+                                    </NavLink>
+                                </div>
+
+                            )
+                            )
+
+                        };
+
+                    </div>
+
+</div>
 
   );
 }

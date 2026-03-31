@@ -55,6 +55,9 @@ const login = async (req, res) => {
             }
         });
 
+        console.log("user", user, rows);
+        
+
         if (flag === true) {
             res.status(200).json({
                 sucess: true,

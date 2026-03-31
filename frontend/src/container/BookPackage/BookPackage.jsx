@@ -74,34 +74,38 @@ function BookPackage(props) {
 
     return (
         <div className="row all-Contact">
-            <div className="col-lg-5">
-
-                <form onSubmit={formik.handleSubmit} id="bookpackage-form">
+            <div className="col-lg-5" style={{ padding: "50px" }}>
+                <h2>Book Your package</h2>
+                <br /><br />
+                <form onSubmit={formik.handleSubmit} id="bookpackage-form" >
                     <TextField
                         error={formik.errors.location_id && formik.touched.location_id}
                         id="standard-select-currency-native"
                         name="location_id"
                         select
                         fullWidth
+                        inputProps={{ style: { fontSize: 18 } }} // font size of input text
+                        InputLabelProps={{ style: { fontSize: 18 } }} // font size of input text
 
                         slotProps={{
                             select: {
                                 native: true,
                             },
                         }}
+
                         variant="standard"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.location_id}
                         helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
                     >
-                        <option value="">--Select location--</option>
                         {locationdata.location.map((v) => (
                             <option key={v.id} value={v.id}>
                                 {v.name}
                             </option>
                         ))}
                     </TextField>
+                    <br /><br />
                     <TextField
                         error={formik.errors.package_id && formik.touched.package_id}
                         id="standard-select-currency-native"
@@ -121,14 +125,14 @@ function BookPackage(props) {
                         helperText={formik.errors.package_id && formik.touched.package_id ? formik.errors.package_id : ''}
                     >
                         <option>---package---</option>
-                        {packagedata.package.filter(v1 => v1.location_id == formik.values.location_id).map((v) => (
-                            <option key={v.id} value={v.id}>
-                                {v.name}
+                        {packagedata.package.filter(v1 => v1.location_id == formik.values.location_id).map((v1) => (
+                            <option key={v1.id} value={v1.id}>
+                                {v1.name}
                             </option>
                         ))}
                     </TextField>
+                    <br /><br />
 
-                    
 
                     <TextField
 
