@@ -11,6 +11,7 @@ const serviceRoutes=require("./service.routes");
 const roomRoutes=require("./room.routes");
 const blogRoutes=require("./blog.routes");
 const bookingRoutes=require("./booking.routes");
+const contactRoutes=require("./contect.routes");
 
 const userRoutes = require("./user.routes");
 const paymentRoutes = require("./payment.routes");
@@ -25,7 +26,7 @@ router.use("/vendor",vendorRoutes);
 router.use("/service",serviceRoutes);
 router.use("/room",roomRoutes);
 router.use("/blog",blogRoutes);
-
+router.use("/contect",contactRoutes);
 router.use("/user",userRoutes);
 router.use("/booking",bookingRoutes);
 router.use("/payment", paymentRoutes);

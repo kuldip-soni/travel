@@ -16,7 +16,7 @@ import Blog from '../admin/container/Blog/Blog';
 import Bookpackage from '../admin/container/Booking/Bookpackage';
 import Bookpackageedit from '../admin/container/Booking/Bookpackageedit';
 import Payment from '../admin/container/Payment/Payment';
-import Contact from '../admin/container/Contact/Contact';
+import Contact from '../admin/container/Contect/Contect';
 
 
 

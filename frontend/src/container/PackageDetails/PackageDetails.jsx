@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 import { getpackage } from '../../redux/slice/package.slice';
 import { getitineary } from '../../redux/slice/itineary.slice';
+import { getlocation } from '../../redux/slice/location.slice';
 
 
 function PackageDetails(props) {
@@ -11,7 +12,8 @@ function PackageDetails(props) {
   useEffect(() => {
 
     dispatch(getpackage());
-    dispatch(getitineary())
+    dispatch(getitineary());
+    dispatch(getlocation());
 
   }, []);
 
@@ -26,8 +28,13 @@ function PackageDetails(props) {
   console.log(pD);
 
   const fit = itnorydata.itineary?.find(v => v.package_id === pD.id);
-
   console.log(fit);
+
+  const locationdata = useSelector(state => state.location);
+  console.log(locationdata);
+
+  
+  
   
 
   return (

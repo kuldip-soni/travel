@@ -34,17 +34,13 @@ export const addcontect = createAsyncThunk(
 
             console.log(data);
 
-            const formData = new FormData();
-            formData.append("name", data.name);
-            formData.append("email", data.email);
-            formData.append("subject", data.subject);
-            formData.append("message", data.message);
+           
             
             
 
 
 
-            const response = await axios.post('http://localhost:4000/contect/addcontect', formData);
+            const response = await axios.post('http://localhost:4000/contect/addContect', data);
             console.log(response.data.data);
             return response.data.data;
         } catch (error) {
@@ -62,16 +58,11 @@ export const putcontect = createAsyncThunk(
 
         try {
 
-            const formData = new FormData();
-            formData.append("id", data.id);
-            formData.append("name", data.name);
-            formData.append("email", data.email);
-            formData.append("subject", data.subject);
-            formData.append("message", data.message);
+           
             
             
             console.log(data);
-            const response = await axios.put(`http://localhost:4000/contect/putcontect/${data.id}`, formData);
+            const response = await axios.put(`http://localhost:4000/contect/putcontect/${data.id}`, data);
             console.log(response.data.data);
             return response.data.data;
         } catch (error) {

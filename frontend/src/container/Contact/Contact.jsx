@@ -2,16 +2,21 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import { object, string } from 'yup';
+import { addcontect } from '../../redux/slice/contect.slice';
+import { useDispatch } from 'react-redux';
 
 
 function Contact(props) {
+        const dispatch = useDispatch();
+
     let contectschema = object({
-            name: string().required('please enter name'),
-            email: string().required('please enter email'),
-            subject: string().required('please enter subject'),
-            message: string().required('please select message'),
-    
-    
+        
+        name: string().required('please enter name'),
+        email: string().required('please enter email'),
+        mobile_no: string().required('please enter mobile_no'),
+        subject: string().required('please enter subject'),
+        message: string().required('please select message'),
+
     
         });
 
@@ -20,6 +25,7 @@ function Contact(props) {
         
                     name: '',
                     email: '',
+                    mobile_no: '',
                     subject: '',
                     message: '',
         
@@ -30,9 +36,9 @@ function Contact(props) {
 
                  onSubmit: (values, { resetForm }) => {
                             console.log(values);
-                           
+                           dispatch(addcontect(values))
                             resetForm();
-                            handleClose();
+                           
                         },
                     });
     
@@ -42,10 +48,7 @@ function Contact(props) {
                 <section id="Contact">
                                 <div className="container">
                                     <h2 className="main-title">Contact</h2>
-                                    <p className="sub-title">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                    </p>
+                                    
                                     <div className="row all-Contact">
                                         <div className="col-lg-5">
                 
@@ -80,6 +83,23 @@ function Contact(props) {
                                                     value={formik.values.email}
                                                     helperText={formik.errors.email && formik.touched.email ? formik.errors.email : ''}
                                                 />
+
+                                                  <TextField
+                
+                                                    error={formik.errors.mobile_no && formik.touched.mobile_no}
+                                                    margin="dense"
+                                                    id="mobile_no"
+                                                    name="mobile_no"
+                                                    label="mobile_no"
+                                                    type="number"
+                                                    fullWidth
+                                                    variant="standard"
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                    value={formik.values.mobile_no}
+                                                    helperText={formik.errors.mobile_no && formik.touched.mobile_no ? formik.errors.mobile_no : ''}
+                                                />
+                                                
                                                 <TextField
                 
                                                     error={formik.errors.subject && formik.touched.subject}

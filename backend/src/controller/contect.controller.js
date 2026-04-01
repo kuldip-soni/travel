@@ -33,11 +33,11 @@ const getcontect = async (req, res) => {
 const addcontect = async (req, res) => {
     try {
         console.log("req.body", req.body);
-        const { name, email, subject, message } = req.body;
-        console.log(name, email, subject, message);
+        const { name, email,mobile_no, subject, message } = req.body;
+        console.log(name, email,mobile_no, subject, message);
 
-        const [rows, fields, result] = await pool.query("INSERT INTO contect (name,email,subject,message) VALUES(?,?,?,?)",
-            [name, email, subject, message]
+        const [rows, fields, result] = await pool.query("INSERT INTO contect (name,email,mobile_no,subject,message) VALUES(?,?,?,?,?)",
+            [name, email,mobile_no, subject, message]
 
         )
 
@@ -67,20 +67,19 @@ const addcontect = async (req, res) => {
 const putcontect = async (req, res) => {
     try {
         console.log("req.body");
-        const { name, email, subject, message } = req.body;
+        const { remark } = req.body;
         const contectId = req.params.id;
-        console.log(name, email, subject, message);
-
+        
         const [rows] = await pool.query(`SELECT * FROM contect WHERE id=${contectId}`);
        
 
-        await pool.query("UPDATE  contect  SET  name=?,email=?,subject=?,message=? WHERE id=?",
-            [name, email, subject, message, contectId]
+        await pool.query("UPDATE  contect  SET  remark=? WHERE id=?",
+            [remark, contectId]
         )
 
         res.status(200).json({
             sucess: true,
-            data: { id: contectId, name, email, subject, message },
+            data: { ...req.body, id: contectId },
             message: "contect is update sucessfuly"
 
         })

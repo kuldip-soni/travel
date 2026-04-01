@@ -170,7 +170,18 @@ function Package(props) {
     }
 
     const columns = [
+        {
+            field: 'location_id',
+            headerName: 'location_id',
+            width: 130,
+            renderCell: (params) => {
+                const d = location.location?.find(v => v.id == params.row.location_id)?.name
+                console.log(location.location, params.row.id, d);
 
+                return d
+            }
+
+        },
         { field: 'name', headerName: 'name', width: 130 },
         { field: 'duration', headerName: 'duration', width: 130 },
         { field: 'price', headerName: 'price', width: 130 },

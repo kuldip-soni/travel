@@ -3,10 +3,24 @@ import { NavLink } from 'react-router-dom';
 import logo from '../../../public/assets/image/Logo.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/slice/auth.slice';
+import { getmyBooking } from '../../redux/slice/bookpackage.slice';
+import { useEffect } from 'react';
 
 function Header(props) {
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
+
+    useEffect(() => {
+    
+            dispatch(getmyBooking());
+          
+        }, []);
+
+        const mybook=useSelector(state => state.bookpackage);
+        console.log(mybook.myBooking);
+        
+    
+    
 
     console.log(auth);
 
@@ -41,6 +55,13 @@ function Header(props) {
                             }
 
                         </li>
+                        
+                            {
+                                mybook.myBooking?.length > 0 ?
+                                <li><NavLink to={"/myBooking"}>My Bookings</NavLink></li>:
+                                null
+                            }
+                        
                         <li><NavLink to={'/BookPackage'} className="btn btn-1">Book Package</NavLink></li>
                     </ul>
                 </nav>

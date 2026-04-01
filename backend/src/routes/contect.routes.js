@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.get('/getcontect', getcontect)
 
-router.post('/addcontect',upload.single('contect_img'), addcontect)
+router.post('/addcontect',addcontect)
 
-router.put('/putcontect/:id',upload.single('contect_img'), putcontect)
+router.put('/putcontect/:id', putcontect)
 
 router.delete('/delcontect/:id', delcontect)
 
