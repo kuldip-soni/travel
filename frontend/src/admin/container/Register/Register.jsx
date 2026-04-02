@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import { object, string } from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../../../redux/slice/auth.slice';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -47,6 +48,7 @@ function Register(props) {
   
   });
   
+  const navigate = useNavigate();
    const formik = useFormik({
       initialValues: {
         name: '',
@@ -61,6 +63,7 @@ function Register(props) {
       onSubmit: (values) => {
         dispatch(register(values))
         
+        navigate("/login")
       }
     });
   

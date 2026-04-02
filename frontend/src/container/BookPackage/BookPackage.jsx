@@ -6,6 +6,7 @@ import { object, string } from 'yup';
 import { getlocation } from '../../redux/slice/location.slice';
 import { getpackage } from '../../redux/slice/package.slice';
 import { bookpackage } from '../../redux/slice/bookpackage.slice';
+import { useNavigate } from 'react-router-dom';
 
 function BookPackage(props) {
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ function BookPackage(props) {
     const locationdata = useSelector(State => State.location);
     console.log(locationdata.location);
 
-
+    const auth =useSelector(state => state.auth)
 
     const packagedata = useSelector(State => State.package);
     console.log(packagedata.package);
@@ -56,6 +57,7 @@ function BookPackage(props) {
             console.log(values);
             dispatch(bookpackage(values))
             resetForm();
+            navigate("/myBooking")
 
         },
     });
@@ -67,11 +69,14 @@ function BookPackage(props) {
         setupdate(true);
 
     }
-
+      const navigate=useNavigate();
+      if(auth.user == null){
+        navigate("/login")
+      }
+    
+    
+    
     console.log(formik.errors, formik.touched, formik.values.location_id);
-
-
-
     return (
         <div className="row all-Contact">
             <div className="col-lg-5" style={{ padding: "50px" }}>

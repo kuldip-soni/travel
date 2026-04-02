@@ -66,7 +66,11 @@ const getBooking = async(req, res) => {
 
 const getmyBooking = async(req, res) => {
     try {
-        const [rows] = await pool.query(`SELECT * FROM booking WHERE user_id=${req.params.user_id}`);        
+        const [rows] = await pool.query(`SELECT * FROM booking WHERE user_id=${req.params.user_id}`);
+        
+        console.log(`SELECT * FROM booking WHERE user_id=${req.params.user_id}`);
+        
+        
         res.status(200).json({
              sucess: true,
              data: rows,

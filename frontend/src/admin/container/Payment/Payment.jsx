@@ -38,6 +38,7 @@ function Payment(props) {
     const [open, setOpen] = React.useState(false);
     const [update, setupdate] = useState(false);
     const [paymentId, setPaymentId] = useState();
+    const [bookigData, setBookingData] = useState();
 
 
     const bookingdata = useSelector(state => state.bookpackage);
@@ -76,9 +77,12 @@ function Payment(props) {
 
     const handleEdit = (data) => {
         console.log(data);
+        setBookingData(data)
         handleClickOpen();
 
-        const uData = paymentdata.payment?.find(v => bookingdata.booking.some(v1 => v1.id == v.booking_id));
+        // const uData = paymentdata.payment?.find(v => bookingdata.booking.some(v1 => v1.id == v.booking_id));
+
+        const uData = paymentdata.payment?.find(v => v.booking_id == data.id);
 
         console.log(uData);
         
@@ -89,7 +93,7 @@ function Payment(props) {
             setPaymentId(uData.id);
         } else {
             
-            paymentFormik.setValues({...data, id: data.id})
+            // paymentFormik.setValues({...data, id: data.id})
         }
 
 
@@ -161,15 +165,19 @@ function Payment(props) {
         },
         validationSchema: Paymentschema,
         onSubmit: (values, { resetForm }) => {
-            console.log(update);
+            console.log("sssss",update,values, bookigData);
 
             if (update) {
                 dispatch(putPayment({...values, id: paymentId}))
             } else {
-                dispatch(addPayment({user_id: values.user_id, booking_id: values.id, transaction_id: values.transaction_id, mode: values.mode, date: values.date, amount: values.amount, status: 'complete'}))
+                dispatch(addPayment(
+                    {user_id: bookigData.user_id, booking_id: bookigData.id, transaction_id: values.transaction_id, mode: values.mode, date: values.date, amount: values.amount, status: 'payment_complete'}))
             
             }
 
+            window.location.reload();
+
+            setBookingData();
             setupdate(false);
             setPaymentId();
 

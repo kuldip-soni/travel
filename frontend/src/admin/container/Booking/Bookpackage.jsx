@@ -15,7 +15,7 @@ import { getpackage } from '../../../redux/slice/package.slice';
 import { useNavigate } from 'react-router-dom';
 // import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
 
-
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 
 
@@ -92,7 +92,7 @@ function Bookpackage(props) {
     }
 
     const columns = [
-
+        { field: 'id', headerName: 'booking_id', width: 130 },
         {
             field: 'location_id',
             headerName: 'location_id',
@@ -125,9 +125,9 @@ function Bookpackage(props) {
                 <>
                     <IconButton
                         aria-label="Edit"
-                        onClick={() => navigate("/admin/bookingedit")}
+                        onClick={() => navigate("/admin/bookingedit", {state: {id: parms.row.id}})}
                     >
-                        <EditIcon />
+                        <RemoveRedEyeIcon />
                     </IconButton>
 
                 </>

@@ -45,6 +45,8 @@ const addPayment = async (req, res) => {
 
         await pool.query(`UPDATE booking SET status='payment_complete' WHERE id=${booking_id}`);
 
+        await pool.query("INSERT INTO transport(booking_id) VALUES(?)", [booking_id]);
+
         res.status(200).json({
             sucess: true,
             data: { ...req.body, id: rows.insertId },

@@ -12,7 +12,7 @@ import Package from '../container/Package/Package';
 import PackageDetails from '../container/PackageDetails/PackageDetails';
 import BookPackage from '../container/BookPackage/BookPackage';
 import Contact from '../container/Contact/contact';
-import MyBooking from '../admin/container/MyBooking/MyBooking';
+import MyBooking from '../container/MyBooking/MyBooking';
 
 
 function UserRoutes(props) {

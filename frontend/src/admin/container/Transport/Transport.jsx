@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { addtransport, deltransport, gettransport, puttransport } from '../../../redux/slice/transport.slice';
+import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
 
 
 
@@ -83,12 +84,18 @@ function Transport(props) {
   const transportdata = useSelector(state => state.transport);
   const vendor = useSelector(state => state.vendor);
   const service = useSelector(state => state.service);
+  const bookingdata = useSelector(state => state.bookpackage);
   console.log(transportdata);
+    console.log(bookingdata);
 
+    const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete');
+
+    console.log(tData);
+    
   const dispatch = useDispatch();
 
   useEffect(() => {
-
+    dispatch(getbookpackage());
     dispatch(gettransport());
     dispatch(getvendor());
     dispatch(getservice());
@@ -166,7 +173,11 @@ function Transport(props) {
   }
 
   const columns = [
-
+    { 
+      field: 'booking_id', 
+      headerName: 'Booking Id', 
+      width: 130
+    },
     { field: 'from', headerName: 'from', width: 130 },
     { field: 'to', headerName: 'to', width: 130 },
     { field: 'datetime', headerName: 'datetime', width: 130 },
@@ -226,6 +237,32 @@ function Transport(props) {
           <DialogContent>
 
             <form onSubmit={formik.handleSubmit} id="subscription-form">
+              <TextField
+                error={formik.errors.booking_id && formik.touched.booking_id}
+                id="standard-select-currency-native"
+                name="booking_id"
+                select
+                fullWidth
+
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.booking_id}
+                helperText={formik.errors.booking_id && formik.touched.booking_id ? formik.errors.booking_id : ''}
+              >
+                <option value="">--Select booking--</option>
+                {bookingdata?.booking?.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.id}
+                  </option>
+                ))}
+              </TextField>
+              <br /><br />
               <TextField
                 error={formik.errors.vendor_id && formik.touched.vendor_id}
                 id="standard-select-currency-native"

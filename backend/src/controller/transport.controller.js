@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const gettransport = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM transportbooking');
+        const [rows] = await pool.query('SELECT * FROM transport');
 
         res.status(200).json({
             sucess: true,
@@ -34,16 +34,16 @@ const addtransport = async (req, res) => {
     try {
         // console.log("req.body");
         console.log("dddddd", req.body, req.file);
-        const { vendor_id, service_id, from, to, datetime, passenger, amount } = req.body;
+        const { booking_id, vendor_id, service_id, from, to, datetime, passenger, amount } = req.body;
         console.log(vendor_id, service_id, from, to, datetime, passenger, amount);
 
-        // const [rows, fields, result] = await pool.query("INSERT INTO transportbooking (vendor_id,service_id,from,to,datetime,passenger,amount,transport_img) VALUES(?,?,?,?,?,?,?,?)",
+        // const [rows, fields, result] = await pool.query("INSERT INTO transport (vendor_id,service_id,from,to,datetime,passenger,amount,transport_img) VALUES(?,?,?,?,?,?,?,?)",
         //     [vendor_id, service_id, from, to, datetime,passenger,amount, req.file.path]
 
         // )
 
 
-        const [rows, fields, result] = await pool.query("INSERT INTO `transportbooking`(`vendor_id`, `service_id`, `from`, `to`, `datetime`, `passenger`, `amount`, `transport_img`) VALUES (?,?,?,?,?,?,?,?)", [vendor_id, service_id, from, to, datetime, passenger, amount, req.file.path]
+        const [rows, fields, result] = await pool.query("INSERT INTO `transport`(`booking_id`,`vendor_id`, `service_id`, `from`, `to`, `datetime`, `passenger`, `amount`, `transport_img`) VALUES (?,?,?,?,?,?,?,?,?)", [booking_id, vendor_id, service_id, from, to, datetime, passenger, amount, req.file.path]
         )
 
         console.log(rows);
@@ -77,19 +77,19 @@ const puttransport = async (req, res) => {
         console.log("req.body");
         // console.log(req.body, req.file.path);
 
-        const { vendor_id, service_id, from, to, datetime, passenger, amount, transport_img } = req.body;
+        const { vendor_id, booking_id, service_id, from, to, datetime, passenger, amount, transport_img } = req.body;
         const transportId = req.params.id;
         console.log(from, to, datetime, passenger, amount, transport_img, transportId);
 
-        const [rows] = await pool.query(`SELECT * FROM transportbooking WHERE id=${transportId}`);
+        const [rows] = await pool.query(`SELECT * FROM transport WHERE id=${transportId}`);
         let fileimg = '';
 
         if (req.file) {
 
-            fs.unlinkSync(rows[0]. transport_img, (error) => {
-                console.log(error);
+            // fs.unlinkSync(rows[0].transport_img, (error) => {
+            //     console.log(error);
 
-            })
+            // })
             fileimg = req.file.path;
         } else {
             fileimg = rows[0].image
@@ -97,8 +97,9 @@ const puttransport = async (req, res) => {
 
 
         const [fields, result] = await pool.query(
-            `UPDATE transportbooking 
-   SET vendor_id = ?, 
+            `UPDATE transport 
+   SET booking_id = ?,
+        vendor_id = ?, 
        service_id = ?, 
        \`from\` = ?, 
        \`to\` = ?, 
@@ -107,7 +108,7 @@ const puttransport = async (req, res) => {
        amount = ?, 
        transport_img = ? 
    WHERE id = ?`,
-            [vendor_id, service_id, from, to, datetime, passenger, amount, fileimg, transportId]
+            [booking_id, vendor_id, service_id, from, to, datetime, passenger, amount, fileimg, transportId]
         );
 
         res.status(200).json({
@@ -137,14 +138,14 @@ const deltransport = async (req, res) => {
         const transportId = req.params.id;
         // console.log(transportId);
 
-        const [rows] = await pool.query(`SELECT * FROM transportbooking WHERE id=${transportId}`);
+        const [rows] = await pool.query(`SELECT * FROM transport WHERE id=${transportId}`);
 
-        fs.unlinkSync(rows[0]. transport_img, (error) => {
+        fs.unlinkSync(rows[0].transport_img, (error) => {
             console.log(error);
 
         })
 
-        await pool.query("DELETE FROM transportbooking WHERE id=?",
+        await pool.query("DELETE FROM transport WHERE id=?",
             [transportId]
 
         )

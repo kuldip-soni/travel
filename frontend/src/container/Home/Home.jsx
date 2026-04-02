@@ -41,6 +41,9 @@ function Home(props) {
     const packagedata = useSelector(State => State.package);
     console.log(packagedata.package);
 
+    const auth=useSelector((state) => state.auth);
+    console.log(auth);
+    
 
     const [update, setupdate] = useState(false);
 
@@ -72,17 +75,31 @@ function Home(props) {
         },
         validationSchema: contectschema,
 
+        
+
         onSubmit: (values, { resetForm }) => {
             console.log(values);
-            if (update) {
-                console.log("update data");
-                dispatch(putcontect(values));
+        //     if (update) {
+        //         console.log("update data");
+        //         dispatch(putcontect(values));
+        //     } else {
+        //         dispatch(addcontect(values));
+
+        //     }
+        //     resetForm();
+        //     handleClose()
+        // },
+         if (auth.user) {
+            dispatch(bookpackage(values))
+                
             } else {
-                dispatch(addcontect(values));
+             alert("please login first.");
+             
+             navigate("/login")
 
             }
             resetForm();
-            handleClose()
+           
         },
     });
 
@@ -101,11 +118,11 @@ function Home(props) {
             <section id="hero">
                 <div className="container">
                     <div className="hero-size">
-                        <h1>Make in your journeyc.</h1>
+                        <h1>Make in your journey.</h1>
                         <p className="sub-title">
                             Explore the world with what you love beautiful natural beauty.
                         </p>
-                        <form action="#" className="hero-form">
+                        {/* <form action="#" className="hero-form">
                             <select name="location" id="location">
                                 <option value={0}>Location</option>
                                 <option value="Goa">Goa</option>
@@ -123,7 +140,7 @@ function Home(props) {
                             </select>
                             <input type="submit" name="Explore now" className="btn" />
                         </form>
-                        <p><b>Popular Place :</b> Bali, Istanbul, Rome, Paris</p>
+                        <p><b>Popular Place :</b> Bali, Istanbul, Rome, Paris</p> */}
                     </div>
                 </div>
             </section>
