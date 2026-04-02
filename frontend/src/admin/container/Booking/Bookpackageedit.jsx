@@ -46,6 +46,10 @@ function Bookpackageedit(props) {
 
   console.log(fTransport);
 
+  const fhotel = hoteldata.hotel?.filter(v => v.booking_id == id);
+  console.log(fhotel);
+  
+  
 
   useEffect(() => {
     dispatch(gethotel());
@@ -76,7 +80,7 @@ function Bookpackageedit(props) {
     <div>
       <h2>Customer Booking Details</h2>
 
-      <h3 style={{marginTop: '50px'}}>Transport Details</h3>
+      <h3 style={{ marginTop: '50px' }}>Transport Details</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -92,9 +96,9 @@ function Bookpackageedit(props) {
             {
               fTransport?.map((v) => (
                 <TableRow
-              key={v.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
+                  key={v.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
                   <TableCell>{v?.from}</TableCell>
                   <TableCell>{v?.to}</TableCell>
                   <TableCell>{v?.to}</TableCell>
