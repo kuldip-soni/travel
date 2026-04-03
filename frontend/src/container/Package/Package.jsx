@@ -19,15 +19,13 @@ function Package(props) {
                 <div className="container">
                     <h2 className="main-title">Packages</h2>
                     <p className="sub-title">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        Our travel management system offers a variety of travel packages designed to meet the needs of different types of users. These packages include arrangements for transportation, accommodation, and sightseeing activities. The main objective is to provide a complete travel solution in one place.
                     </p>
                     <div className="row all-popular">
                         <div className="Popular-data col-lg-6">
                             <h2>Popular Packages</h2>
                             <p>
-                                orem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                eiusmod tempor incididunt ut labore et dolore magna
+                                The popular packages section highlights the most frequently selected travel plans by users. These packages are chosen based on demand and user interest.
                             </p>
                         </div>
                         <div className="col-lg-3">

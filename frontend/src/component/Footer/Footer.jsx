@@ -12,8 +12,7 @@ function Footer(props) {
           <img src={logo} alt="logo" />
         </div>
         <p className="sub-title">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-          pharetra condimentum.
+         Making travel simple, affordable, and accessible for everyone. Explore, plan, and enjoy your journey with us.
         </p>
       </div>
       <div className="col-lg-3 col-md-5 col-sm-5 col-12 quick-links">
@@ -21,8 +20,8 @@ function Footer(props) {
         <ul>
           <li>
             <a href="#">
-              <i className="fa-solid fa-location-dot" />732 Despard St,
-              Atlanta
+              <i className="fa-solid fa-location-dot" />IT Park,
+              Songadh
             </a>
           </li>
           <li>
@@ -31,7 +30,7 @@ function Footer(props) {
             </a>
           </li>
           <li>
-            <a href="#"> <i className="fa-solid fa-phone" />+62 6943 6956 </a>
+            <a href="#"> <i className="fa-solid fa-phone" />+63 6943 6956 </a>
           </li>
         </ul>
       </div>
@@ -40,7 +39,7 @@ function Footer(props) {
         <ul className="quick-links">
           <li><a href="#">Home</a></li>
           <li><a href="#">About Us</a></li>
-          <li><a href="#">Tours</a></li>
+          
           <li><a href="#">Contact</a></li>
         </ul>
       </div>

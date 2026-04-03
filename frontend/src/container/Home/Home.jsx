@@ -41,16 +41,16 @@ function Home(props) {
     const packagedata = useSelector(State => State.package);
     console.log(packagedata.package);
 
-    const auth=useSelector((state) => state.auth);
+    const auth = useSelector((state) => state.auth);
     console.log(auth);
-    
+
 
     const [update, setupdate] = useState(false);
 
     const handleClose = () => { };
     const handleClickOpen = () => { };
 
-    
+
 
     let contectschema = object({
         name: string().required('please enter name'),
@@ -75,31 +75,31 @@ function Home(props) {
         },
         validationSchema: contectschema,
 
-        
+
 
         onSubmit: (values, { resetForm }) => {
             console.log(values);
-        //     if (update) {
-        //         console.log("update data");
-        //         dispatch(putcontect(values));
-        //     } else {
-        //         dispatch(addcontect(values));
+            //     if (update) {
+            //         console.log("update data");
+            //         dispatch(putcontect(values));
+            //     } else {
+            //         dispatch(addcontect(values));
 
-        //     }
-        //     resetForm();
-        //     handleClose()
-        // },
-         if (auth.user) {
-            dispatch(bookpackage(values))
-                
+            //     }
+            //     resetForm();
+            //     handleClose()
+            // },
+            if (auth.user) {
+                dispatch(bookpackage(values))
+
             } else {
-             alert("please login first.");
-             
-             navigate("/login")
+                alert("please login first.");
+
+                navigate("/login")
 
             }
             resetForm();
-           
+
         },
     });
 
@@ -148,8 +148,7 @@ function Home(props) {
                 <div className="container">
                     <h2 className="main-title">About US</h2>
                     <p className="sub-title">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        We are a passionate travel management company dedicated to making every journey seamless, memorable, and stress-free. Whether it’s business travel, family vacations, or customized holiday experiences, we specialize in planning every detail with precision and care.
                     </p>
                     <div className="row all-work">
                         <div className="col-lg-4 col-md-6">
@@ -157,9 +156,7 @@ function Home(props) {
                                 <img src="./assets/image/Vector.png" alt />
                                 <h2>Great team work</h2>
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                    Ut enim ad minim veniam..
+                                    Our strength lies in our team. We are a group of experienced travel experts, planners, and support professionals who work together to deliver exceptional service.
                                 </p>
                             </div>
                         </div>
@@ -168,9 +165,7 @@ function Home(props) {
                                 <img src="./assets/image/Vector (1).png" alt />
                                 <h2>Our vision</h2>
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                    Ut enim ad minim veniam..
+                                    To become a trusted global travel partner known for innovation, reliability, and exceptional customer experiences.
                                 </p>
                             </div>
                         </div>
@@ -179,9 +174,7 @@ function Home(props) {
                                 <img src="./assets/image/Vector (2).png" alt />
                                 <h2>Our mision</h2>
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                    Ut enim ad minim veniam..
+                                    Our mission is to deliver exceptional travel management services that simplify and enhance every journey.
                                 </p>
                             </div>
                         </div>
@@ -212,8 +205,8 @@ function Home(props) {
                                     consequat dui, a malesuada ipsum. Pellentesque nec turpis
                                     viverra, blandit mi a, accumsan justo.
                                 </p>
-                                <h4>Siti Sarah</h4>
-                                <p>Founder Travosca</p>
+                                <h4>Virat Kohli</h4>
+                                <p>Founder Traveler</p>
                             </div>
                         </div>
                     </div>
@@ -223,15 +216,13 @@ function Home(props) {
                 <div className="container">
                     <h2 className="main-title">Packages</h2>
                     <p className="sub-title">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        Our travel management system offers a variety of travel packages designed to meet the needs of different types of users. These packages include arrangements for transportation, accommodation, and sightseeing activities. The main objective is to provide a complete travel solution in one place.
                     </p>
                     <div className="row all-popular">
                         <div className="Popular-data col-lg-6">
                             <h2>Popular Packages</h2>
                             <p>
-                                orem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                eiusmod tempor incididunt ut labore et dolore magna
+                                The popular packages section highlights the most frequently selected travel plans by users. These packages are chosen based on demand and user interest.
                             </p>
                         </div>
                         <div className="col-lg-3">
@@ -283,9 +274,7 @@ function Home(props) {
                 <div className="container">
                     <h2 className="main-title">Location</h2>
                     <p className="sub-title">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
+                        Explore a wide range of exciting travel destinations through our platform. From scenic hill stations and beautiful beaches to historical landmarks and modern cities, we provide information about the best places to visit.                    </p>
 
                     <Swiper
                         // install Swiper modules
@@ -459,8 +448,7 @@ function Home(props) {
                 <div className="container">
                     <h2 className="main-title">Blog</h2>
                     <p className="sub-title">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        Stay updated with the latest travel tips, guides, and destination insights through our blog. We share useful information to help you plan better and travel smarter.
                     </p>
                     <div className="row all-blog">
 
@@ -521,8 +509,7 @@ function Home(props) {
                 <div className="container">
                     <h2 className="main-title">Contact</h2>
                     <p className="sub-title">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        We are here to help you with all your travel needs. Feel free to reach out to us for any inquiries, support, or booking assistance.
                     </p>
                     <div className="row all-Contact">
                         <div className="col-lg-5">
@@ -657,6 +644,7 @@ function Home(props) {
                     </div>
                 </div>
             </section>
+            <br /><br />
             {/* <section id="Subcribe">
                 <div className="container">
                     <div className="Subcribe-size">

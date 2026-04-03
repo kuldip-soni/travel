@@ -13,6 +13,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 function MyBookingDetails(props) {
     const location = useLocation();
@@ -75,10 +77,12 @@ function MyBookingDetails(props) {
                 </h2>
 
                 <h3 style={{ marginTop: '50px', fontSize: '24px' }}>Transport Details</h3>
-                <TableContainer component={Paper} style={{fontSize: '30px'}}>
+                <TableContainer component={Paper} style={{ fontSize: '30px' }}>
                     <Table sx={{ "& .MuiTableCell-root": { fontSize: "1.5rem" } }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
+                                <TableCell>vendor</TableCell>
+                                <TableCell>service</TableCell>
                                 <TableCell>from</TableCell>
                                 <TableCell>to</TableCell>
                                 <TableCell>datetime</TableCell>
@@ -95,12 +99,16 @@ function MyBookingDetails(props) {
                                         key={v.id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
+                                        <TableCell>{vendor.vendor?.find(v2 => v2.id == v?.vendor_id)?.name}</TableCell>
+                                        <TableCell>{service?.service?.find(v2 => v2.id == v?.service_id)?.name}</TableCell>
                                         <TableCell>{v?.from}</TableCell>
                                         <TableCell>{v?.to}</TableCell>
                                         <TableCell>{v?.datetime}</TableCell>
                                         <TableCell>{v?.passenger}</TableCell>
                                         <TableCell>{v?.amount}</TableCell>
-                                        <TableCell>{v?.transport_img}</TableCell>
+                                        <TableCell>
+                                            <img src={`http://localhost:4000/${v?.transport_img}`} width={'50px'} height={'50px'} />
+                                            <a href={`http://localhost:4000/${v?.transport_img}`} download="myFile"><RemoveRedEyeIcon /></a>                                            </TableCell>
 
                                     </TableRow>
                                 ))
@@ -111,11 +119,11 @@ function MyBookingDetails(props) {
 
                 <h3 style={{ marginTop: '50px', fontSize: '24px' }}>hotel Details</h3>
                 <TableContainer component={Paper}>
-                    <Table sx={{ "& .MuiTableCell-root": { fontSize: "1.5rem" } }}  aria-label="simple table">
+                    <Table sx={{ "& .MuiTableCell-root": { fontSize: "1.5rem" } }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>vendor_id</TableCell>
-                                <TableCell>service_id</TableCell>
+                                <TableCell>vendor</TableCell>
+                                <TableCell>service</TableCell>
                                 <TableCell>checkin</TableCell>
                                 <TableCell>checkout</TableCell>
                                 <TableCell>datetime</TableCell>
@@ -139,7 +147,11 @@ function MyBookingDetails(props) {
                                         <TableCell>{v1?.datetime}</TableCell>
                                         <TableCell>{v1?.passenger}</TableCell>
                                         <TableCell>{v1?.amount}</TableCell>
-                                        <TableCell><img src={`http://localhost:4000/${v1?.hotel_img}`} width={'50px'} height={'50px'} /></TableCell>
+                                        <TableCell>
+                                            <img src={`http://localhost:4000/${v1?.hotel_img}`} width={'50px'} height={'50px'} />
+                                            <a href={`http://localhost:4000/${v1?.hotel_img}`} download="myFile"><RemoveRedEyeIcon /></a>
+
+                                        </TableCell>
 
 
                                     </TableRow>
@@ -151,11 +163,11 @@ function MyBookingDetails(props) {
 
                 <h3 style={{ marginTop: '50px', fontSize: '24px' }}>restaurant Details</h3>
                 <TableContainer component={Paper}>
-                    <Table sx={{ "& .MuiTableCell-root": { fontSize: "1.5rem" } }}  aria-label="simple table">
+                    <Table sx={{ "& .MuiTableCell-root": { fontSize: "1.5rem" } }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>vendor_id</TableCell>
-                                <TableCell>service_id</TableCell>
+                                <TableCell>vendor</TableCell>
+                                <TableCell>service</TableCell>
                                 <TableCell>datetime</TableCell>
                                 <TableCell>meals</TableCell>
                                 <TableCell>passenger</TableCell>
@@ -172,13 +184,16 @@ function MyBookingDetails(props) {
                                         key={v2.id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
-                                        <TableCell>{v2?.vendor_id}</TableCell>
-                                        <TableCell>{v2?.service_id}</TableCell>
+                                        <TableCell>{vendor.vendor?.find(v3 => v3.id == v2?.vendor_id)?.name}</TableCell>
+                                        <TableCell>{service?.service?.find(v3 => v3.id == v2?.service_id)?.name}</TableCell>
                                         <TableCell>{v2?.datetime}</TableCell>
                                         <TableCell>{v2?.meals}</TableCell>
                                         <TableCell>{v2?.passenger}</TableCell>
                                         <TableCell>{v2?.amount}</TableCell>
-                                        <TableCell>{v2?.restaurant_img}</TableCell>
+                                        <TableCell>
+                                            <img src={`http://localhost:4000/${v2?.restaurant_img}`} width={'50px'} height={'50px'} />
+                                            <a href={`http://localhost:4000/${v2?.restaurant_img}`} download="myFile"><RemoveRedEyeIcon /></a>
+                                            </TableCell>
 
 
 

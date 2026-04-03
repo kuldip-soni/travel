@@ -21,8 +21,8 @@ function PackageDetails(props) {
   const packagedata = useSelector(State => State.package);
 
   const itnorydata = useSelector(State => State.itineary);
-
   console.log(itnorydata.itineary);
+
 
   const pD = packagedata.package?.find((v) => v.id == id);
   console.log(pD);
@@ -38,6 +38,25 @@ function PackageDetails(props) {
   
 
   return (
+    <section
+      id="Popular-Packages"
+      style={{
+        padding: "40px 20px",
+        background: "#f5f7fa",
+      }}
+    >
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontSize: "28px",
+            fontWeight: "600",
+          }}
+        >
+          Package Details
+        </h2>
     <div className="container my-5">
       <div className="row justify-content-center">
 
@@ -56,10 +75,10 @@ function PackageDetails(props) {
               <h5 className="card-title" style={{ fontSize: "20px" }}>{pD?.name}</h5>
 
               <p className="card-text">
-                <strong>{pD?.location_id}</strong> <br />
-                <strong>{pD?.itineary_id}</strong> <br />
+                <strong>{locationdata.location?.find(v1=>v1.id == pD.location_id)?.name}</strong> <br />
                 <strong>{pD?.duration}</strong> <br />
                 <strong>{pD?.price}</strong>
+                
               </p>
 
 
@@ -89,6 +108,8 @@ function PackageDetails(props) {
 
       <NavLink to={'/BookPackage'} className="btn btn-1">Book Package</NavLink>
     </div>
+    </div>
+    </section>
   );
 }
 

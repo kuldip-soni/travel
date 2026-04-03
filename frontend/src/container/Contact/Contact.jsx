@@ -45,98 +45,129 @@ function Contact(props) {
     return (
         <div>
             <main>
-                <section id="Contact">
-                                <div className="container">
-                                    <h2 className="main-title">Contact</h2>
-                                    
-                                    <div className="row all-Contact">
-                                        <div className="col-lg-5">
-                
-                                            <form onSubmit={formik.handleSubmit} id="contect-form">
-                                                <TextField
-                
-                                                    error={formik.errors.name && formik.touched.name}
-                                                    margin="dense"
-                                                    id="name"
-                                                    name="name"
-                                                    label="name"
-                                                    type="text"
-                                                    fullWidth
-                                                    variant="standard"
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    value={formik.values.name}
-                                                    helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
-                                                />
-                                                <TextField
-                
-                                                    error={formik.errors.email && formik.touched.email}
-                                                    margin="dense"
-                                                    id="email"
-                                                    name="email"
-                                                    label="email"
-                                                    type="email"
-                                                    fullWidth
-                                                    variant="standard"
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    value={formik.values.email}
-                                                    helperText={formik.errors.email && formik.touched.email ? formik.errors.email : ''}
-                                                />
+               <section
+  id="Contact"
+  style={{
+    padding: '60px 20px',
+    backgroundColor: '#f8f8f8',
+    fontFamily: 'Georgia, serif',
+  }}
+>
+  <div
+    style={{
+      maxWidth: '600px',
+      margin: '0 auto',
+      padding: '30px',
+      backgroundColor: '#fff',
+      border: '1px solid #ccc',
+      borderRadius: '8px',
+    }}
+  >
+    <h2
+      style={{
+        textAlign: 'center',
+        fontSize: '2rem',
+        marginBottom: '30px',
+        color: '#222',
+      }}
+    >
+      Contact
+    </h2>
 
-                                                  <TextField
-                
-                                                    error={formik.errors.mobile_no && formik.touched.mobile_no}
-                                                    margin="dense"
-                                                    id="mobile_no"
-                                                    name="mobile_no"
-                                                    label="mobile_no"
-                                                    type="number"
-                                                    fullWidth
-                                                    variant="standard"
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    value={formik.values.mobile_no}
-                                                    helperText={formik.errors.mobile_no && formik.touched.mobile_no ? formik.errors.mobile_no : ''}
-                                                />
-                                                
-                                                <TextField
-                
-                                                    error={formik.errors.subject && formik.touched.subject}
-                                                    margin="dense"
-                                                    id="subject"
-                                                    name="subject"
-                                                    label="subject"
-                                                    type="text"
-                                                    fullWidth
-                                                    variant="standard"
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    value={formik.values.subject}
-                                                    helperText={formik.errors.subject && formik.touched.subject ? formik.errors.subject : ''}
-                                                />
-                                                <TextField
-                
-                                                    error={formik.errors.message && formik.touched.message}
-                                                    margin="dense"
-                                                    id="message"
-                                                    name="message"
-                                                    label="message"
-                                                    type="text"
-                                                    fullWidth
-                                                    variant="standard"
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    value={formik.values.message}
-                                                    helperText={formik.errors.message && formik.touched.message ? formik.errors.message : ''}
-                                                />
-                                                <input type="submit" defaultValue="Send Message" className="btn" />
-                                            </form>
-                            </div>
-                </div>
-            </div>               
-                            
-            </section>
+    <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      
+      <TextField
+        error={formik.errors.name && formik.touched.name}
+        label="Name"
+        name="name"
+        variant="standard"
+        fullWidth
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.name}
+        helperText={formik.touched.name && formik.errors.name}
+      />
+
+      <TextField
+        error={formik.errors.email && formik.touched.email}
+        label="Email"
+        name="email"
+        type="email"
+        variant="standard"
+        fullWidth
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.email}
+        helperText={formik.touched.email && formik.errors.email}
+      />
+
+      <TextField
+        error={formik.errors.mobile_no && formik.touched.mobile_no}
+        label="Mobile Number"
+        name="mobile_no"
+        type="tel"
+        variant="standard"
+        fullWidth
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.mobile_no}
+        helperText={formik.touched.mobile_no && formik.errors.mobile_no}
+      />
+
+      <TextField
+        error={formik.errors.subject && formik.touched.subject}
+        label="Subject"
+        name="subject"
+        variant="standard"
+        fullWidth
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.subject}
+        helperText={formik.touched.subject && formik.errors.subject}
+      />
+
+      <TextField
+        error={formik.errors.message && formik.touched.message}
+        label="Message"
+        name="message"
+        multiline
+        rows={4}
+        variant="standard"
+        fullWidth
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.message}
+        helperText={formik.touched.message && formik.errors.message}
+      />
+
+      <button
+        type="submit"
+        style={{
+          marginTop: '10px',
+          padding: '10px 20px',
+          border: '1px solid #444',
+          borderRadius: '5px',
+          backgroundColor: '#fff',
+          color: '#444',
+          fontSize: '16px',
+          cursor: 'pointer',
+          transition: '0.2s ease',
+        }}
+        onMouseOver={e => {
+          e.currentTarget.style.backgroundColor = '#444';
+          e.currentTarget.style.color = '#fff';
+        }}
+        onMouseOut={e => {
+          e.currentTarget.style.backgroundColor = '#fff';
+          e.currentTarget.style.color = '#444';
+        }}
+      >
+        Send Message
+      </button>
+
+    </form>
+  </div>
+</section>
             </main>
 </div>
         

@@ -38,7 +38,7 @@ const addrestaurant = async (req, res) => {
         console.log(  vendor_id, service_id, datetime, meals, passenger, amount
         );
        const [rows] = await pool.query(
-            "INSERT INTO restaurant (booking_id, vendor_id, service_id, datetime, meals, passenger, amount, restaurant_img) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO restaurant (booking_id, vendor_id, service_id, datetime, meals, passenger, amount, restaurant_img) VALUES (?, ?, ?, ?, ?, ?, ?,?)",
             [booking_id, vendor_id, service_id, datetime, meals, passenger, amount,req.file.path ]
         );
 

@@ -21,6 +21,8 @@ function Location(props) {
        <section id="Popular-Packages">
                 <div className="container">
                     <h2 className="main-title">Popular Travel Location</h2>
+                     <p className="sub-title">
+                        Explore a wide range of exciting travel destinations through our platform. From scenic hill stations and beautiful beaches to historical landmarks and modern cities, we provide information about the best places to visit.                    </p>
                    
                  
                     <div className="row card">
