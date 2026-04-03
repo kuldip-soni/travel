@@ -281,7 +281,7 @@ function Home(props) {
             </section>
             <section id="Destination">
                 <div className="container">
-                    <h2 className="main-title">Destination</h2>
+                    <h2 className="main-title">Location</h2>
                     <p className="sub-title">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                         eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -593,7 +593,7 @@ function Home(props) {
 
 
                         </div>
-                        <div className="col-lg-7 Contact-data">
+                        {/* <div className="col-lg-7 Contact-data">
                             <h2 className="main-title">Get In Touch</h2>
                             <p className="sub-title">
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -653,11 +653,11 @@ function Home(props) {
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </section>
-            <section id="Subcribe">
+            {/* <section id="Subcribe">
                 <div className="container">
                     <div className="Subcribe-size">
                         <h2 className="main-title">Subcribe to get special price</h2>
@@ -671,7 +671,7 @@ function Home(props) {
                         </form>
                     </div>
                 </div>
-            </section>
+            </section> */}
         </main>
 
     );

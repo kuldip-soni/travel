@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addrestaurant, delrestaurant, getrestaurant, putrestaurant } from '../../../redux/slice/restaurant.slice';
 import { getvendor } from '../../../redux/slice/vendor.slice';
 import { getservice } from '../../../redux/slice/service.slice';
+import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
 
 const vendor = [
   {
@@ -77,13 +78,18 @@ function Restaurant(props) {
 
   const restaurantdata = useSelector(state => state.restaurant);
   const vendor = useSelector(state => state.vendor);
+  const bookingdata = useSelector(state => state.bookpackage);
+const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete');
+
+    console.log(tData);
   const service = useSelector(state => state.service);
   console.log(restaurantdata);
+  console.log(bookingdata);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-
+    dispatch(getbookpackage());
     dispatch(getrestaurant());
     dispatch(getvendor());
     dispatch(getservice());
@@ -110,6 +116,7 @@ function Restaurant(props) {
   };
 
   let Restaurantschema = object({
+    booking_id: string().required('please select vendor_id'),
     vendor_id: string().required('please select vendor_id'),
     service_id: string().required('please select service_id'),
     datetime: string().required('please select datetime'),
@@ -122,6 +129,7 @@ function Restaurant(props) {
   });
   const formik = useFormik({
     initialValues: {
+      booking_id: '',
       vendor_id: '',
       service_id: '',
       datetime: '',
@@ -136,7 +144,7 @@ function Restaurant(props) {
     validationSchema: Restaurantschema,
 
     onSubmit: (values, { resetForm }) => {
-      console.log(values);
+      console.log("sssss", values);
       if (update) {
         console.log("update data");
         dispatch(putrestaurant(values));
@@ -158,31 +166,39 @@ function Restaurant(props) {
   }
 
   const columns = [
-    { field: 'vendor_id',
-       headerName: 'vendor_id',
-        width: 130,
-         renderCell: (params) => {
-                const d = vendor.vendor?.find(v => v.id == params.row.vendor_id)?.name
-                console.log(vendor.vendor, params.row.id, d);
-                
-                return d
-             }
-       },
-    { field: 'service_id',
-       headerName: 'service_id',
-        width: 130,
-        renderCell: (params) => {
-                const d = service.service?.find(v => v.id == params.row.service_id)?.name
-                console.log(service.service, params.row.id, d);
-                
-                return d
-             }
-       },
+    {
+      field: 'booking_id',
+      headerName: 'Booking Id',
+      width: 130
+    },
+
+    {
+      field: 'vendor_id',
+      headerName: 'vendor_id',
+      width: 130,
+      renderCell: (params) => {
+        const d = vendor.vendor?.find(v => v.id == params.row.vendor_id)?.name
+        console.log(vendor.vendor, params.row.id, d);
+
+        return d
+      }
+    },
+    {
+      field: 'service_id',
+      headerName: 'service_id',
+      width: 130,
+      renderCell: (params) => {
+        const d = service.service?.find(v => v.id == params.row.service_id)?.name
+        console.log(service.service, params.row.id, d);
+
+        return d
+      }
+    },
     { field: 'datetime', headerName: 'datetime', width: 130 },
     { field: 'meals', headerName: 'meals', width: 130 },
     { field: 'passenger', headerName: 'passenger', width: 130 },
     { field: 'amount', headerName: 'amount', width: 130 },
-    
+
     {
       field: 'restaurant_img',
       headerName: 'restaurant_img',
@@ -234,7 +250,31 @@ function Restaurant(props) {
           <DialogContent>
 
             <form onSubmit={formik.handleSubmit} id="subscription-form">
+              <TextField
+                error={formik.errors.booking_id && formik.touched.booking_id}
+                id="standard-select-currency-native"
+                name="booking_id"
+                select
+                fullWidth
 
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.booking_id}
+                helperText={formik.errors.booking_id && formik.touched.booking_id ? formik.errors.booking_id : ''}
+              >
+                <option value="">--Select booking--</option>
+                {bookingdata?.booking?.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.id}
+                  </option>
+                ))}
+              </TextField>
               <TextField
                 error={formik.errors.vendor_id && formik.touched.vendor_id}
                 id="standard-select-currency-native"

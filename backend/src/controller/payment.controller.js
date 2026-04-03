@@ -47,6 +47,10 @@ const addPayment = async (req, res) => {
 
         await pool.query("INSERT INTO transport(booking_id) VALUES(?)", [booking_id]);
 
+        await pool.query("INSERT INTO hotel(booking_id) VALUES(?)", [booking_id]);
+
+        await pool.query("INSERT INTO restaurant(booking_id) VALUES(?)", [booking_id]);
+
         res.status(200).json({
             sucess: true,
             data: { ...req.body, id: rows.insertId },

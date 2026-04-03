@@ -20,46 +20,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getvendor } from '../../../redux/slice/vendor.slice';
 import { getservice } from '../../../redux/slice/service.slice';
 import { addhotel, delhotel, gethotel, puthotel } from '../../../redux/slice/hotel.slice';
+import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
 
-
-
-const vendor_id = [
-  {
-    value: '',
-    label: '--select vendor_id--',
-  },
-  {
-    value: 'ind',
-    label: 'india',
-  },
-  {
-    value: 'jpn',
-    label: 'japan',
-  },
-  {
-    value: 'usa',
-    label: 'usa',
-  },
-];
-
-const service_id = [
-  {
-    value: '',
-    label: '--select service_id--',
-  },
-  {
-    value: 'ind',
-    label: 'india',
-  },
-  {
-    value: 'jpn',
-    label: 'japan',
-  },
-  {
-    value: 'usa',
-    label: 'usa',
-  },
-];
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -93,7 +55,7 @@ function Hotel(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
+    dispatch(getbookpackage());
     dispatch(gethotel());
     dispatch(getvendor());
     dispatch(getservice());
@@ -121,6 +83,7 @@ function Hotel(props) {
   };
 
   let Hotelschema = object({
+        booking_id: string().required('please select booking_id'),
     vendor_id: string().required('please select vendor_id'),
     service_id: string().required('please select service_id'),
     checkin: string().required('please enter checkin'),
@@ -136,6 +99,7 @@ function Hotel(props) {
   });
   const formik = useFormik({
     initialValues: {
+      booking_id: '',
       vendor_id: '',
       service_id: '',
       checkin: '',
