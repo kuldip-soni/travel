@@ -33,11 +33,11 @@ const getvendor = async(req, res) => {
 const addvendor = async(req,res) => {
     try {
         console.log("req.body", req.body);
-       const {name,phoneno,gstno,email,type,company_name,status,vendor_img}=req.body;
+       const {location_id,name,phoneno,gstno,email,type,company_name,status,vendor_img}=req.body;
        console.log(name,phoneno,gstno,email,type,company_name,status,vendor_img);
        
-        const [rows,fields,result] = await pool.query("INSERT INTO vendor (name,phoneno,gstno,email,type,company_name,status,vendor_img) VALUES(?,?,?,?,?,?,?,?)", 
-        [name,phoneno,gstno,email,type,company_name,status, req.file.path]
+        const [rows,fields,result] = await pool.query("INSERT INTO vendor (location_id,name,phoneno,gstno,email,type,company_name,status,vendor_img) VALUES(?,?,?,?,?,?,?,?,?)", 
+        [location_id,name,phoneno,gstno,email,type,company_name,status, req.file.path]
 
     )
        

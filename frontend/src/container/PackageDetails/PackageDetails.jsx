@@ -33,9 +33,9 @@ function PackageDetails(props) {
   const locationdata = useSelector(state => state.location);
   console.log(locationdata);
 
-  
-  
-  
+
+
+
 
   return (
     <section
@@ -57,58 +57,58 @@ function PackageDetails(props) {
         >
           Package Details
         </h2>
-    <div className="container my-5">
-      <div className="row justify-content-center">
+        <div className="container my-5">
+          <div className="row justify-content-center">
 
-        <div className="col-md-4">
-          <div className="card shadow-sm">
+            <div className="col-md-4">
+              <div className="card shadow-sm">
 
-            {/* Image */}
-            <img
-              src={"http://localhost:4000/" + pD?.image}
-              className="card-img-top"
-              alt="Location"
-              style={{ height: "300px", width: "100%", marginTop: "20px" }}
-            />
+                {/* Image */}
+                <img
+                  src={"http://localhost:4000/" + pD?.image}
+                  className="card-img-top"
+                  alt="Location"
+                  style={{ height: "300px", width: "100%", marginTop: "20px" }}
+                />
 
-            <div className="card-body">
-              <h5 className="card-title" style={{ fontSize: "20px" }}>{pD?.name}</h5>
+                <div className="card-body">
+                  <h5 className="card-title" style={{ fontSize: "20px" }}>{pD?.name}</h5>
 
-              <p className="card-text">
-                <strong>{locationdata.location?.find(v1=>v1.id == pD.location_id)?.name}</strong> <br />
-                <strong>{pD?.duration}</strong> <br />
-                <strong>{pD?.price}</strong>
-                
-              </p>
+                  <p className="card-text">
+                    <strong>{locationdata.location?.find(v1 => v1.id == pD.location_id)?.name}</strong> <br />
+                    <strong>{pD?.duration}</strong> <br />
+                    <strong>{pD?.price}</strong>
+
+                  </p>
 
 
+                </div>
+
+              </div>
             </div>
 
           </div>
+
+          <div className="row">
+            <div className="col-6">
+              <img
+                src={"http://localhost:4000/" + fit?.itineary_img}
+                className="card-img-top"
+                alt="Location"
+                style={{ height: "300px", width: "100%", marginTop: "20px" }}
+              />
+              <h2>{fit?.title}</h2>
+
+              {fit?.description?.split("\n").map((i, key) => {
+                return <p style={{ margin: '14px 0' }} key={key}>{i}</p>;
+              })}
+
+            </div>
+          </div>
+
+          <NavLink to={'/BookPackage'} className="btn btn-1">Book Package</NavLink>
         </div>
-
       </div>
-
-      <div className="row">
-        <div className="col-6">
-          <img
-              src={"http://localhost:4000/" + fit?.itineary_img}
-              className="card-img-top"
-              alt="Location"
-              style={{ height: "300px", width: "100%", marginTop: "20px" }}
-            />
-            <h2>{fit?.title}</h2>
-           
-               {fit?.description?.split("\n").map((i,key) => {
-      return <p style={{margin: '14px 0'}} key={key}>{i}</p>;
-   })}
-
-        </div>
-      </div>
-
-      <NavLink to={'/BookPackage'} className="btn btn-1">Book Package</NavLink>
-    </div>
-    </div>
     </section>
   );
 }

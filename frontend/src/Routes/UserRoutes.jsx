@@ -14,6 +14,7 @@ import BookPackage from '../container/BookPackage/BookPackage';
 import Contact from '../container/Contact/contact';
 import MyBooking from '../container/MyBooking/MyBooking';
 import MyBookingDetails from '../container/MyBooking/MyBookingDetails';
+import CustomizedPackage from '../container/customizedpackage/customizedpackage';
 
 
 function UserRoutes(props) {
@@ -34,6 +35,7 @@ function UserRoutes(props) {
                 <Route path='/contact' element={<Contact />} />
                 <Route path='/myBooking' element={<MyBooking />} />
                 <Route path='/myBookingDetails' element={<MyBookingDetails />} />
+                <Route path='/customizedpackage' element={<CustomizedPackage />} />
 
 
 

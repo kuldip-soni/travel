@@ -35,6 +35,8 @@ export const addvendor = createAsyncThunk(
             console.log(data);
 
             const formData = new FormData();
+            formData.append("location_id", data.location_id);
+
             formData.append("name", data.name);
             formData.append("phoneno", data.phoneno);
             formData.append("gstno", data.gstno);

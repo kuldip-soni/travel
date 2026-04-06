@@ -29,7 +29,7 @@ function Package(props) {
                             </p>
                         </div>
                         <div className="col-lg-3">
-                            <a href="#" className="btn btn-1">Discover more</a>
+                           <NavLink to={'/customizedpackage'} className="btn btn-1">Customize Package</NavLink>
                         </div>
                     </div>
                     <div className="row card">

@@ -18,6 +18,24 @@ import { mixed, object, string } from 'yup';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { addvendor, delvendor, getvendor, putvendor } from '../../../redux/slice/vendor.slice';
+import { getlocation } from '../../../redux/slice/location.slice';
+
+
+const type = [
+  {
+    value: 'transport',
+    label: 'transport',
+  },
+  {
+    value: 'hotel',
+    label: 'hotel',
+  },
+  {
+    value: 'restaurent',
+    label: 'restaurent',
+  },
+
+];
 
 
 
@@ -38,11 +56,14 @@ function Vendor(props) {
   const [update, setupdate] = useState(false);
 
   const vendordata = useSelector(state => state.vendor);
+  const location = useSelector(state => state.location);
+
   console.log(vendordata);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(getlocation());
 
     dispatch(getvendor());
 
@@ -69,11 +90,13 @@ function Vendor(props) {
   };
 
   let Vendorschema = object({
+    location_id: string().required('please select location'),
+
     name: string().required('please enter name'),
     phoneno: string().required('please enter phoneno'),
     gstno: string().required('please enter gstno'),
     email: string().required('please enter email'),
-    type: string().required('please enter type'),
+    type: string().required('please select type'),
     company_name: string().required('please enter company_name'),
     status: string().required('please enter status'),
     vendor_img: mixed().required('pleaser upload image'),
@@ -88,6 +111,7 @@ function Vendor(props) {
 
   const formik = useFormik({
     initialValues: {
+      location_id: '',
       name: '',
       phoneno: '',
       gstno: '',
@@ -132,6 +156,19 @@ function Vendor(props) {
   }
   const columns = [
 
+    {
+      field: 'location_id',
+      headerName: 'location_id',
+      width: 130,
+      renderCell: (params) => {
+        const d = location.location?.find(v => v.id == params.row.location_id)?.name
+        console.log(location.location, params.row.id, d);
+
+        return d
+      }
+
+    },
+
     { field: 'name', headername: 'name', width: 130 },
     { field: 'phoneno', headername: 'phoneno', width: 130 },
     { field: 'gstno', headername: 'gstno', width: 130 },
@@ -139,7 +176,7 @@ function Vendor(props) {
     { field: 'type', headername: 'type', width: 130 },
     { field: 'company_name', headername: 'company_name', width: 130 },
     { field: 'status', headername: 'status', width: 130 },
- 
+
 
 
     {
@@ -188,6 +225,32 @@ function Vendor(props) {
           <DialogContent>
 
             <form onSubmit={formik.handleSubmit} id="subscription-form">
+
+              <TextField
+                error={formik.errors.location_id && formik.touched.location_id}
+                id="standard-select-currency-native"
+                name="location_id"
+                select
+                fullWidth
+
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.location_id}
+                helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
+              >
+                <option value="">--Select location--</option>
+                {location.location.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.name}
+                  </option>
+                ))}
+              </TextField>
 
 
               <TextField
@@ -254,22 +317,37 @@ function Vendor(props) {
                 value={formik.values.email}
                 helperText={formik.errors.email && formik.touched.email ? formik.errors.email : ''}
               />
+              <br /><br />
 
               <TextField
-
                 error={formik.errors.type && formik.touched.type}
-                margin="dense"
-                id="type"
-                name="type"
-                label="type"
-                type="text"
+
+                id="standard-select-currency-native"
+                name='type'
+                select
                 fullWidth
-                variant="standard"
+
+
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.type}
+
+                variant="standard"
                 helperText={formik.errors.type && formik.touched.type ? formik.errors.type : ''}
-              />
+
+              >
+                <option>---select type---</option>
+                {type.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
 
               <TextField
 
@@ -349,13 +427,13 @@ function Vendor(props) {
       </React.Fragment>
 
       <DataGrid
-              rows={vendordata.vendor}
-              columns={columns}
-              initialState={{ pagination: { paginationModel } }}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection
-              sx={{ border: 0 }}
-            />
+        rows={vendordata.vendor}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
 
     </div>
   );
