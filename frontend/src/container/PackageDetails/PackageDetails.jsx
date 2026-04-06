@@ -38,78 +38,151 @@ function PackageDetails(props) {
 
 
   return (
-    <section
-      id="Popular-Packages"
-      style={{
-        padding: "40px 20px",
-        background: "#f5f7fa",
-      }}
-    >
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <div style={{ marginTop: "90px", background: "#eef2f7" }}>
 
-        <h2
+      {/* HERO SECTION */}
+      <div
+        style={{
+          height: "420px",
+          backgroundImage: `url(http://localhost:4000/${pD?.image})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          position: "relative"
+        }}
+      >
+        {/* Overlay */}
+        <div
           style={{
-            textAlign: "center",
-            marginBottom: "30px",
-            fontSize: "28px",
-            fontWeight: "600",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.3))"
+          }}
+        />
+
+        {/* Text */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "40px",
+            left: "60px",
+            color: "#fff"
           }}
         >
-          Package Details
-        </h2>
-        <div className="container my-5">
-          <div className="row justify-content-center">
+          <h1 style={{ fontSize: "40px", fontWeight: "800" }}>
+            {pD?.name}
+          </h1>
 
-            <div className="col-md-4">
-              <div className="card shadow-sm">
-
-                {/* Image */}
-                <img
-                  src={"http://localhost:4000/" + pD?.image}
-                  className="card-img-top"
-                  alt="Location"
-                  style={{ height: "300px", width: "100%", marginTop: "20px" }}
-                />
-
-                <div className="card-body">
-                  <h5 className="card-title" style={{ fontSize: "20px" }}>{pD?.name}</h5>
-
-                  <p className="card-text">
-                    <strong>{locationdata.location?.find(v1 => v1.id == pD.location_id)?.name}</strong> <br />
-                    <strong>{pD?.duration}</strong> <br />
-                    <strong>{pD?.price}</strong>
-
-                  </p>
-
-
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
-          <div className="row">
-            <div className="col-6">
-              <img
-                src={"http://localhost:4000/" + fit?.itineary_img}
-                className="card-img-top"
-                alt="Location"
-                style={{ height: "300px", width: "100%", marginTop: "20px" }}
-              />
-              <h2>{fit?.title}</h2>
-
-              {fit?.description?.split("\n").map((i, key) => {
-                return <p style={{ margin: '14px 0' }} key={key}>{i}</p>;
-              })}
-
-            </div>
-          </div>
-
-          <NavLink to={'/BookPackage'} className="btn btn-1">Book Package</NavLink>
+          <p style={{ fontSize: "16px", opacity: 0.9 }}>
+            {
+              locationdata.location?.find(v1 => v1.id == pD?.location_id)?.name
+            }
+          </p>
         </div>
       </div>
-    </section>
+
+      {/* CONTENT WRAPPER */}
+      <div style={{ maxWidth: "1100px", margin: "30px auto 40px", padding: "0 20px" }}>
+        {/* PACKAGE CARD */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: "18px",
+            padding: "25px 30px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "30px"
+          }}
+        >
+          <div>
+            <h3 style={{ fontWeight: "700", marginBottom: "5px" }}>
+              {pD?.name}
+            </h3>
+            <p style={{ color: "#666" }}>{pD?.duration}</p>
+          </div>
+
+          <div style={{ textAlign: "right" }}>
+            <h2 style={{ color: "#0d6efd", fontWeight: "800" }}>
+              ₹ {pD?.price}
+            </h2>
+
+            <NavLink to="/BookPackage">
+              <button
+                style={{
+                  marginTop: "10px",
+                  background: "#0d6efd",
+                  color: "#fff",
+                  border: "none",
+                  padding: "10px 22px",
+                  borderRadius: "30px",
+                  fontWeight: "600",
+                  cursor: "pointer"
+                }}
+              >
+                Book Now
+              </button>
+            </NavLink>
+          </div>
+        </div>
+
+        {/* ITINERARY */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: "18px",
+            padding: "30px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
+          }}
+        >
+          <h2 style={{ fontWeight: "700", marginBottom: "20px" }}>
+            📍 Itinerary Plan
+          </h2>
+
+          {/* IMAGE */}
+          <img
+            src={"http://localhost:4000/" + fit?.itineary_img}
+            alt="Itinerary"
+            style={{
+              width: "100%",
+              height: "300px",
+              objectFit: "cover",
+              borderRadius: "14px",
+              marginBottom: "25px"
+            }}
+          />
+
+          {/* TIMELINE STYLE */}
+          <div style={{ borderLeft: "3px solid #0d6efd", paddingLeft: "20px" }}>
+            {fit?.description?.split("\n").map((item, index) => (
+              <div key={index} style={{ marginBottom: "20px", position: "relative" }}>
+
+                {/* Dot */}
+                <span
+                  style={{
+                    position: "absolute",
+                    left: "-28px",
+                    top: "5px",
+                    width: "12px",
+                    height: "12px",
+                    background: "#0d6efd",
+                    borderRadius: "50%"
+                  }}
+                ></span>
+
+                <p style={{ margin: 0, color: "#444", lineHeight: "1.6" }}>
+                  {item}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
   );
 }
 
