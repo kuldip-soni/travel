@@ -145,8 +145,8 @@ function LocationDetails(props) {
                     marginBottom: "5px"
                   }}
                 >
-                 {vv.from} - {vv.to}
-                  {vv.amount}
+                  {vv.from} - {vv.to} <br />
+                  ₹{vv.amount}
                 </h4>
 
                 <p style={{ fontSize: "13px", color: "#777" }}>
@@ -200,9 +200,8 @@ function LocationDetails(props) {
                     fontSize: "18px",
                     marginBottom: "5px"
                   }}
-                >
-                  {vv.checkin
-                  } - {vv.checkout}
+                >  {<img src={"http://localhost:4000/" + vv.hotel_img} />}
+                  ₹{vv.amount}
                 </h4>
 
                 <p style={{ fontSize: "13px", color: "#777" }}>
@@ -213,7 +212,7 @@ function LocationDetails(props) {
         </div>
       </div>
 
-       <div>
+      <div>
         <h2 style={{ marginBottom: "25px", fontWeight: "700" }}>
           🤝 Select Restaurant
         </h2>
@@ -256,9 +255,8 @@ function LocationDetails(props) {
                     fontSize: "18px",
                     marginBottom: "5px"
                   }}
-                >
-                  {vv.meals
-                  } - {vv.passenger}
+                > {<img src={"http://localhost:4000/" + vv.img} />}
+                  ₹{vv.amount}per meal
                 </h4>
 
                 <p style={{ fontSize: "13px", color: "#777" }}>
