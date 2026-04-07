@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { addtransport, deltransport, gettransport, puttransport } from '../../../redux/slice/transport.slice';
 import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
+import { getlocation } from '../../../redux/slice/location.slice';
 
 
 
@@ -83,20 +84,24 @@ function Transport(props) {
 
   const transportdata = useSelector(state => state.transport);
   const vendor = useSelector(state => state.vendor);
+  const locationdata = useSelector(state => state.location);
   const service = useSelector(state => state.service);
   const bookingdata = useSelector(state => state.bookpackage);
   console.log(transportdata);
-    console.log(bookingdata);
+  console.log(bookingdata);
+  console.log(locationdata);
 
-    const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete');
 
-    console.log(tData);
-    
+  const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete');
+
+  console.log(tData);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getbookpackage());
     dispatch(gettransport());
+    dispatch(getlocation())
     dispatch(getvendor());
     dispatch(getservice());
 
@@ -122,6 +127,7 @@ function Transport(props) {
   };
 
   let Transportschema = object({
+    location_id: string().required('please select location'),
     vendor_id: string().required('please select vendor_id'),
     service_id: string().required('please select service_id'),
     from: string().required('please enter From'),
@@ -137,6 +143,7 @@ function Transport(props) {
 
   const formik = useFormik({
     initialValues: {
+      location_id: '',
       vendor_id: '',
       service_id: '',
       from: '',
@@ -173,11 +180,23 @@ function Transport(props) {
   }
 
   const columns = [
-    { 
-      field: 'booking_id', 
-      headerName: 'Booking Id', 
+    
+    {
+      field: 'booking_id',
+      headerName: 'Booking Id',
       width: 130
     },
+    { field: 'location_id', 
+      headerName: 'location_id',
+       width: 130,
+       renderCell: (params) => {
+        const d = locationdata.location?.find(v => v.id == params.row.location_id)?.name
+        console.log(locationdata.location, params.row.id, d);
+
+        return d
+      }
+
+       },
     { field: 'from', headerName: 'from', width: 130 },
     { field: 'to', headerName: 'to', width: 130 },
     { field: 'datetime', headerName: 'datetime', width: 130 },
@@ -237,6 +256,7 @@ function Transport(props) {
           <DialogContent>
 
             <form onSubmit={formik.handleSubmit} id="subscription-form">
+
               <TextField
                 error={formik.errors.booking_id && formik.touched.booking_id}
                 id="standard-select-currency-native"
@@ -263,6 +283,34 @@ function Transport(props) {
                 ))}
               </TextField>
               <br /><br />
+
+                <TextField
+                 error={formik.errors.booking_id && formik.touched.booking_id}
+                 id="standard-select-currency-native"
+                 name="location_id"
+                 select
+                 fullWidth
+ 
+                 slotProps={{
+                   select: {
+                     native: true,
+                   },
+                 }}
+                 variant="standard"
+                 onChange={formik.handleChange}
+                 onBlur={formik.handleBlur}
+                 value={formik.values.location_id}
+                 helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
+               >
+                 <option value="">--Select location--</option>
+                 {locationdata?.location?.map((v) => (
+                   <option key={v.id} value={v.id}>
+                     {v.name}
+                   </option>
+                 ))}
+               </TextField>
+                 <br /><br />
+
               <TextField
                 error={formik.errors.vendor_id && formik.touched.vendor_id}
                 id="standard-select-currency-native"
@@ -284,7 +332,7 @@ function Transport(props) {
                 <option value="">--Select vendor--</option>
                 {vendor.vendor.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.type}
+                    {v.name}
                   </option>
                 ))}
               </TextField>

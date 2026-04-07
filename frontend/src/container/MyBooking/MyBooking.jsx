@@ -64,78 +64,84 @@ function MyBooking(props) {
                   : { bg: "#f8d7da", color: "#721c24" };
 
             return (
-              <NavLink
-                to={{
-                  pathname: "/myBookingDetails",
-                }}
-                state={{id: v.id}}
-              >
-                <div
-                  key={v.id}
-                  style={{
-                    background: "#fff",
-                    padding: "20px",
-                    borderRadius: "12px",
-                    boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
-                    transition: "0.3s",
+
+              <div className="col-6">
+                <NavLink
+                  to={{
+                    pathname: "/myBookingDetails",
                   }}
+                  state={{ id: v.id }}
                 >
-                  <h3
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: "600",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {
-                      location.location?.find(
-                        (v1) => v1.id == v.location_id
-                      )?.name
-                    }
-                  </h3>
-
-                  <p
-                    style={{
-                      color: "#555",
-                      marginBottom: "15px",
-                    }}
-                  >
-                    {
-                      packagedata.package?.find(
-                        (v1) => v1.id == v.package_id
-                      )?.name
-                    }
-                  </p>
-
                   <div
+                    key={v.id}
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontSize: "14px",
-                      marginBottom: "15px",
+                      background: "#fff",
+                      padding: "20px",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+                      transition: "0.3s",
                     }}
                   >
-                    <span>👥 {v.passenger} Passengers</span>
-                    <span>
-                      📅 {new Date(v.travel_date).toLocaleDateString()}
-                    </span>
-                  </div>
+                    <h3
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      {
+                        location.location?.find(
+                          (v1) => v1.id == v.location_id
+                        )?.name
+                      }
+                    </h3>
 
-                  <div
-                    style={{
-                      padding: "6px 12px",
-                      borderRadius: "20px",
-                      fontSize: "13px",
-                      fontWeight: "500",
-                      width: "fit-content",
-                      background: statusColor.bg,
-                      color: statusColor.color,
-                    }}
-                  >
-                    {v.status}
+                    <p
+                      style={{
+                        color: "#555",
+                        marginBottom: "15px",
+                      }}
+                    >
+                      {
+                        packagedata.package?.find(
+                          (v1) => v1.id == v.package_id
+                        )?.name
+                      }
+                    </p>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: "14px",
+                        marginBottom: "15px",
+                      }}
+                    >
+                      <span>👥 {v.passenger} Passengers</span>
+                      <span>
+                        📅 {new Date(v.travel_date).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    <div
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: "20px",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                        width: "fit-content",
+                        background: statusColor.bg,
+                        color: statusColor.color,
+                      }}
+                    >
+                      {v.status}
+                    </div>
                   </div>
-                </div>
-              </NavLink>
+                </NavLink>
+
+              </div>
+
+
             );
           })}
         </div>

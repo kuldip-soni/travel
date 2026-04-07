@@ -21,6 +21,7 @@ import { getvendor } from '../../../redux/slice/vendor.slice';
 import { getservice } from '../../../redux/slice/service.slice';
 import { addhotel, delhotel, gethotel, puthotel } from '../../../redux/slice/hotel.slice';
 import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
+import { getlocation } from '../../../redux/slice/location.slice';
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -40,9 +41,13 @@ function Hotel(props) {
   const [update, setupdate] = useState(false);
 
   const hoteldata = useSelector(state => state.hotel);
+  const locationdata = useSelector(state => state.location);
+
   const vendor = useSelector(state => state.vendor);
   const service = useSelector(state => state.service);
   const bookingdata = useSelector(state => state.bookpackage);
+
+  console.log(locationdata);
 
   console.log(hoteldata);
   console.log(bookingdata);
@@ -57,6 +62,8 @@ function Hotel(props) {
   useEffect(() => {
     dispatch(getbookpackage());
     dispatch(gethotel());
+    dispatch(getlocation())
+
     dispatch(getvendor());
     dispatch(getservice());
 
@@ -83,7 +90,8 @@ function Hotel(props) {
   };
 
   let Hotelschema = object({
-        booking_id: string().required('please select booking_id'),
+    location_id: string().required('please select location'),
+
     vendor_id: string().required('please select vendor_id'),
     service_id: string().required('please select service_id'),
     checkin: string().required('please enter checkin'),
@@ -99,7 +107,8 @@ function Hotel(props) {
   });
   const formik = useFormik({
     initialValues: {
-      booking_id: '',
+      location_id: '',
+
       vendor_id: '',
       service_id: '',
       checkin: '',
@@ -143,6 +152,19 @@ function Hotel(props) {
       field: 'booking_id',
       headerName: 'Booking Id',
       width: 130
+    },
+
+    {
+      field: 'location_id',
+      headerName: 'location_id',
+      width: 130,
+      renderCell: (params) => {
+        const d = locationdata.location?.find(v => v.id == params.row.location_id)?.name
+        console.log(locationdata.location, params.row.id, d);
+
+        return d
+      }
+
     },
 
     {
@@ -248,6 +270,34 @@ function Hotel(props) {
                   </option>
                 ))}
               </TextField>
+              <br /> <br />
+
+              <TextField
+                error={formik.errors.booking_id && formik.touched.booking_id}
+                id="standard-select-currency-native"
+                name="location_id"
+                select
+                fullWidth
+
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.location_id}
+                helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
+              >
+                <option value="">--Select location--</option>
+                {locationdata?.location?.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.name}
+                  </option>
+                ))}
+              </TextField>
+              <br /><br />
 
 
 

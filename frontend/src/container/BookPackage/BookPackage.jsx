@@ -7,6 +7,9 @@ import { getlocation } from '../../redux/slice/location.slice';
 import { getpackage } from '../../redux/slice/package.slice';
 import { bookpackage } from '../../redux/slice/bookpackage.slice';
 import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, Typography, Button, MenuItem } from '@mui/material';
+
+
 
 function BookPackage(props) {
     const dispatch = useDispatch();
@@ -22,7 +25,7 @@ function BookPackage(props) {
     const locationdata = useSelector(State => State.location);
     console.log(locationdata.location);
 
-    const auth =useSelector(state => state.auth)
+    const auth = useSelector(state => state.auth)
 
     const packagedata = useSelector(State => State.package);
     console.log(packagedata.package);
@@ -69,119 +72,179 @@ function BookPackage(props) {
         setupdate(true);
 
     }
-      const navigate=useNavigate();
-      if(auth.user == null){
+    const navigate = useNavigate();
+    if (auth.user == null) {
         navigate("/login")
-      }
-    
-    
-    
+    }
+
+
+
     console.log(formik.errors, formik.touched, formik.values.location_id);
     return (
-        <div className="row all-Contact">
-            <div className="col-lg-5" style={{ padding: "50px" }}>
-                <h2>Book Your package</h2>
-                <br /><br />
-                <form onSubmit={formik.handleSubmit} id="bookpackage-form" >
-                    <TextField
-                        error={formik.errors.location_id && formik.touched.location_id}
-                        id="standard-select-currency-native"
-                        name="location_id"
-                        select
-                        fullWidth
-                        inputProps={{ style: { fontSize: 18 } }} // font size of input text
-                        InputLabelProps={{ style: { fontSize: 18 } }} // font size of input text
+        <main style={{ background: "#f5f7fb", minHeight: "100vh", padding: "40px 0", marginTop: "60px" }}>
+            <div className="container">
 
-                        slotProps={{
-                            select: {
-                                native: true,
-                            },
-                        }}
+                <h2 style={{
+                    textAlign: "center",
+                    fontWeight: "700",
+                    marginBottom: "10px",
+                    fontSize: "30px"
+                }}>
+                    Book your Package
+                </h2>
+                <Card elevation={5} style={{ borderRadius: "15px", overflow: "hidden" }}>
+                    <div className="row">
 
-                        variant="standard"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.location_id}
-                        helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
-                    >   
-                          <option >---location---</option>
-                        {locationdata.location.map((v) => (
-                            <option key={v.id} value={v.id}>
-                                {v.name}
-                            </option>
-                        ))}
-                    </TextField>
-                    <br /><br />
-                    <TextField
-                        error={formik.errors.package_id && formik.touched.package_id}
-                        id="standard-select-currency-native"
-                        name="package_id"
-                        select
-                        fullWidth
-                         inputProps={{ style: { fontSize: 18 } }} // font size of input text
-                        InputLabelProps={{ style: { fontSize: 18 } }} // font size of input text
+                        {/* LEFT IMAGE */}
+                        <div className="col-lg-6 d-none d-lg-block">
+                            <img
+                                src="assets/image/bookingimg.png"
+                                alt="booking"
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover"
+                                }}
+                            />
+                        </div>
 
-                        slotProps={{
-                            select: {
-                                native: true,
-                            },
-                        }}
-                        variant="standard"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.package_id}
-                        helperText={formik.errors.package_id && formik.touched.package_id ? formik.errors.package_id : ''}
-                    >
-                        <option>---package---</option>
-                        {packagedata.package.filter(v1 => v1.location_id == formik.values.location_id).map((v1) => (
-                            <option key={v1.id} value={v1.id}>
-                                {v1.name}
-                            </option>
-                        ))}
-                    </TextField>
-                    <br /><br />
+                        {/* RIGHT FORM */}
+                        <div className="col-lg-6">
+                            <CardContent style={{ padding: "40px" }}>
 
 
-                    <TextField
 
-                        error={formik.errors.travel_date && formik.touched.travel_date}
-                        margin="dense"
+                                <form onSubmit={formik.handleSubmit}>
 
-                        id="travel_date"
-                        name="travel_date"
-                        type="date"
-                        fullWidth
-                         inputProps={{ style: { fontSize: 18 } }} // font size of input text
-                        InputLabelProps={{ style: { fontSize: 18 } }} // font size of input text
-                        variant="standard"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.travel_date}
-                        helperText={formik.errors.travel_date && formik.touched.travel_date ? formik.errors.travel_date : ''}
-                    />
+                                    {/* LOCATION */}
+                                    <TextField
+                                        select
+                                        label="Select Location"
+                                        name="location_id"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        value={formik.values.location_id}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.location_id && Boolean(formik.errors.location_id)}
+                                        helperText={formik.touched.location_id && formik.errors.location_id}
+                                        InputLabelProps={{
+                                            style: { fontSize: '18px', color: '#555' }  // Label font size
+                                        }}
+                                        inputProps={{
+                                            style: { fontSize: '18px' } // Input text (what user types) font size
+                                        }}
+                                    >
+                                        {locationdata.location.map((v) => (
+                                            <MenuItem key={v.id} value={v.id}>
+                                                {v.name}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
 
-                    <TextField
+                                    {/* PACKAGE */}
+                                    <TextField
+                                        select
+                                        label="Select Package"
+                                        name="package_id"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        value={formik.values.package_id}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.package_id && Boolean(formik.errors.package_id)}
+                                        helperText={formik.touched.package_id && formik.errors.package_id}
+                                        InputLabelProps={{
+                                            style: { fontSize: '18px', color: '#555' }  // Label font size
+                                        }}
+                                        inputProps={{
+                                            style: { fontSize: '18px' } // Input text (what user types) font size
+                                        }}
+                                    >
+                                        {packagedata.package
+                                            .filter(v => v.location_id == formik.values.location_id)
+                                            .map((v) => (
+                                                <MenuItem key={v.id} value={v.id}>
+                                                    {v.name}
+                                                </MenuItem>
+                                            ))}
+                                    </TextField>
 
-                        error={formik.errors.passenger && formik.touched.passenger}
-                        margin="dense"
-                        id="passenger"
-                        name="passenger"
-                        label="passenger"
-                        type="number"
-                        fullWidth
-                         inputProps={{ style: { fontSize: 18 } }} // font size of input text
-                        InputLabelProps={{ style: { fontSize: 18 } }} // font size of input text
-                        variant="standard"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.passenger}
-                        helperText={formik.errors.passenger && formik.touched.passenger ? formik.errors.passenger : ''}
-                    />
-                    <input type="submit" defaultValue="Book Package" className="btn" />
-                </form>
+                                    {/* DATE */}
+                                    <TextField
+                                        label="Travel Date"
+                                        type="date"
+                                        name="travel_date"
+                                        fullWidth
+                                        margin="normal"
+                                        // InputLabelProps={{ shrink: true }}
+                                        value={formik.values.travel_date}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.travel_date && Boolean(formik.errors.travel_date)}
+                                        helperText={formik.touched.travel_date && formik.errors.travel_date}
+
+                                        InputLabelProps={{
+                                            shrink: true, // Ensures label stays at the top
+                                            style: { fontSize: '18px' } // Adjusts font size of the label
+                                        }}
+                                        // Use inputProps (lowercase 'i') for placeholder text sizing
+                                        inputProps={{
+                                            style: { fontSize: '18px' } // Adjusts font size of the date input
+                                        }}
+
+
+                                    />
+
+                                    {/* PASSENGERS */}
+                                    <TextField 
+                                        label="Passengers"
+                                        type="number"
+                                        name="passenger"
+                                        fullWidth
+                                        margin="normal"
+                                        value={formik.values.passenger}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.passenger && Boolean(formik.errors.passenger)}
+                                        helperText={formik.touched.passenger && formik.errors.passenger}
+                                        InputLabelProps={{
+                                            style: { fontSize: '18px', color: '#555' }  // Label font size
+                                        }}
+                                        inputProps={{
+                                            style: { fontSize: '18px' } // Input text (what user types) font size
+                                        }}
+                                    />
+
+                                    {/* BUTTON */}
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        size="large"
+                                        style={{
+                                            marginTop: "20px",
+                                            padding: "12px",
+                                            fontSize: "16px",
+                                            fontWeight: "600",
+                                            background: "linear-gradient(45deg, #2196F3, #21CBF3)",
+                                            borderRadius: "8px"
+                                        }}
+                                    >
+                                        Book Now 🚀
+                                    </Button>
+
+                                </form>
+
+                            </CardContent>
+                        </div>
+                    </div>
+                </Card>
 
             </div>
-        </div>
+        </main>
     );
 }
 

@@ -34,7 +34,7 @@ const addtransport = async (req, res) => {
     try {
         // console.log("req.body");
         console.log("dddddd", req.body, req.file);
-        const { booking_id, vendor_id, service_id, from, to, datetime, passenger, amount } = req.body;
+        const { booking_id, location_id, vendor_id, service_id, from, to, datetime, passenger, amount } = req.body;
         console.log(vendor_id, service_id, from, to, datetime, passenger, amount);
 
         // const [rows, fields, result] = await pool.query("INSERT INTO transport (vendor_id,service_id,from,to,datetime,passenger,amount,transport_img) VALUES(?,?,?,?,?,?,?,?)",
@@ -43,7 +43,7 @@ const addtransport = async (req, res) => {
         // )
 
 
-        const [rows, fields, result] = await pool.query("INSERT INTO `transport`(`booking_id`,`vendor_id`, `service_id`, `from`, `to`, `datetime`, `passenger`, `amount`, `transport_img`) VALUES (?,?,?,?,?,?,?,?,?)", [booking_id, vendor_id, service_id, from, to, datetime, passenger, amount, req.file.path]
+        const [rows, fields, result] = await pool.query("INSERT INTO `transport`(`booking_id`,`location_id`,`vendor_id`, `service_id`, `from`, `to`, `datetime`, `passenger`, `amount`, `transport_img`) VALUES (?,?,?,?,?,?,?,?,?,?)", [booking_id,location_id, vendor_id, service_id, from, to, datetime, passenger, amount, req.file.path]
         )
 
         console.log(rows);
@@ -77,7 +77,7 @@ const puttransport = async (req, res) => {
         console.log("req.body");
         // console.log(req.body, req.file.path);
 
-        const { vendor_id, booking_id, service_id, from, to, datetime, passenger, amount, transport_img } = req.body;
+        const { vendor_id, booking_id, location_id, service_id, from, to, datetime, passenger, amount, transport_img } = req.body;
         const transportId = req.params.id;
         console.log(from, to, datetime, passenger, amount, transport_img, transportId);
 
@@ -99,6 +99,7 @@ const puttransport = async (req, res) => {
         const [fields, result] = await pool.query(
             `UPDATE transport 
    SET booking_id = ?,
+    location_id = ?, 
         vendor_id = ?, 
        service_id = ?, 
        \`from\` = ?, 
@@ -108,12 +109,12 @@ const puttransport = async (req, res) => {
        amount = ?, 
        transport_img = ? 
    WHERE id = ?`,
-            [booking_id, vendor_id, service_id, from, to, datetime, passenger, amount, fileimg, transportId]
+            [booking_id,location_id, vendor_id, service_id, from, to, datetime, passenger, amount, fileimg, transportId]
         );
 
         res.status(200).json({
             sucess: true,
-            data: { vendor_id, service_id, from, to, datetime, passenger, amount, transport_img: fileimg, id: transportId },
+            data: {location_id, vendor_id, service_id, from, to, datetime, passenger, amount, transport_img: fileimg, id: transportId },
             message: "transport is update sucessfuly"
 
         })

@@ -32,6 +32,8 @@ export const addtransport = createAsyncThunk(
 
             const formData = new FormData();
             formData.append("booking_id", data.booking_id);
+            formData.append("location_id", data.location_id);
+
             formData.append("vendor_id", data.vendor_id);
             formData.append("service_id", data.service_id);
             formData.append("from", data.from);
@@ -49,7 +51,7 @@ export const addtransport = createAsyncThunk(
             return response.data.data;
         } catch (error) {
             console.log(error);
-            
+
         }
 
     }
@@ -66,6 +68,8 @@ export const puttransport = createAsyncThunk(
 
             formData.append("id", data.id);
             formData.append("booking_id", data.booking_id);
+            formData.append("location_id", data.location_id);
+
             formData.append("vendor_id", data.vendor_id);
             formData.append("service_id", data.service_id);
             formData.append("from", data.from);

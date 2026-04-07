@@ -32,6 +32,8 @@ export const addrestaurant = createAsyncThunk(
 
             const formData = new FormData();
             formData.append("booking_id", data.booking_id);
+                        formData.append("location_id", data.location_id);
+
             formData.append("vendor_id", data.vendor_id);
             formData.append("service_id", data.service_id);
             formData.append("datetime", data.datetime);
@@ -65,6 +67,8 @@ export const putrestaurant = createAsyncThunk(
 
             formData.append("id", data.id);
             formData.append("booking_id", data.booking_id);
+            formData.append("location_id", data.location_id);
+
             formData.append("vendor_id", data.vendor_id);
             formData.append("service_id", data.service_id);
             formData.append("datetime", data.datetime);

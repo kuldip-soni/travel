@@ -21,6 +21,7 @@ import { addrestaurant, delrestaurant, getrestaurant, putrestaurant } from '../.
 import { getvendor } from '../../../redux/slice/vendor.slice';
 import { getservice } from '../../../redux/slice/service.slice';
 import { getbookpackage } from '../../../redux/slice/bookpackage.slice';
+import { getlocation } from '../../../redux/slice/location.slice';
 
 const vendor = [
   {
@@ -77,20 +78,26 @@ function Restaurant(props) {
   const [update, setupdate] = useState(false);
 
   const restaurantdata = useSelector(state => state.restaurant);
+  const locationdata = useSelector(state => state.location);
+
   const vendor = useSelector(state => state.vendor);
   const bookingdata = useSelector(state => state.bookpackage);
-const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete');
+  const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete');
 
-    console.log(tData);
+  console.log(tData);
   const service = useSelector(state => state.service);
   console.log(restaurantdata);
   console.log(bookingdata);
+  console.log(locationdata);
+
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getbookpackage());
     dispatch(getrestaurant());
+    dispatch(getlocation())
+
     dispatch(getvendor());
     dispatch(getservice());
 
@@ -116,7 +123,8 @@ const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete')
   };
 
   let Restaurantschema = object({
-    booking_id: string().required('please select vendor_id'),
+    location_id: string().required('please select location'),
+
     vendor_id: string().required('please select vendor_id'),
     service_id: string().required('please select service_id'),
     datetime: string().required('please select datetime'),
@@ -129,7 +137,8 @@ const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete')
   });
   const formik = useFormik({
     initialValues: {
-      booking_id: '',
+      location_id: '',
+
       vendor_id: '',
       service_id: '',
       datetime: '',
@@ -170,6 +179,19 @@ const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete')
       field: 'booking_id',
       headerName: 'Booking Id',
       width: 130
+    },
+
+    {
+      field: 'location_id',
+      headerName: 'location_id',
+      width: 130,
+      renderCell: (params) => {
+        const d = locationdata.location?.find(v => v.id == params.row.location_id)?.name
+        console.log(locationdata.location, params.row.id, d);
+
+        return d
+      }
+
     },
 
     {
@@ -275,6 +297,35 @@ const tData = bookingdata?.booking?.filter(v => v.status === 'payment_complete')
                   </option>
                 ))}
               </TextField>
+              <br /><br />
+
+              <TextField
+                error={formik.errors.booking_id && formik.touched.booking_id}
+                id="standard-select-currency-native"
+                name="location_id"
+                select
+                fullWidth
+
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.location_id}
+                helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
+              >
+                <option value="">--Select location--</option>
+                {locationdata?.location?.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.name}
+                  </option>
+                ))}
+              </TextField>
+              <br /><br />
+
               <TextField
                 error={formik.errors.vendor_id && formik.touched.vendor_id}
                 id="standard-select-currency-native"

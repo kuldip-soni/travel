@@ -33,13 +33,13 @@ const addrestaurant = async (req, res) => {
     try {
         // console.log("req.body");
         //console.log("dddddd",req.body, req.file.path);
-                const { booking_id, vendor_id, service_id, datetime, meals, passenger, amount } = req.body;
+                const { booking_id,location_id, vendor_id, service_id, datetime, meals, passenger, amount } = req.body;
 
-        console.log(  vendor_id, service_id, datetime, meals, passenger, amount
+        console.log( location_id, vendor_id, service_id, datetime, meals, passenger, amount
         );
        const [rows] = await pool.query(
-            "INSERT INTO restaurant (booking_id, vendor_id, service_id, datetime, meals, passenger, amount, restaurant_img) VALUES (?, ?, ?, ?, ?, ?, ?,?)",
-            [booking_id, vendor_id, service_id, datetime, meals, passenger, amount,req.file.path ]
+            "INSERT INTO restaurant (booking_id,location_id, vendor_id, service_id, datetime, meals, passenger, amount, restaurant_img) VALUES (?,?, ?, ?, ?, ?, ?, ?,?)",
+            [booking_id,location_id, vendor_id, service_id, datetime, meals, passenger, amount,req.file.path ]
         );
 
 
@@ -71,9 +71,9 @@ const putrestaurant = async (req, res) => {
         console.log("req.body");
         // console.log(req.body, req.file.path);
 
-        const {booking_id, vendor_id, service_id, datetime, meals, passenger, amount } = req.body;
+        const {booking_id,location_id, vendor_id, service_id, datetime, meals, passenger, amount } = req.body;
         const restaurantId = req.params.id;
-        console.log(booking_id, vendor_id, service_id, datetime, meals, passenger, amount , restaurantId);
+        console.log(booking_id,location_id, vendor_id, service_id, datetime, meals, passenger, amount , restaurantId);
 
                 const [rows] = await pool.query(
             "SELECT * FROM restaurant WHERE id=?",
@@ -95,8 +95,8 @@ const putrestaurant = async (req, res) => {
 
 
 await pool.query(
-            "UPDATE restaurant SET booking_id=?, vendor_id=?, service_id=?, datetime=?, meals=?, passenger=?, amount=?, restaurant_img=? WHERE id=?",
-            [booking_id, vendor_id, service_id, datetime, meals, passenger, amount, fileimg, restaurantId]
+            "UPDATE restaurant SET booking_id=?,location_id=?, vendor_id=?, service_id=?, datetime=?, meals=?, passenger=?, amount=?, restaurant_img=? WHERE id=?",
+            [booking_id,location_id, vendor_id, service_id, datetime, meals, passenger, amount, fileimg, restaurantId]
         );
 
 
@@ -105,7 +105,7 @@ await pool.query(
         res.status(200).json({
             sucess: true,
 
-            data: { id: restaurantId, booking_id, vendor_id, service_id, datetime, meals, passenger, amount, restaurant_img: fileimg },
+            data: { id: restaurantId, booking_id,location_id, vendor_id, service_id, datetime, meals, passenger, amount, restaurant_img: fileimg },
             message: "restaurant is update sucessfuly"
 
         })
