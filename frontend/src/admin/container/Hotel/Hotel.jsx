@@ -320,11 +320,13 @@ function Hotel(props) {
                 helperText={formik.errors.vendor_id && formik.touched.vendor_id ? formik.errors.vendor_id : ''}
               >
                 <option value="">--Select vendor--</option>
-                {vendor.vendor.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.name}
-                  </option>
-                ))}
+                {vendor.vendor
+                  .filter(v => v.location_id == formik.values.location_id)
+                  .map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name}
+                    </option>
+                  ))}
               </TextField>
               <br /><br />
               <TextField
@@ -346,11 +348,13 @@ function Hotel(props) {
                 helperText={formik.errors.service_id && formik.touched.service_id ? formik.errors.service_id : ''}
               >
                 <option value="">--Select service--</option>
-                {service.service.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.name}
-                  </option>
-                ))}
+                 {service.service
+                  .filter(v => v.vendor_id == formik.values.vendor_id)
+                  .map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name}
+                    </option>
+                  ))}
               </TextField>
 
               <TextField

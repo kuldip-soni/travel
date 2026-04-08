@@ -166,9 +166,9 @@ function BookPackage(props) {
                                         {packagedata.package
                                             .filter(v => v.location_id == formik.values.location_id)
                                             .map((v) => (
-                                                <MenuItem key={v.id} value={v.id}>
+                                                <option key={v.id} value={v.id}>
                                                     {v.name}
-                                                </MenuItem>
+                                                </option>
                                             ))}
                                     </TextField>
 

@@ -180,23 +180,24 @@ function Transport(props) {
   }
 
   const columns = [
-    
+
     {
       field: 'booking_id',
       headerName: 'Booking Id',
       width: 130
     },
-    { field: 'location_id', 
+    {
+      field: 'location_id',
       headerName: 'location_id',
-       width: 130,
-       renderCell: (params) => {
+      width: 130,
+      renderCell: (params) => {
         const d = locationdata.location?.find(v => v.id == params.row.location_id)?.name
         console.log(locationdata.location, params.row.id, d);
 
         return d
       }
 
-       },
+    },
     { field: 'from', headerName: 'from', width: 130 },
     { field: 'to', headerName: 'to', width: 130 },
     { field: 'datetime', headerName: 'datetime', width: 130 },
@@ -284,32 +285,32 @@ function Transport(props) {
               </TextField>
               <br /><br />
 
-                <TextField
-                 error={formik.errors.booking_id && formik.touched.booking_id}
-                 id="standard-select-currency-native"
-                 name="location_id"
-                 select
-                 fullWidth
- 
-                 slotProps={{
-                   select: {
-                     native: true,
-                   },
-                 }}
-                 variant="standard"
-                 onChange={formik.handleChange}
-                 onBlur={formik.handleBlur}
-                 value={formik.values.location_id}
-                 helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
-               >
-                 <option value="">--Select location--</option>
-                 {locationdata?.location?.map((v) => (
-                   <option key={v.id} value={v.id}>
-                     {v.name}
-                   </option>
-                 ))}
-               </TextField>
-                 <br /><br />
+              <TextField
+                error={formik.errors.booking_id && formik.touched.booking_id}
+                id="standard-select-currency-native"
+                name="location_id"
+                select
+                fullWidth
+
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                variant="standard"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.location_id}
+                helperText={formik.errors.location_id && formik.touched.location_id ? formik.errors.location_id : ''}
+              >
+                <option value="">--Select location--</option>
+                {locationdata?.location?.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.name}
+                  </option>
+                ))}
+              </TextField>
+              <br /><br />
 
               <TextField
                 error={formik.errors.vendor_id && formik.touched.vendor_id}
@@ -330,11 +331,13 @@ function Transport(props) {
                 helperText={formik.errors.vendor_id && formik.touched.vendor_id ? formik.errors.vendor_id : ''}
               >
                 <option value="">--Select vendor--</option>
-                {vendor.vendor.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.name}
-                  </option>
-                ))}
+                {vendor.vendor
+                  .filter(v => v.location_id == formik.values.location_id)
+                  .map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name}
+                    </option>
+                  ))}
               </TextField>
               <br /><br />
 
@@ -357,11 +360,13 @@ function Transport(props) {
                 helperText={formik.errors.service_id && formik.touched.service_id ? formik.errors.service_id : ''}
               >
                 <option value="">--Select service--</option>
-                {service.service.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.name}
-                  </option>
-                ))}
+                 {service.service
+                  .filter(v => v.vendor_id == formik.values.vendor_id)
+                  .map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name}
+                    </option>
+                  ))}
               </TextField>
 
               <TextField

@@ -15,10 +15,11 @@ function LocationDetails() {
   const [selectedHotelId, setSelectedHotelId] = useState(null);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
 
-  // ✅ Passenger state
-  const [passengers, setPassengers] = useState([
-    { name: "", age: "" }
-  ]);
+  const [transportQty, setTransportQty] = useState(0);
+  const [hotelQty, setHotelQty] = useState(0);
+  const [restaurantQty, setRestaurantQty] = useState(0);
+
+  const [passengers, setPassengers] = useState([{ name: "", age: "" }]);
 
   useEffect(() => {
     dispatch(getlocation());
@@ -41,181 +42,185 @@ function LocationDetails() {
   const selectedHotel = hoteldata?.hotel?.find(h => h.id === selectedHotelId);
   const selectedRestaurant = restaurantdata?.restaurant?.find(r => r.id === selectedRestaurantId);
 
-  // ✅ Passenger functions
-  const addPassenger = () => {
-    setPassengers([...passengers, { name: "", age: "" }]);
-  };
-
-  const removePassenger = (index) => {
-    const updated = passengers.filter((_, i) => i !== index);
-    setPassengers(updated);
-  };
-
-  const handlePassengerChange = (index, field, value) => {
+  // Passenger
+  const addPassenger = () => setPassengers([...passengers, { name: "", age: "" }]);
+  const removePassenger = (i) => setPassengers(passengers.filter((_, index) => index !== i));
+  const handlePassengerChange = (i, field, value) => {
     const updated = [...passengers];
-    updated[index][field] = value;
+    updated[i][field] = value;
     setPassengers(updated);
   };
 
-  // ✅ Toggle selection
-  const toggleSelection = (currentId, setter, idToSelect) => {
-    setter(currentId === idToSelect ? null : idToSelect);
-  };
-
-  // ✅ Price calculation
+  // Price
   const totalPassengers = passengers.length;
+  const transportPrice = (selectedTransport?.amount || 0) * transportQty;
+  const hotelPrice = (selectedHotel?.amount || 0) * hotelQty;
+  const restaurantPrice = (selectedRestaurant?.amount || 0) * restaurantQty;
+  const finalPrice = totalPassengers * (transportPrice + hotelPrice + restaurantPrice);
 
-  const singlePrice =
-    (selectedTransport?.amount || 0) +
-    (selectedHotel?.amount || 0) +
-    (selectedRestaurant?.amount || 0);
+  // Styles
+  const container = { maxWidth: "1200px", margin: "auto", padding: "20px" };
 
-  const finalPrice = totalPassengers * singlePrice;
+  const grid = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+    gap: "20px"
+  };
 
   const cardStyle = (isSelected) => ({
-    padding: "25px",
-    background: isSelected ? "#e0f7fa" : "#fff",
+    padding: "15px",
     borderRadius: "14px",
+    background: "#fff",
+    border: isSelected ? "2px solid #007bff" : "1px solid #ddd",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     textAlign: "center",
-    boxShadow: isSelected
-      ? "0 0 0 3px #080900, 0 12px 30px rgba(0,0,0,0.2)"
-      : "0 6px 20px rgba(0,0,0,0.1)",
-    transition: "0.3s",
-    cursor: "pointer"
+    cursor: "pointer",
+    transition: "0.3s"
   });
 
+  const btnStyle = {
+    padding: "4px 10px",
+    borderRadius: "6px",
+    border: "none",
+    background: "#007bff",
+    color: "#fff",
+    cursor: "pointer"
+  };
+
+  const inputStyle = {
+    padding: "8px",
+    borderRadius: "6px",
+    border: "1px solid #ccc"
+  };
+
   return (
-    <div style={{ marginTop: "90px", padding: "20px 40px" }}>
+    <div style={container}>
 
       {/* HERO */}
       <div style={{
         position: "relative",
-        borderRadius: "20px",
+        borderRadius: "16px",
         overflow: "hidden",
-        marginBottom: "50px",
-        height: "420px",
-        boxShadow: "0 15px 40px rgba(0,0,0,0.25)"
+        height: "300px",
+        marginBottom: "30px"
       }}>
         <img
           src={"http://localhost:4000/" + lD?.image}
-          alt={lD?.name}
+          alt=""
           style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(70%)" }}
         />
-        <div style={{ position: "absolute", bottom: "40px", left: "40px", color: "#fff" }}>
+        <div style={{ position: "absolute", bottom: "20px", left: "20px", color: "#fff" }}>
           <h1>{lD?.name}</h1>
           <p>{lD?.description}</p>
         </div>
       </div>
 
-      {/* ✅ Passenger Details */}
-      <div style={{ marginBottom: "30px" }}>
-        <h3>Passenger Details</h3>
+      {/* PASSENGERS */}
+      <h3>Passenger Details</h3>
+      {passengers.map((p, i) => (
+        <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+          <input style={inputStyle} placeholder="Name" value={p.name}
+            onChange={(e) => handlePassengerChange(i, "name", e.target.value)} />
+          <input style={inputStyle} type="number" placeholder="Age" value={p.age}
+            onChange={(e) => handlePassengerChange(i, "age", e.target.value)} />
+          <button onClick={addPassenger}>+</button>
+          {passengers.length > 1 && <button onClick={() => removePassenger(i)}>-</button>}
+        </div>
+      ))}
 
-        {passengers.map((p, index) => (
-          <div key={index} style={{ marginBottom: "10px" }}>
-            <input
-              type="text"
-              placeholder="Name"
-              value={p.name}
-              onChange={(e) =>
-                handlePassengerChange(index, "name", e.target.value)
-              }
-              style={{ marginRight: "10px" }}
-            />
+      {/* SUMMARY */}
+      <div style={{
+        background: "#f1f3f5",
+        padding: "20px",
+        borderRadius: "12px",
+        margin: "30px 0"
+      }}>
+        <h3>Selected Options</h3>
+        <p>Transport: ₹{transportPrice}</p>
+        <p>Hotel: ₹{hotelPrice}</p>
+        <p>Restaurant: ₹{restaurantPrice}</p>
+        <p>Total Passengers: {totalPassengers}</p>
+        <h2 style={{ color: "#007bff" }}>Final Price: ₹{finalPrice}</h2>
+      </div>
 
-            <input
-              type="number"
-              placeholder="Age"
-              value={p.age}
-              onChange={(e) =>
-                handlePassengerChange(index, "age", e.target.value)
-              }
-              style={{ marginRight: "10px" }}
-            />
+      {/* TRANSPORT */}
+      <h2>Select Transport</h2>
+      <div style={grid}>
+        {transportdata?.transport?.filter(v => v.location_id == id)?.map(vv => (
+          <div key={vv.id}
+            style={cardStyle(selectedTransportId === vv.id)}
+            onClick={() => { setSelectedTransportId(vv.id); setTransportQty(1); }}>
+            <h4>{vv.from} - {vv.to}</h4>
+            <p>₹{vv.amount}</p>
 
-            <button type="button" onClick={addPassenger}>+</button>
-
-            {passengers.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removePassenger(index)}
-                style={{ marginLeft: "5px" }}
-              >
-                -
-              </button>
+            {selectedTransportId === vv.id && (
+              <div style={{ marginTop: "10px" }}>
+                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setTransportQty(Math.max(0, transportQty - 1)); }}>-</button>
+                <span style={{ margin: "0 10px" }}>{transportQty}</span>
+                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setTransportQty(transportQty + 1); }}>+</button>
+              </div>
             )}
           </div>
         ))}
       </div>
 
-      {/* ✅ Selected Prices */}
-      <div style={{ marginBottom: "30px" }}>
-        <h3>Selected Options</h3>
-        <p>Transport: ₹{selectedTransport?.amount || 0}</p>
-        <p>Hotel: ₹{selectedHotel?.amount || 0}</p>
-        <p>Restaurant: ₹{selectedRestaurant?.amount || 0}</p>
-        <p><strong>Total Passengers:</strong> {totalPassengers}</p>
-        <p><strong>Final Price:</strong> ₹{finalPrice}</p>
-      </div>
-
-      {/* TRANSPORT */}
-      <h2>🤝 Select Transport</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
-        {transportdata?.transport
-          ?.filter(v => v.location_id == id)
-          ?.map(vv => (
-            <div
-              key={vv.id}
-              style={cardStyle(selectedTransportId === vv.id)}
-              onClick={() => toggleSelection(selectedTransportId, setSelectedTransportId, vv.id)}
-            >
-              <h4>{vv.from} - {vv.to}</h4>
-              <p>₹{vv.amount}</p>
-            </div>
-          ))}
-      </div>
-
       {/* HOTEL */}
-      <h2 style={{ marginTop: "40px" }}>🤝 Select Hotel</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
-        {hoteldata?.hotel
-          ?.filter(v => v.location_id == id)
-          ?.map(vv => (
-            <div
-              key={vv.id}
-              style={cardStyle(selectedHotelId === vv.id)}
-              onClick={() => toggleSelection(selectedHotelId, setSelectedHotelId, vv.id)}
-            >
-              <img src={"http://localhost:4000/" + vv.hotel_img} style={{ width: "100%", height: "120px" }} />
-              <h4>₹{vv.amount}</h4>
-            </div>
-          ))}
+      <h2 style={{ marginTop: "30px" }}>Select Hotel</h2>
+      <div style={grid}>
+        {hoteldata?.hotel?.filter(v => v.location_id == id)?.map(vv => (
+          <div key={vv.id}
+            style={cardStyle(selectedHotelId === vv.id)}
+            onClick={() => { setSelectedHotelId(vv.id); setHotelQty(1); }}>
+            <img src={"http://localhost:4000/" + vv.hotel_img}
+              style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "10px" }} />
+            <p>₹{vv.amount}</p>
+
+            {selectedHotelId === vv.id && (
+              <div style={{ marginTop: "10px" }}>
+                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setHotelQty(Math.max(0, hotelQty - 1)); }}>-</button>
+                <span style={{ margin: "0 10px" }}>{hotelQty}</span>
+                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setHotelQty(hotelQty + 1); }}>+</button>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* RESTAURANT */}
-      <h2 style={{ marginTop: "40px" }}>🤝 Select Restaurant</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
-        {restaurantdata?.restaurant
-          ?.filter(v => v.location_id == id)
-          ?.map(vv => (
-            <div
-              key={vv.id}
-              style={cardStyle(selectedRestaurantId === vv.id)}
-              onClick={() => toggleSelection(selectedRestaurantId, setSelectedRestaurantId, vv.id)}
-            >
-              <img src={"http://localhost:4000/" + vv.restaurant_img} style={{ width: "100%", height: "120px" }} />
-              <h4>₹{vv.amount}</h4>
-            </div>
-          ))}
+      <h2 style={{ marginTop: "30px" }}>Select Restaurant</h2>
+      <div style={grid}>
+        {restaurantdata?.restaurant?.filter(v => v.location_id == id)?.map(vv => (
+          <div key={vv.id}
+            style={cardStyle(selectedRestaurantId === vv.id)}
+            onClick={() => { setSelectedRestaurantId(vv.id); setRestaurantQty(1); }}>
+            <img src={"http://localhost:4000/" + vv.restaurant_img}
+              style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "10px" }} />
+            <p>₹{vv.amount}</p>
+
+            {selectedRestaurantId === vv.id && (
+              <div style={{ marginTop: "10px" }}>
+                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setRestaurantQty(Math.max(0, restaurantQty - 1)); }}>-</button>
+                <span style={{ margin: "0 10px" }}>{restaurantQty}</span>
+                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setRestaurantQty(restaurantQty + 1); }}>+</button>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* PACKAGES */}
-      <h2 style={{ marginTop: "50px" }}>✈️ Packages</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "25px" }}>
+      <h2 style={{ marginTop: "40px" }}>Packages</h2>
+      <div style={grid}>
         {pD?.map(v2 => (
           <NavLink key={v2.id} to={`/packagedetails/${v2.id}`}>
-            <div style={{ background: "#fff", padding: "10px" }}>
-              <img src={`http://localhost:4000/${v2.image}`} style={{ width: "100%", height: "200px" }} />
+            <div style={{
+              background: "#fff",
+              padding: "10px",
+              borderRadius: "10px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+            }}>
+              <img src={`http://localhost:4000/${v2.image}`}
+                style={{ width: "100%", height: "180px", objectFit: "cover" }} />
               <h4>{v2.name}</h4>
               <p>{v2.duration}</p>
               <h3>₹{v2.price}</h3>
