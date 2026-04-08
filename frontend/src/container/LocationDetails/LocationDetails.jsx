@@ -15,6 +15,11 @@ function LocationDetails() {
   const [selectedHotelId, setSelectedHotelId] = useState(null);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
 
+  // ✅ Passenger state
+  const [passengers, setPassengers] = useState([
+    { name: "", age: "" }
+  ]);
+
   useEffect(() => {
     dispatch(getlocation());
     dispatch(getpackage());
@@ -32,10 +37,40 @@ function LocationDetails() {
   const lD = locationdata.location?.find(v => v.id == id);
   const pD = packagedata.package?.filter(v => v.location_id == id);
 
-  // Selected items
   const selectedTransport = transportdata?.transport?.find(t => t.id === selectedTransportId);
   const selectedHotel = hoteldata?.hotel?.find(h => h.id === selectedHotelId);
   const selectedRestaurant = restaurantdata?.restaurant?.find(r => r.id === selectedRestaurantId);
+
+  // ✅ Passenger functions
+  const addPassenger = () => {
+    setPassengers([...passengers, { name: "", age: "" }]);
+  };
+
+  const removePassenger = (index) => {
+    const updated = passengers.filter((_, i) => i !== index);
+    setPassengers(updated);
+  };
+
+  const handlePassengerChange = (index, field, value) => {
+    const updated = [...passengers];
+    updated[index][field] = value;
+    setPassengers(updated);
+  };
+
+  // ✅ Toggle selection
+  const toggleSelection = (currentId, setter, idToSelect) => {
+    setter(currentId === idToSelect ? null : idToSelect);
+  };
+
+  // ✅ Price calculation
+  const totalPassengers = passengers.length;
+
+  const singlePrice =
+    (selectedTransport?.amount || 0) +
+    (selectedHotel?.amount || 0) +
+    (selectedRestaurant?.amount || 0);
+
+  const finalPrice = totalPassengers * singlePrice;
 
   const cardStyle = (isSelected) => ({
     padding: "25px",
@@ -48,11 +83,6 @@ function LocationDetails() {
     transition: "0.3s",
     cursor: "pointer"
   });
-
-  // Toggle function for vendors
-  const toggleSelection = (currentId, setter, idToSelect) => {
-    setter(currentId === idToSelect ? null : idToSelect);
-  };
 
   return (
     <div style={{ marginTop: "90px", padding: "20px 40px" }}>
@@ -77,12 +107,55 @@ function LocationDetails() {
         </div>
       </div>
 
-      {/* Selected Prices */}
+      {/* ✅ Passenger Details */}
       <div style={{ marginBottom: "30px" }}>
-        <h3>Selected Options:</h3>
-        <p>Transport Price: ₹{selectedTransport?.amount || "None"}</p>
-        <p>Hotel Price: ₹{selectedHotel?.amount || "None"}</p>
-        <p>Restaurant Price: ₹{selectedRestaurant?.amount || "None"}</p>
+        <h3>Passenger Details</h3>
+
+        {passengers.map((p, index) => (
+          <div key={index} style={{ marginBottom: "10px" }}>
+            <input
+              type="text"
+              placeholder="Name"
+              value={p.name}
+              onChange={(e) =>
+                handlePassengerChange(index, "name", e.target.value)
+              }
+              style={{ marginRight: "10px" }}
+            />
+
+            <input
+              type="number"
+              placeholder="Age"
+              value={p.age}
+              onChange={(e) =>
+                handlePassengerChange(index, "age", e.target.value)
+              }
+              style={{ marginRight: "10px" }}
+            />
+
+            <button type="button" onClick={addPassenger}>+</button>
+
+            {passengers.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removePassenger(index)}
+                style={{ marginLeft: "5px" }}
+              >
+                -
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* ✅ Selected Prices */}
+      <div style={{ marginBottom: "30px" }}>
+        <h3>Selected Options</h3>
+        <p>Transport: ₹{selectedTransport?.amount || 0}</p>
+        <p>Hotel: ₹{selectedHotel?.amount || 0}</p>
+        <p>Restaurant: ₹{selectedRestaurant?.amount || 0}</p>
+        <p><strong>Total Passengers:</strong> {totalPassengers}</p>
+        <p><strong>Final Price:</strong> ₹{finalPrice}</p>
       </div>
 
       {/* TRANSPORT */}
