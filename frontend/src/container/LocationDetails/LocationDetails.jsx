@@ -32,12 +32,11 @@ function LocationDetails() {
   const lD = locationdata.location?.find(v => v.id == id);
   const pD = packagedata.package?.filter(v => v.location_id == id);
 
-  // ✅ Get selected items
+  // Selected items
   const selectedTransport = transportdata?.transport?.find(t => t.id === selectedTransportId);
   const selectedHotel = hoteldata?.hotel?.find(h => h.id === selectedHotelId);
   const selectedRestaurant = restaurantdata?.restaurant?.find(r => r.id === selectedRestaurantId);
 
-  // ✅ Improved card style
   const cardStyle = (isSelected) => ({
     padding: "25px",
     background: isSelected ? "#e0f7fa" : "#fff",
@@ -49,6 +48,11 @@ function LocationDetails() {
     transition: "0.3s",
     cursor: "pointer"
   });
+
+  // Toggle function for vendors
+  const toggleSelection = (currentId, setter, idToSelect) => {
+    setter(currentId === idToSelect ? null : idToSelect);
+  };
 
   return (
     <div style={{ marginTop: "90px", padding: "20px 40px" }}>
@@ -73,7 +77,7 @@ function LocationDetails() {
         </div>
       </div>
 
-      {/* ✅ Selected Prices */}
+      {/* Selected Prices */}
       <div style={{ marginBottom: "30px" }}>
         <h3>Selected Options:</h3>
         <p>Transport Price: ₹{selectedTransport?.amount || "None"}</p>
@@ -90,7 +94,7 @@ function LocationDetails() {
             <div
               key={vv.id}
               style={cardStyle(selectedTransportId === vv.id)}
-              onClick={() => setSelectedTransportId(vv.id)}  // ✅ FIXED
+              onClick={() => toggleSelection(selectedTransportId, setSelectedTransportId, vv.id)}
             >
               <h4>{vv.from} - {vv.to}</h4>
               <p>₹{vv.amount}</p>
@@ -107,7 +111,7 @@ function LocationDetails() {
             <div
               key={vv.id}
               style={cardStyle(selectedHotelId === vv.id)}
-              onClick={() => setSelectedHotelId(vv.id)}  // ✅ FIXED
+              onClick={() => toggleSelection(selectedHotelId, setSelectedHotelId, vv.id)}
             >
               <img src={"http://localhost:4000/" + vv.hotel_img} style={{ width: "100%", height: "120px" }} />
               <h4>₹{vv.amount}</h4>
@@ -124,7 +128,7 @@ function LocationDetails() {
             <div
               key={vv.id}
               style={cardStyle(selectedRestaurantId === vv.id)}
-              onClick={() => setSelectedRestaurantId(vv.id)}  // ✅ FIXED
+              onClick={() => toggleSelection(selectedRestaurantId, setSelectedRestaurantId, vv.id)}
             >
               <img src={"http://localhost:4000/" + vv.restaurant_img} style={{ width: "100%", height: "120px" }} />
               <h4>₹{vv.amount}</h4>
