@@ -359,7 +359,7 @@ function Transport(props) {
                 <option value="">--Select service--</option>
                 {service.service.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.description}
+                    {v.name}
                   </option>
                 ))}
               </TextField>

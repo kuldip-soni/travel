@@ -71,22 +71,22 @@ function LocationDetails(props) {
       {/* Selected Vendors Display */}
       <div style={{ marginBottom: "30px" }}>
         <h3>Selected Options:</h3>
-        <p>Transport ID: {selectedTransportId || "None"}</p>
-        <p>Hotel ID: {selectedHotelId || "None"}</p>
-        <p>Restaurant ID: {selectedRestaurantId || "None"}</p>
+        <p>Transport Price: {selectedTransportId || "None"}</p>
+        <p>Hotel Price: {selectedHotelId || "None"}</p>
+        <p>Restaurant Price: {selectedRestaurantId || "None"}</p>
       </div>
 
       {/* TRANSPORT */}
       <div>
         <h2 style={{ marginBottom: "25px", fontWeight: "700" }}>🤝 Select Transport</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px"}}>
           {transportdata?.transport
             ?.filter(v => v.location_id == id)
             ?.map(vv => (
               <div
                 key={vv.id}
                 style={cardStyle(selectedTransportId === vv.id)}
-                onClick={() => setSelectedTransportId(vv.id)}
+                onClick={() => setSelectedTransportId(vv.amount)}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = "translateY(-5px)";
                   e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.2)";
@@ -117,7 +117,7 @@ function LocationDetails(props) {
               <div
                 key={vv.id}
                 style={cardStyle(selectedHotelId === vv.id)}
-                onClick={() => setSelectedHotelId(vv.id)}
+                onClick={() => setSelectedHotelId(vv.amount)}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = "translateY(-5px)";
                   e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.2)";
@@ -147,7 +147,7 @@ function LocationDetails(props) {
               <div
                 key={vv.id}
                 style={cardStyle(selectedRestaurantId === vv.id)}
-                onClick={() => setSelectedRestaurantId(vv.id)}
+                onClick={() => setSelectedRestaurantId(vv.amount)}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = "translateY(-5px)";
                   e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.2)";
