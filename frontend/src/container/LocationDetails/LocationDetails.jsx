@@ -255,7 +255,7 @@ function LocationDetails(props) {
                     fontSize: "18px",
                     marginBottom: "5px"
                   }}
-                > {<img src={"http://localhost:4000/" + vv.img} />}
+                > {<img src={"http://localhost:4000/" + vv.restaurant_img} style={{height:'100%',width:'100%',objectFit:'cover'}} />}
                   ₹{vv.amount}per meal
                 </h4>
 
