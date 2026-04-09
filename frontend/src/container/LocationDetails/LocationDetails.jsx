@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getlocation } from '../../redux/slice/location.slice';
 import { getpackage } from '../../redux/slice/package.slice';
 import { gettransport } from '../../redux/slice/transport.slice';
@@ -20,6 +20,10 @@ function LocationDetails() {
   const dispatch = useDispatch();
   const { id } = useParams();
 
+  // ✅ Section toggle
+  const [activeSection, setActiveSection] = useState("transport");
+
+  // ✅ Selected vendors
   const [selectedTransportId, setSelectedTransportId] = useState(null);
   const [selectedHotelId, setSelectedHotelId] = useState(null);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
@@ -28,7 +32,6 @@ function LocationDetails() {
   const [hotelQty, setHotelQty] = useState(0);
   const [restaurantQty, setRestaurantQty] = useState(0);
 
-  // ✅ Added
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
 
@@ -64,13 +67,11 @@ function LocationDetails() {
   });
 
   const locationdata = useSelector(state => state.location);
-  const packagedata = useSelector(state => state.package);
   const transportdata = useSelector(state => state.transport);
   const hoteldata = useSelector(state => state.hotel);
   const restaurantdata = useSelector(state => state.restaurant);
 
   const lD = locationdata.location?.find(v => v.id == id);
-  const pD = packagedata.package?.filter(v => v.location_id == id);
 
   const selectedTransport = transportdata?.transport?.find(t => t.id === selectedTransportId);
   const selectedHotel = hoteldata?.hotel?.find(h => h.id === selectedHotelId);
@@ -89,7 +90,6 @@ function LocationDetails() {
   const totalPassengers = passengers.length;
   const transportPrice = (selectedTransport?.amount || 0) * transportQty;
 
-  // ✅ Hotel days calculation
   const days = checkIn && checkOut
     ? Math.max(1, (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24))
     : 1;
@@ -99,7 +99,6 @@ function LocationDetails() {
 
   const finalPrice = totalPassengers * (transportPrice + hotelPrice + restaurantPrice);
 
-  // Styles
   const container = { maxWidth: "1200px", margin: "auto", padding: "20px" };
 
   const grid = {
@@ -127,21 +126,23 @@ function LocationDetails() {
     cursor: "pointer"
   };
 
-  const inputStyle = {
-    padding: "8px",
-    borderRadius: "6px",
-    border: "1px solid #ccc"
-  };
+  const toggleBtn = (active) => ({
+    padding: "10px 15px",
+    marginRight: "10px",
+    borderRadius: "8px",
+    border: "none",
+    background: active ? "#007bff" : "#ccc",
+    color: "#fff",
+    cursor: "pointer"
+  });
 
   return (
     <div style={container}>
 
       {/* HERO */}
       <div style={{ height: "300px", marginBottom: "30px" }}>
-        <img
-          src={"http://localhost:4000/" + lD?.image}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+        <img src={"http://localhost:4000/" + lD?.image}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </div>
 
       {/* PASSENGERS */}
@@ -149,10 +150,10 @@ function LocationDetails() {
       {passengers.map((p, i) => (
         <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
           <input type="date" />
-          <input style={inputStyle} placeholder="Name"
+          <input placeholder="Name"
             value={p.name}
             onChange={(e) => handlePassengerChange(i, "name", e.target.value)} />
-          <input style={inputStyle} type="number" placeholder="Age"
+          <input type="number" placeholder="Age"
             value={p.age}
             onChange={(e) => handlePassengerChange(i, "age", e.target.value)} />
           <button onClick={addPassenger}>+</button>
@@ -169,98 +170,201 @@ function LocationDetails() {
         <h2>Total: ₹{finalPrice}</h2>
       </div>
 
-      {/* TRANSPORT */}
-      <h2>Select Transport</h2>
-      <div style={grid}>
-        {transportdata?.transport?.filter(v => v.location_id == id)?.map(vv => (
-          <div key={vv.id}
-            style={cardStyle(selectedTransportId === vv.id)}
-            onClick={() => { setSelectedTransportId(vv.id); setTransportQty(1); }}>
-            <h4>{vv.from} - {vv.to}</h4>
-            <p>₹{vv.amount}</p>
+      {/* PAYMENT */}
+      <form onSubmit={paymentFormik.handleSubmit} id="payment-form">
+        <TextField
+          error={paymentFormik.errors.mode && paymentFormik.touched.mode}
+          id="standard-select-currency-native"
+          name="mode"
+          select
+          fullWidth
 
-            {selectedTransportId === vv.id && (
-              <div>
-                <button style={btnStyle}
-                  onClick={(e) => { e.stopPropagation(); setTransportQty(Math.max(0, transportQty - 1)); }}>-</button>
-                <span>{transportQty}</span>
-                <button style={btnStyle}
-                  onClick={(e) => { e.stopPropagation(); setTransportQty(transportQty + 1); }}>+</button>
-              </div>
-            )}
-          </div>
-        ))}
+          slotProps={{
+            select: {
+              native: true,
+            },
+          }}
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.mode}
+          helperText={paymentFormik.errors.mode && paymentFormik.touched.mode ? paymentFormik.errors.mode : ''}
+        >
+          <option value="">--Select mode--</option>
+          {mode.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </TextField>
+        <br />
+
+        <TextField
+          error={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id}
+          id="transaction_id"
+          name="transaction_id"
+          type="text"
+          label="transaction_id "
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.transaction_id}
+          helperText={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id ? paymentFormik.errors.transaction_id : ''}
+        ></TextField>
+
+        <TextField
+
+          error={paymentFormik.errors.date && paymentFormik.touched.date}
+          margin="dense"
+          id="date"
+          name="date"
+          type="date"
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.date}
+          helperText={paymentFormik.errors.date && paymentFormik.touched.date ? paymentFormik.errors.date : ''}
+
+        />
+
+        <TextField
+
+          error={paymentFormik.errors.amount && paymentFormik.touched.amount}
+          margin="dense"
+          id="amount"
+          name="amount"
+          label="amount"
+          type="number"
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.amount}
+          helperText={paymentFormik.errors.amount && paymentFormik.touched.amount ? paymentFormik.errors.amount : ''}
+        />        <Button type="submit">Submit</Button>
+      </form>
+
+      {/* SECTION TOGGLE */}
+      <div style={{ margin: "20px 0" }}>
+        <button style={toggleBtn(activeSection === "transport")} onClick={() => setActiveSection("transport")}>Transport</button>
+        <button style={toggleBtn(activeSection === "hotel")} onClick={() => setActiveSection("hotel")}>Hotel</button>
+        <button style={toggleBtn(activeSection === "restaurant")} onClick={() => setActiveSection("restaurant")}>Restaurant</button>
       </div>
+
+      {/* TRANSPORT */}
+      {activeSection === "transport" && (
+        <>
+          <h2>Select Transport</h2>
+          <div style={grid}>
+            {transportdata?.transport?.filter(v => v.location_id == id)?.map(vv => (
+              <div key={vv.id}
+                style={cardStyle(selectedTransportId === vv.id)}
+                onClick={() => {
+                  if (selectedTransportId === vv.id) {
+                    setSelectedTransportId(null);
+                    setTransportQty(0);
+                  } else {
+                    setSelectedTransportId(vv.id);
+                    setTransportQty(1);
+                  }
+                }}>
+                <h4>{vv.from} - {vv.to}</h4>
+                <p>₹{vv.amount}</p>
+
+                {selectedTransportId === vv.id && (
+                  <div>
+                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setTransportQty(Math.max(0, transportQty - 1)); }}>-</button>
+                    <span>{transportQty}</span>
+                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setTransportQty(transportQty + 1); }}>+</button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* HOTEL */}
-      <h2>Select Hotel</h2>
-      <div style={grid}>
-        {hoteldata?.hotel?.filter(v => v.location_id == id)?.map(vv => (
-          <div key={vv.id}
-            style={cardStyle(selectedHotelId === vv.id)}
-            onClick={() => { setSelectedHotelId(vv.id); setHotelQty(1); }}>
+      {activeSection === "hotel" && (
+        <>
+          <h2>Select Hotel</h2>
+          <div style={grid}>
+            {hoteldata?.hotel?.filter(v => v.location_id == id)?.map(vv => (
+              <div key={vv.id}
+                style={cardStyle(selectedHotelId === vv.id)}
+                onClick={() => {
+                  if (selectedHotelId === vv.id) {
+                    setSelectedHotelId(null);
+                    setHotelQty(0);
+                    setCheckIn("");
+                    setCheckOut("");
+                  } else {
+                    setSelectedHotelId(vv.id);
+                    setHotelQty(1);
+                  }
+                }}>
+                <img src={"http://localhost:4000/" + vv.hotel_img}
+                  style={{ width: "100%", height: "140px", objectFit: "cover" }} />
+                <p>₹{vv.amount}</p>
 
-            <img src={"http://localhost:4000/" + vv.hotel_img}
-              style={{ width: "100%", height: "140px", objectFit: "cover" }} />
+                {selectedHotelId === vv.id && (
+                  <div>
+                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setHotelQty(Math.max(0, hotelQty - 1)); }}>-</button>
+                    <span>{hotelQty}</span>
+                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setHotelQty(hotelQty + 1); }}>+</button>
 
-            <p>₹{vv.amount}</p>
+                    <input type="date" value={checkIn}
+                      onChange={(e) => setCheckIn(e.target.value)}
+                      onClick={(e) => e.stopPropagation()} />
 
-            {selectedHotelId === vv.id && (
-              <div>
+                    <input type="date" value={checkOut}
+                      onChange={(e) => setCheckOut(e.target.value)}
+                      onClick={(e) => e.stopPropagation()} />
 
-                <button style={btnStyle}
-                  onClick={(e) => { e.stopPropagation(); setHotelQty(Math.max(0, hotelQty - 1)); }}>-</button>
-
-                <span>{hotelQty}</span>
-
-                <button style={btnStyle}
-                  onClick={(e) => { e.stopPropagation(); setHotelQty(hotelQty + 1); }}>+</button>
-
-                {/* Check-in */}
-                <input type="date"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-
-                {/* Check-out */}
-                <input type="date"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-
-                <p>Days: {days}</p>
-
+                    <p>Days: {days}</p>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
 
       {/* RESTAURANT */}
-      <h2>Select Restaurant</h2>
-      <div style={grid}>
-        {restaurantdata?.restaurant?.filter(v => v.location_id == id)?.map(vv => (
-          <div key={vv.id}
-            style={cardStyle(selectedRestaurantId === vv.id)}
-            onClick={() => { setSelectedRestaurantId(vv.id); setRestaurantQty(1); }}>
-            <img src={"http://localhost:4000/" + vv.restaurant_img}
-              style={{ width: "100%", height: "140px", objectFit: "cover" }} />
-            <p>₹{vv.amount}</p>
+      {activeSection === "restaurant" && (
+        <>
+          <h2>Select Restaurant</h2>
+          <div style={grid}>
+            {restaurantdata?.restaurant?.filter(v => v.location_id == id)?.map(vv => (
+              <div key={vv.id}
+                style={cardStyle(selectedRestaurantId === vv.id)}
+                onClick={() => {
+                  if (selectedRestaurantId === vv.id) {
+                    setSelectedRestaurantId(null);
+                    setRestaurantQty(0);
+                  } else {
+                    setSelectedRestaurantId(vv.id);
+                    setRestaurantQty(1);
+                  }
+                }}>
+                <img src={"http://localhost:4000/" + vv.restaurant_img}
+                  style={{ width: "100%", height: "140px", objectFit: "cover" }} />
+                <p>₹{vv.amount}</p>
 
-            {selectedRestaurantId === vv.id && (
-              <div>
-                <button style={btnStyle}
-                  onClick={(e) => { e.stopPropagation(); setRestaurantQty(Math.max(0, restaurantQty - 1)); }}>-</button>
-                <span>{restaurantQty}</span>
-                <button style={btnStyle}
-                  onClick={(e) => { e.stopPropagation(); setRestaurantQty(restaurantQty + 1); }}>+</button>
+                {selectedRestaurantId === vv.id && (
+                  <div>
+                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setRestaurantQty(Math.max(0, restaurantQty - 1)); }}>-</button>
+                    <span>{restaurantQty}</span>
+                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setRestaurantQty(restaurantQty + 1); }}>+</button>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
 
     </div>
   );
