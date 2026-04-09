@@ -42,6 +42,8 @@ export const addhotel = createAsyncThunk(
             formData.append("passenger", data.passenger);
             formData.append("amount", data.amount);
             formData.append("hotel_img", data.hotel_img);
+                                    formData.append("status", data.status);
+
 
 
 
@@ -77,6 +79,8 @@ export const puthotel = createAsyncThunk(
             formData.append("passenger", data.passenger);
             formData.append("amount", data.amount);
             formData.append("hotel_img", data.hotel_img);
+                                    formData.append("status", data.status);
+
             console.log(data);
             const response = await axios.put(`http://localhost:4000/hotel/puthotel/${data.id}`, formData);
             console.log(response.data.data);

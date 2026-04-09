@@ -6,6 +6,22 @@ import { getpackage } from '../../redux/slice/package.slice';
 import { gettransport } from '../../redux/slice/transport.slice';
 import { gethotel } from '../../redux/slice/hotel.slice';
 import { getrestaurant } from '../../redux/slice/restaurant.slice';
+import { object, string } from 'yup';
+import { useFormik } from 'formik';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+const mode = [
+  {
+    value: 'online',
+    label: 'online',
+  },
+  {
+    value: 'cash',
+    label: 'cash',
+  },
+
+];
 
 function LocationDetails() {
   const dispatch = useDispatch();
@@ -28,6 +44,46 @@ function LocationDetails() {
     dispatch(gethotel());
     dispatch(getrestaurant());
   }, [dispatch]);
+
+  let Paymentschema = object({
+    mode: string().required('please select mode'),
+    transaction_id: string().required('please enter transaction_id'),
+    date: string().required('please select date'),
+    amount: string().required('please enter amount'),
+  });
+
+  const paymentFormik = useFormik({
+    initialValues: {
+      mode: '',
+      transaction_id: '',
+      date: '',
+      amount: '',
+
+    },
+    validationSchema: Paymentschema,
+    onSubmit: (values, { resetForm }) => {
+      console.log("sssss", update, values, bookigData);
+
+      if (update) {
+        dispatch(putPayment({ ...values, id: paymentId }))
+      } else {
+        dispatch(addPayment(
+          { user_id: bookigData.user_id, booking_id: bookigData.id, transaction_id: values.transaction_id, mode: values.mode, date: values.date, amount: values.amount, status: 'payment_complete' }))
+
+      }
+
+      window.location.reload();
+
+      setBookingData();
+      setupdate(false);
+      setPaymentId();
+
+      resetForm();
+      handleClose()
+    },
+  });
+
+
 
   const locationdata = useSelector(state => state.location);
   const packagedata = useSelector(state => state.package);
@@ -119,6 +175,7 @@ function LocationDetails() {
       <h3>Passenger Details</h3>
       {passengers.map((p, i) => (
         <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+          <input type="date" />
           <input style={inputStyle} placeholder="Name" value={p.name}
             onChange={(e) => handlePassengerChange(i, "name", e.target.value)} />
           <input style={inputStyle} type="number" placeholder="Age" value={p.age}
@@ -127,6 +184,89 @@ function LocationDetails() {
           {passengers.length > 1 && <button onClick={() => removePassenger(i)}>-</button>}
         </div>
       ))}
+
+      <form onSubmit={paymentFormik.handleSubmit} style={{ marginBottom: '50px' }} id="payment-form">
+
+        <TextField
+          error={paymentFormik.errors.mode && paymentFormik.touched.mode}
+          id="standard-select-currency-native"
+          name="mode"
+          select
+          fullWidth
+
+          slotProps={{
+            select: {
+              native: true,
+            },
+          }}
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.mode}
+          helperText={paymentFormik.errors.mode && paymentFormik.touched.mode ? paymentFormik.errors.mode : ''}
+        >
+          <option value="">--Select mode--</option>
+          {mode.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </TextField>
+        <br />
+
+        <TextField
+          error={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id}
+          id="transaction_id"
+          name="transaction_id"
+          type="text"
+          label="transaction_id "
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.transaction_id}
+          helperText={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id ? paymentFormik.errors.transaction_id : ''}
+        ></TextField>
+
+        <TextField
+
+          error={paymentFormik.errors.date && paymentFormik.touched.date}
+          margin="dense"
+          id="date"
+          name="date"
+          type="date"
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.date}
+          helperText={paymentFormik.errors.date && paymentFormik.touched.date ? paymentFormik.errors.date : ''}
+
+        />
+
+        <TextField
+
+          error={paymentFormik.errors.amount && paymentFormik.touched.amount}
+          margin="dense"
+          id="amount"
+          name="amount"
+          label="amount"
+          type="number"
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.amount}
+          helperText={paymentFormik.errors.amount && paymentFormik.touched.amount ? paymentFormik.errors.amount : ''}
+        />
+      </form>
+      <Button type="submit" form="payment-form">
+        Submit
+      </Button>
+
+
+
+
 
       {/* SUMMARY */}
       <div style={{

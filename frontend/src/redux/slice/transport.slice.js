@@ -42,6 +42,8 @@ export const addtransport = createAsyncThunk(
             formData.append("passenger", data.passenger);
             formData.append("amount", data.amount);
             formData.append("transport_img", data.transport_img);
+                        formData.append("status", data.status);
+
 
 
 
@@ -78,6 +80,8 @@ export const puttransport = createAsyncThunk(
             formData.append("passenger", data.passenger);
             formData.append("amount", data.amount);
             formData.append("transport_img", data.transport_img);
+                        formData.append("status", data.status);
+
             console.log(data);
             const response = await axios.put(`http://localhost:4000/transport/puttransport/${data.id}`, formData);
             console.log(response.data.data);

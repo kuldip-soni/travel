@@ -33,17 +33,17 @@ const addhotel = async(req,res) => {
     try {
                // console.log("req.body");
         //console.log("dddddd",req.body, req.file.path);
-        const { location_id,vendor_id, service_id, checkin, checkout, datetime,passenger,amount} = req.body;
-        console.log( location_id,vendor_id, service_id,checkin, checkout, datetime,passenger,amount);
+        const { location_id,vendor_id, service_id, checkin, checkout, datetime,passenger,amount,status} = req.body;
+        console.log( location_id,vendor_id, service_id,checkin, checkout, datetime,passenger,amount,status);
 
-        const [rows, fields, result] = await pool.query("INSERT INTO hotel (location_id,vendor_id,service_id,checkin,checkout,datetime,passenger,amount,hotel_img) VALUES(?,?,?,?,?,?,?,?,?)",
-            [location_id,vendor_id, service_id, checkin, checkout, datetime,passenger,amount, req.file.path]
+        const [rows, fields, result] = await pool.query("INSERT INTO hotel (location_id,vendor_id,service_id,checkin,checkout,datetime,passenger,amount,hotel_img,status) VALUES(?,?,?,?,?,?,?,?,?,?)",
+            [location_id,vendor_id, service_id, checkin, checkout, datetime,passenger,amount, req.file.path,status]
 
         )
 
         res.status(200).json({
             sucess: true,
-            data: { ...req.body, id: rows.insertId, hotel_img: req.file.path },
+            data: { ...req.body, id: rows.insertId, hotel_img: req.file.path,status },
             message: "hotel is add sucessfuly"
         })
 
@@ -69,9 +69,9 @@ const puthotel =async (req,res) => {
        console.log("req.body");
         // console.log(req.body, req.file.path);
 
-        const { booking_id,location_id, vendor_id, service_id, checkin, checkout, datetime,passenger,amount} = req.body;
+        const { booking_id,location_id, vendor_id, service_id, checkin, checkout, datetime,passenger,amount,status} = req.body;
         const hotelId = req.params.id;
-        console.log(booking_id,location_id, checkin, checkout, datetime,passenger,amount, hotelId);
+        console.log(booking_id,location_id, checkin, checkout, datetime,passenger,amount, hotelId,status);
 
         const [rows] = await pool.query(`SELECT * FROM hotel WHERE id=${hotelId}`);
         let fileimg = '';
@@ -88,14 +88,14 @@ const puthotel =async (req,res) => {
         }
 
 
-        await pool.query("UPDATE  hotel  SET booking_id=?,location_id=?, vendor_id=?, service_id=?, checkin=?, checkout=?, datetime=?,passenger=?,amount=?, hotel_img=? WHERE id=?",
-            [booking_id,location_id, vendor_id, service_id, checkin, checkout, datetime,passenger,amount,fileimg, hotelId]
+        await pool.query("UPDATE  hotel  SET booking_id=?,location_id=?, vendor_id=?, service_id=?, checkin=?, checkout=?, datetime=?,passenger=?,amount=?, hotel_img=?, status=? WHERE id=?",
+            [booking_id,location_id, vendor_id, service_id, checkin, checkout, datetime,passenger,amount,fileimg,status, hotelId]
 
         )
 
         res.status(200).json({
             sucess: true,
-            data: {  booking_id,location_id, vendor_id, service_id, checkin, checkout, datetime,passenger,amount, hotel_img: fileimg, id: hotelId },
+            data: {  booking_id,location_id, vendor_id, service_id, checkin, checkout, datetime,passenger,amount, hotel_img: fileimg,status, id: hotelId },
             message: "hotel is update sucessfuly"
 
         })

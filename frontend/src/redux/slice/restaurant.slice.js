@@ -42,6 +42,8 @@ export const addrestaurant = createAsyncThunk(
             formData.append("amount", data.amount);
             
             formData.append("restaurant_img", data.restaurant_img);
+                                    formData.append("status", data.status);
+
 
 
 
@@ -77,6 +79,8 @@ export const putrestaurant = createAsyncThunk(
             formData.append("passenger", data.passenger);
             formData.append("amount", data.amount);
             formData.append("restaurant_img", data.restaurant_img);
+                                    formData.append("status", data.status);
+
             console.log(data);
             const response = await axios.put(`http://localhost:4000/restaurant/putrestaurant/${data.id}`, formData);
             console.log(response.data.data);

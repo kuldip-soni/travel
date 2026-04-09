@@ -66,6 +66,25 @@ const service = [
   },
 ];
 
+const status = [
+  {
+    value: '',
+    label: '--select status--',
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+  },
+  {
+    value: 'Complete',
+    label: 'Complete',
+  },
+  {
+    value: 'Reject',
+    label: 'Reject',
+  },
+];
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -136,6 +155,8 @@ function Transport(props) {
     passenger: string().required('please enter Passenger'),
     amount: string().required('please enter Amount'),
     transport_img: mixed().required('please upload transport image'),
+    status: string().required('please enter status')
+
 
 
 
@@ -152,6 +173,7 @@ function Transport(props) {
       passenger: '',
       amount: '',
       transport_img: '',
+      status: '',
 
 
     },
@@ -212,6 +234,8 @@ function Transport(props) {
         <img src={"http://localhost:4000/" + params.row.transport_img} width={'50px'} height={'50px'} />
       )
     },
+    { field: 'status', headerName: 'status', width: 130 },
+
 
 
 
@@ -360,7 +384,7 @@ function Transport(props) {
                 helperText={formik.errors.service_id && formik.touched.service_id ? formik.errors.service_id : ''}
               >
                 <option value="">--Select service--</option>
-                 {service.service
+                {service.service
                   .filter(v => v.vendor_id == formik.values.vendor_id)
                   .map((v) => (
                     <option key={v.id} value={v.id}>
@@ -474,6 +498,37 @@ function Transport(props) {
               {formik.errors.transport_img && formik.touched.transport_img ?
                 <span className='error'>{formik.errors.transport_img}</span> :
                 ''}
+                <br />
+
+              <TextField
+                error={formik.errors.status && formik.touched.status}
+
+                id="standard-select-currency-native"
+                name='status'
+                select
+                fullWidth
+
+
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.status}
+
+                variant="standard"
+                helperText={formik.errors.status && formik.touched.status ? formik.errors.status : ''}
+
+              >
+                <option>---select status---</option>
+                {status.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
 
 
 

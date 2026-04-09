@@ -61,6 +61,25 @@ const service = [
   },
 ];
 
+const status = [
+  {
+    value: '',
+    label: '--select status--',
+  },
+  {
+    value: 'Pending',
+    label: 'Pending',
+  },
+  {
+    value: 'Complete',
+    label: 'Complete',
+  },
+  {
+    value: 'Reject',
+    label: 'Reject',
+  },
+];
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -132,6 +151,7 @@ function Restaurant(props) {
     passenger: string().required('please enter passenger'),
     amount: string().required('please enter amount'),
     restaurant_img: mixed().required('please upload restaurant image'),
+    status: string().required('please enter status')
 
 
   });
@@ -146,6 +166,8 @@ function Restaurant(props) {
       passenger: '',
       amount: '',
       restaurant_img: '',
+      status: '',
+
 
     },
 
@@ -229,6 +251,8 @@ function Restaurant(props) {
         <img src={"http://localhost:4000/" + params.row.restaurant_img} width={'50px'} height={'50px'} />
       )
     },
+    { field: 'status', headerName: 'status', width: 130 },
+
 
 
 
@@ -477,6 +501,39 @@ function Restaurant(props) {
               {formik.errors.restaurant_img && formik.touched.restaurant_img ?
                 <span className='error'>{formik.errors.restaurant_img}</span> :
                 ''}
+
+              <br />
+
+              <TextField
+                error={formik.errors.status && formik.touched.status}
+
+                id="standard-select-currency-native"
+                name='status'
+                select
+                fullWidth
+
+
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.status}
+
+                variant="standard"
+                helperText={formik.errors.status && formik.touched.status ? formik.errors.status : ''}
+
+              >
+                <option>---select status---</option>
+                {status.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+
 
 
 

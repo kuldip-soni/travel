@@ -45,11 +45,11 @@ const addPayment = async (req, res) => {
 
         await pool.query(`UPDATE booking SET status='payment_complete' WHERE id=${booking_id}`);
 
-        await pool.query("INSERT INTO transport(booking_id) VALUES(?)", [booking_id]);
+        await pool.query("INSERT INTO transport(booking_id, status) VALUES(?, ?)", [booking_id, "pending"]);
 
-        await pool.query("INSERT INTO hotel(booking_id) VALUES(?)", [booking_id]);
+        await pool.query("INSERT INTO hotel(booking_id,status ) VALUES(?,?)", [booking_id,"pending"]);
 
-        await pool.query("INSERT INTO restaurant(booking_id) VALUES(?)", [booking_id]);
+        await pool.query("INSERT INTO restaurant(booking_id,status) VALUES(?,?)", [booking_id,"pending"]);
 
         res.status(200).json({
             sucess: true,

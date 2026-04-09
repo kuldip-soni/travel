@@ -60,7 +60,8 @@ import restaurantSlice from './slice/restaurant.slice'
 import contectSlice from './slice/contect.slice'
 import authSlice from './slice/auth.slice'
 import bookingSlice from './slice/bookpackage.slice'
-import paymentSlice  from './slice/payment.slice';
+import paymentSlice  from './slice/payment.slice'
+import passengerSlice  from './slice/passenger.slice'
 
 
 
@@ -79,6 +80,7 @@ const reducers = combineReducers({
   auth: authSlice,
   bookpackage:bookingSlice,
   payment:paymentSlice,
+  passenger:passengerSlice 
 });
 
 const persistConfig = {
