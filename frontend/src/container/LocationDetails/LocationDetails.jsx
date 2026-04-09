@@ -12,15 +12,8 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 const mode = [
-  {
-    value: 'online',
-    label: 'online',
-  },
-  {
-    value: 'cash',
-    label: 'cash',
-  },
-
+  { value: 'online', label: 'online' },
+  { value: 'cash', label: 'cash' },
 ];
 
 function LocationDetails() {
@@ -34,6 +27,10 @@ function LocationDetails() {
   const [transportQty, setTransportQty] = useState(0);
   const [hotelQty, setHotelQty] = useState(0);
   const [restaurantQty, setRestaurantQty] = useState(0);
+
+  // ✅ Added
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
 
   const [passengers, setPassengers] = useState([{ name: "", age: "" }]);
 
@@ -58,32 +55,13 @@ function LocationDetails() {
       transaction_id: '',
       date: '',
       amount: '',
-
     },
     validationSchema: Paymentschema,
     onSubmit: (values, { resetForm }) => {
-      console.log("sssss", update, values, bookigData);
-
-      if (update) {
-        dispatch(putPayment({ ...values, id: paymentId }))
-      } else {
-        dispatch(addPayment(
-          { user_id: bookigData.user_id, booking_id: bookigData.id, transaction_id: values.transaction_id, mode: values.mode, date: values.date, amount: values.amount, status: 'payment_complete' }))
-
-      }
-
-      window.location.reload();
-
-      setBookingData();
-      setupdate(false);
-      setPaymentId();
-
+      console.log(values);
       resetForm();
-      handleClose()
     },
   });
-
-
 
   const locationdata = useSelector(state => state.location);
   const packagedata = useSelector(state => state.package);
@@ -110,8 +88,15 @@ function LocationDetails() {
   // Price
   const totalPassengers = passengers.length;
   const transportPrice = (selectedTransport?.amount || 0) * transportQty;
-  const hotelPrice = (selectedHotel?.amount || 0) * hotelQty;
+
+  // ✅ Hotel days calculation
+  const days = checkIn && checkOut
+    ? Math.max(1, (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24))
+    : 1;
+
+  const hotelPrice = (selectedHotel?.amount || 0) * hotelQty * days;
   const restaurantPrice = (selectedRestaurant?.amount || 0) * restaurantQty;
+
   const finalPrice = totalPassengers * (transportPrice + hotelPrice + restaurantPrice);
 
   // Styles
@@ -130,8 +115,7 @@ function LocationDetails() {
     border: isSelected ? "2px solid #007bff" : "1px solid #ddd",
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     textAlign: "center",
-    cursor: "pointer",
-    transition: "0.3s"
+    cursor: "pointer"
   });
 
   const btnStyle = {
@@ -153,22 +137,11 @@ function LocationDetails() {
     <div style={container}>
 
       {/* HERO */}
-      <div style={{
-        position: "relative",
-        borderRadius: "16px",
-        overflow: "hidden",
-        height: "300px",
-        marginBottom: "30px"
-      }}>
+      <div style={{ height: "300px", marginBottom: "30px" }}>
         <img
           src={"http://localhost:4000/" + lD?.image}
-          alt=""
-          style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(70%)" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
-        <div style={{ position: "absolute", bottom: "20px", left: "20px", color: "#fff" }}>
-          <h1>{lD?.name}</h1>
-          <p>{lD?.description}</p>
-        </div>
       </div>
 
       {/* PASSENGERS */}
@@ -176,111 +149,24 @@ function LocationDetails() {
       {passengers.map((p, i) => (
         <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
           <input type="date" />
-          <input style={inputStyle} placeholder="Name" value={p.name}
+          <input style={inputStyle} placeholder="Name"
+            value={p.name}
             onChange={(e) => handlePassengerChange(i, "name", e.target.value)} />
-          <input style={inputStyle} type="number" placeholder="Age" value={p.age}
+          <input style={inputStyle} type="number" placeholder="Age"
+            value={p.age}
             onChange={(e) => handlePassengerChange(i, "age", e.target.value)} />
           <button onClick={addPassenger}>+</button>
           {passengers.length > 1 && <button onClick={() => removePassenger(i)}>-</button>}
         </div>
       ))}
 
-      <form onSubmit={paymentFormik.handleSubmit} style={{ marginBottom: '50px' }} id="payment-form">
-
-        <TextField
-          error={paymentFormik.errors.mode && paymentFormik.touched.mode}
-          id="standard-select-currency-native"
-          name="mode"
-          select
-          fullWidth
-
-          slotProps={{
-            select: {
-              native: true,
-            },
-          }}
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.mode}
-          helperText={paymentFormik.errors.mode && paymentFormik.touched.mode ? paymentFormik.errors.mode : ''}
-        >
-          <option value="">--Select mode--</option>
-          {mode.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </TextField>
-        <br />
-
-        <TextField
-          error={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id}
-          id="transaction_id"
-          name="transaction_id"
-          type="text"
-          label="transaction_id "
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.transaction_id}
-          helperText={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id ? paymentFormik.errors.transaction_id : ''}
-        ></TextField>
-
-        <TextField
-
-          error={paymentFormik.errors.date && paymentFormik.touched.date}
-          margin="dense"
-          id="date"
-          name="date"
-          type="date"
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.date}
-          helperText={paymentFormik.errors.date && paymentFormik.touched.date ? paymentFormik.errors.date : ''}
-
-        />
-
-        <TextField
-
-          error={paymentFormik.errors.amount && paymentFormik.touched.amount}
-          margin="dense"
-          id="amount"
-          name="amount"
-          label="amount"
-          type="number"
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.amount}
-          helperText={paymentFormik.errors.amount && paymentFormik.touched.amount ? paymentFormik.errors.amount : ''}
-        />
-      </form>
-      <Button type="submit" form="payment-form">
-        Submit
-      </Button>
-
-
-
-
-
       {/* SUMMARY */}
-      <div style={{
-        background: "#f1f3f5",
-        padding: "20px",
-        borderRadius: "12px",
-        margin: "30px 0"
-      }}>
-        <h3>Selected Options</h3>
+      <div style={{ background: "#f1f3f5", padding: "20px", margin: "20px 0" }}>
         <p>Transport: ₹{transportPrice}</p>
         <p>Hotel: ₹{hotelPrice}</p>
         <p>Restaurant: ₹{restaurantPrice}</p>
-        <p>Total Passengers: {totalPassengers}</p>
-        <h2 style={{ color: "#007bff" }}>Final Price: ₹{finalPrice}</h2>
+        <p>Passengers: {totalPassengers}</p>
+        <h2>Total: ₹{finalPrice}</h2>
       </div>
 
       {/* TRANSPORT */}
@@ -294,10 +180,12 @@ function LocationDetails() {
             <p>₹{vv.amount}</p>
 
             {selectedTransportId === vv.id && (
-              <div style={{ marginTop: "10px" }}>
-                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setTransportQty(Math.max(0, transportQty - 1)); }}>-</button>
-                <span style={{ margin: "0 10px" }}>{transportQty}</span>
-                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setTransportQty(transportQty + 1); }}>+</button>
+              <div>
+                <button style={btnStyle}
+                  onClick={(e) => { e.stopPropagation(); setTransportQty(Math.max(0, transportQty - 1)); }}>-</button>
+                <span>{transportQty}</span>
+                <button style={btnStyle}
+                  onClick={(e) => { e.stopPropagation(); setTransportQty(transportQty + 1); }}>+</button>
               </div>
             )}
           </div>
@@ -305,21 +193,45 @@ function LocationDetails() {
       </div>
 
       {/* HOTEL */}
-      <h2 style={{ marginTop: "30px" }}>Select Hotel</h2>
+      <h2>Select Hotel</h2>
       <div style={grid}>
         {hoteldata?.hotel?.filter(v => v.location_id == id)?.map(vv => (
           <div key={vv.id}
             style={cardStyle(selectedHotelId === vv.id)}
             onClick={() => { setSelectedHotelId(vv.id); setHotelQty(1); }}>
+
             <img src={"http://localhost:4000/" + vv.hotel_img}
-              style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "10px" }} />
+              style={{ width: "100%", height: "140px", objectFit: "cover" }} />
+
             <p>₹{vv.amount}</p>
 
             {selectedHotelId === vv.id && (
-              <div style={{ marginTop: "10px" }}>
-                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setHotelQty(Math.max(0, hotelQty - 1)); }}>-</button>
-                <span style={{ margin: "0 10px" }}>{hotelQty}</span>
-                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setHotelQty(hotelQty + 1); }}>+</button>
+              <div>
+
+                <button style={btnStyle}
+                  onClick={(e) => { e.stopPropagation(); setHotelQty(Math.max(0, hotelQty - 1)); }}>-</button>
+
+                <span>{hotelQty}</span>
+
+                <button style={btnStyle}
+                  onClick={(e) => { e.stopPropagation(); setHotelQty(hotelQty + 1); }}>+</button>
+
+                {/* Check-in */}
+                <input type="date"
+                  value={checkIn}
+                  onChange={(e) => setCheckIn(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+
+                {/* Check-out */}
+                <input type="date"
+                  value={checkOut}
+                  onChange={(e) => setCheckOut(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+
+                <p>Days: {days}</p>
+
               </div>
             )}
           </div>
@@ -327,45 +239,26 @@ function LocationDetails() {
       </div>
 
       {/* RESTAURANT */}
-      <h2 style={{ marginTop: "30px" }}>Select Restaurant</h2>
+      <h2>Select Restaurant</h2>
       <div style={grid}>
         {restaurantdata?.restaurant?.filter(v => v.location_id == id)?.map(vv => (
           <div key={vv.id}
             style={cardStyle(selectedRestaurantId === vv.id)}
             onClick={() => { setSelectedRestaurantId(vv.id); setRestaurantQty(1); }}>
             <img src={"http://localhost:4000/" + vv.restaurant_img}
-              style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "10px" }} />
+              style={{ width: "100%", height: "140px", objectFit: "cover" }} />
             <p>₹{vv.amount}</p>
 
             {selectedRestaurantId === vv.id && (
-              <div style={{ marginTop: "10px" }}>
-                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setRestaurantQty(Math.max(0, restaurantQty - 1)); }}>-</button>
-                <span style={{ margin: "0 10px" }}>{restaurantQty}</span>
-                <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setRestaurantQty(restaurantQty + 1); }}>+</button>
+              <div>
+                <button style={btnStyle}
+                  onClick={(e) => { e.stopPropagation(); setRestaurantQty(Math.max(0, restaurantQty - 1)); }}>-</button>
+                <span>{restaurantQty}</span>
+                <button style={btnStyle}
+                  onClick={(e) => { e.stopPropagation(); setRestaurantQty(restaurantQty + 1); }}>+</button>
               </div>
             )}
           </div>
-        ))}
-      </div>
-
-      {/* PACKAGES */}
-      <h2 style={{ marginTop: "40px" }}>Packages</h2>
-      <div style={grid}>
-        {pD?.map(v2 => (
-          <NavLink key={v2.id} to={`/packagedetails/${v2.id}`}>
-            <div style={{
-              background: "#fff",
-              padding: "10px",
-              borderRadius: "10px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
-            }}>
-              <img src={`http://localhost:4000/${v2.image}`}
-                style={{ width: "100%", height: "180px", objectFit: "cover" }} />
-              <h4>{v2.name}</h4>
-              <p>{v2.duration}</p>
-              <h3>₹{v2.price}</h3>
-            </div>
-          </NavLink>
         ))}
       </div>
 
