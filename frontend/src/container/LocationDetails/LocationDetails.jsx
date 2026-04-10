@@ -97,7 +97,7 @@ function LocationDetails() {
   const hotelPrice = (selectedHotel?.amount || 0) * hotelQty * days;
   const restaurantPrice = (selectedRestaurant?.amount || 0) * restaurantQty;
 
-  const finalPrice =  (transportPrice + hotelPrice + restaurantPrice);
+  const finalPrice = (transportPrice + hotelPrice + restaurantPrice);
 
   const container = { maxWidth: "1200px", margin: "auto", padding: "20px" };
 
@@ -147,9 +147,11 @@ function LocationDetails() {
 
       {/* PASSENGERS */}
       <h3>Passenger Details</h3>
+       <input type="date" />
+       <br /><br />
       {passengers.map((p, i) => (
         <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
-          <input type="date" />
+         
           <input placeholder="Name"
             value={p.name}
             onChange={(e) => handlePassengerChange(i, "name", e.target.value)} />
@@ -170,81 +172,7 @@ function LocationDetails() {
         <h2>Total: ₹{finalPrice}</h2>
       </div>
 
-      {/* PAYMENT */}
-      <form onSubmit={paymentFormik.handleSubmit} id="payment-form">
-        <TextField
-          error={paymentFormik.errors.mode && paymentFormik.touched.mode}
-          id="standard-select-currency-native"
-          name="mode"
-          select
-          fullWidth
 
-          slotProps={{
-            select: {
-              native: true,
-            },
-          }}
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.mode}
-          helperText={paymentFormik.errors.mode && paymentFormik.touched.mode ? paymentFormik.errors.mode : ''}
-        >
-          <option value="">--Select mode--</option>
-          {mode.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </TextField>
-        <br />
-
-        <TextField
-          error={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id}
-          id="transaction_id"
-          name="transaction_id"
-          type="text"
-          label="transaction_id "
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.transaction_id}
-          helperText={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id ? paymentFormik.errors.transaction_id : ''}
-        ></TextField>
-
-        <TextField
-
-          error={paymentFormik.errors.date && paymentFormik.touched.date}
-          margin="dense"
-          id="date"
-          name="date"
-          type="date"
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.date}
-          helperText={paymentFormik.errors.date && paymentFormik.touched.date ? paymentFormik.errors.date : ''}
-
-        />
-
-        <TextField
-
-          error={paymentFormik.errors.amount && paymentFormik.touched.amount}
-          margin="dense"
-          id="amount"
-          name="amount"
-          label="amount"
-          type="number"
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.amount}
-          helperText={paymentFormik.errors.amount && paymentFormik.touched.amount ? paymentFormik.errors.amount : ''}
-        />        <Button type="submit">Submit</Button>
-      </form>
 
       {/* SECTION TOGGLE */}
       <div style={{ margin: "20px 0" }}>
@@ -365,6 +293,83 @@ function LocationDetails() {
           </div>
         </>
       )}
+      <br /><br />
+
+      {/* PAYMENT */}
+      <form onSubmit={paymentFormik.handleSubmit} id="payment-form">
+        <TextField
+          error={paymentFormik.errors.mode && paymentFormik.touched.mode}
+          id="standard-select-currency-native"
+          name="mode"
+          select
+          fullWidth
+
+          slotProps={{
+            select: {
+              native: true,
+            },
+          }}
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.mode}
+          helperText={paymentFormik.errors.mode && paymentFormik.touched.mode ? paymentFormik.errors.mode : ''}
+        >
+          <option value="">--Select mode--</option>
+          {mode.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </TextField>
+        <br />
+
+        <TextField
+          error={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id}
+          id="transaction_id"
+          name="transaction_id"
+          type="text"
+          label="transaction_id "
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.transaction_id}
+          helperText={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id ? paymentFormik.errors.transaction_id : ''}
+        ></TextField>
+
+        <TextField
+
+          error={paymentFormik.errors.date && paymentFormik.touched.date}
+          margin="dense"
+          id="date"
+          name="date"
+          type="date"
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.date}
+          helperText={paymentFormik.errors.date && paymentFormik.touched.date ? paymentFormik.errors.date : ''}
+
+        />
+
+        <TextField
+
+          error={paymentFormik.errors.amount && paymentFormik.touched.amount}
+          margin="dense"
+          id="amount"
+          name="amount"
+          label="amount"
+          type="number"
+          fullWidth
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.amount}
+          helperText={paymentFormik.errors.amount && paymentFormik.touched.amount ? paymentFormik.errors.amount : ''}
+        />        <Button type="submit">Submit</Button>
+      </form>
 
     </div>
   );
