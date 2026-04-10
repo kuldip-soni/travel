@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getlocation } from '../../redux/slice/location.slice';
-import { getpackage } from '../../redux/slice/package.slice';
+import { bookCustomized, getpackage } from '../../redux/slice/package.slice';
 import { gettransport } from '../../redux/slice/transport.slice';
 import { gethotel } from '../../redux/slice/hotel.slice';
 import { getrestaurant } from '../../redux/slice/restaurant.slice';
-import { object, string } from 'yup';
+import { array, date, number, object, string } from 'yup';
 import { useFormik } from 'formik';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -24,18 +24,18 @@ function LocationDetails() {
   const [activeSection, setActiveSection] = useState("transport");
 
   // ✅ Selected vendors
-  const [selectedTransportId, setSelectedTransportId] = useState(null);
-  const [selectedHotelId, setSelectedHotelId] = useState(null);
-  const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
+  // const [selectedTransportId, setSelectedTransportId] = useState(null);
+  // const [selectedHotelId, setSelectedHotelId] = useState(null);
+  // const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
 
-  const [transportQty, setTransportQty] = useState(0);
-  const [hotelQty, setHotelQty] = useState(0);
-  const [restaurantQty, setRestaurantQty] = useState(0);
+  // const [transportQty, setTransportQty] = useState(0);
+  // const [hotelQty, setHotelQty] = useState(0);
+  // const [restaurantQty, setRestaurantQty] = useState(0);
 
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
+  // const [checkIn, setCheckIn] = useState("");
+  // const [checkOut, setCheckOut] = useState("");
 
-  const [passengers, setPassengers] = useState([{ name: "", age: "" }]);
+  // const [passengers, setPassengers] = useState([{ name: "", age: "" }]);
 
   useEffect(() => {
     dispatch(getlocation());
@@ -45,26 +45,78 @@ function LocationDetails() {
     dispatch(getrestaurant());
   }, [dispatch]);
 
-  let Paymentschema = object({
-    mode: string().required('please select mode'),
-    transaction_id: string().required('please enter transaction_id'),
-    date: string().required('please select date'),
-    amount: string().required('please enter amount'),
+  const Paymentschema = object({
+    travel_date: date().required(),
+    passengers: array().of(
+      object({
+        name: string().required("Name required"),
+        age: number().required("Age required").positive().integer(),
+      })
+    ),
+
+    selectedTransportId: string().required("Select transport"),
+    transportQty: number().min(1, "Qty must be > 0"),
+
+    selectedHotelId: string().required("Select hotel"),
+    hotelQty: number().min(1, "Qty must be > 0"),
+
+    checkOut: string()
+      .required("Check-out required")
+      .test("date-check", "Check-out must be after check-in", function (value) {
+        const { checkIn, selectedHotelId } = this.parent;
+
+        if (!selectedHotelId) return true; // skip if no hotel selected
+        if (!checkIn || !value) return false;
+
+        return new Date(value) > new Date(checkIn);
+      }),
+    checkIn: string().test(
+      "checkin-required",
+      "Check-in required",
+      function (value) {
+        if (!this.parent.selectedHotelId) return true;
+        return !!value;
+      }
+    ),
+
+    selectedRestaurantId: string().required("Select restaurant"),
+    restaurantQty: number().min(1, "Qty must be > 0"),
+
+    mode: string().required("Select mode"),
+    transaction_id: string().required("Enter transaction id"),
+    date: string().required("Select date"),
+    amount: number().required("Enter amount"),
   });
 
   const paymentFormik = useFormik({
     initialValues: {
-      mode: '',
-      transaction_id: '',
-      date: '',
-      amount: '',
+      travel_date: '',
+      passengers: [{ name: "", age: "" }],
+      selectedTransportId: "",
+      transportQty: 0,
+
+      selectedHotelId: "",
+      hotelQty: 0,
+      checkIn: "",
+      checkOut: "",
+
+      selectedRestaurantId: "",
+      restaurantQty: 0,
+
+      mode: "",
+      transaction_id: "",
+      date: "",
+      amount: "",
     },
     validationSchema: Paymentschema,
     onSubmit: (values, { resetForm }) => {
-      console.log(values);
+      // add
+      dispatch(bookCustomized(values)) 
       resetForm();
     },
   });
+
+  const passengers = paymentFormik.values.passengers;
 
   const locationdata = useSelector(state => state.location);
   const transportdata = useSelector(state => state.transport);
@@ -73,29 +125,41 @@ function LocationDetails() {
 
   const lD = locationdata.location?.find(v => v.id == id);
 
-  const selectedTransport = transportdata?.transport?.find(t => t.id === selectedTransportId);
-  const selectedHotel = hoteldata?.hotel?.find(h => h.id === selectedHotelId);
-  const selectedRestaurant = restaurantdata?.restaurant?.find(r => r.id === selectedRestaurantId);
+  const selectedTransport = transportdata?.transport?.find(t => t.id === paymentFormik.values.selectedTransportId);
+  const selectedHotel = hoteldata?.hotel?.find(h => h.id === paymentFormik.values.selectedHotelId);
+  const selectedRestaurant = restaurantdata?.restaurant?.find(r => r.id === paymentFormik.values.selectedRestaurantId);
 
   // Passenger
-  const addPassenger = () => setPassengers([...passengers, { name: "", age: "" }]);
   const removePassenger = (i) => setPassengers(passengers.filter((_, index) => index !== i));
+
+  const addPassenger = () => {
+    const updated = [...paymentFormik.values.passengers, { name: "", age: "" }];
+    paymentFormik.setFieldValue("passengers", updated);
+  };
+
   const handlePassengerChange = (i, field, value) => {
-    const updated = [...passengers];
+    const updated = [...paymentFormik.values.passengers];
     updated[i][field] = value;
-    setPassengers(updated);
+    paymentFormik.setFieldValue("passengers", updated);
   };
 
   // Price
   const totalPassengers = passengers.length;
-  const transportPrice = (selectedTransport?.amount || 0) * transportQty;
+  const transportPrice =
+    (selectedTransport?.amount || 0) * paymentFormik.values.transportQty;
 
-  const days = checkIn && checkOut
-    ? Math.max(1, (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24))
-    : 1;
+  const days =
+    paymentFormik.values.checkIn && paymentFormik.values.checkOut
+      ? Math.max(
+        1,
+        (new Date(paymentFormik.values.checkOut) -
+          new Date(paymentFormik.values.checkIn)) /
+        (1000 * 60 * 60 * 24)
+      )
+      : 1;
 
-  const hotelPrice = (selectedHotel?.amount || 0) * hotelQty * days;
-  const restaurantPrice = (selectedRestaurant?.amount || 0) * restaurantQty;
+  const hotelPrice = (selectedHotel?.amount || 0) * paymentFormik.values.hotelQty * days;
+  const restaurantPrice = (selectedRestaurant?.amount || 0) * paymentFormik.values.restaurantQty;
 
   const finalPrice = (transportPrice + hotelPrice + restaurantPrice);
 
@@ -136,6 +200,9 @@ function LocationDetails() {
     cursor: "pointer"
   });
 
+  console.log("paymentFormikpaymentFormik", paymentFormik.errors);
+
+
   return (
     <div style={container}>
 
@@ -144,159 +211,231 @@ function LocationDetails() {
         <img src={"http://localhost:4000/" + lD?.image}
           style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </div>
-
-      {/* PASSENGERS */}
-      <h3>Passenger Details</h3>
-       <input type="date" />
-       <br /><br />
-      {passengers.map((p, i) => (
-        <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
-         
-          <input placeholder="Name"
-            value={p.name}
-            onChange={(e) => handlePassengerChange(i, "name", e.target.value)} />
-          <input type="number" placeholder="Age"
-            value={p.age}
-            onChange={(e) => handlePassengerChange(i, "age", e.target.value)} />
-          <button onClick={addPassenger}>+</button>
-          {passengers.length > 1 && <button onClick={() => removePassenger(i)}>-</button>}
-        </div>
-      ))}
-
-      {/* SUMMARY */}
-      <div style={{ background: "#f1f3f5", padding: "20px", margin: "20px 0" }}>
-        <p>Transport: ₹{transportPrice}</p>
-        <p>Hotel: ₹{hotelPrice}</p>
-        <p>Restaurant: ₹{restaurantPrice}</p>
-        <p>Passengers: {totalPassengers}</p>
-        <h2>Total: ₹{finalPrice}</h2>
-      </div>
-
-
-
-      {/* SECTION TOGGLE */}
-      <div style={{ margin: "20px 0" }}>
-        <button style={toggleBtn(activeSection === "transport")} onClick={() => setActiveSection("transport")}>Transport</button>
-        <button style={toggleBtn(activeSection === "hotel")} onClick={() => setActiveSection("hotel")}>Hotel</button>
-        <button style={toggleBtn(activeSection === "restaurant")} onClick={() => setActiveSection("restaurant")}>Restaurant</button>
-      </div>
-
-      {/* TRANSPORT */}
-      {activeSection === "transport" && (
-        <>
-          <h2>Select Transport</h2>
-          <div style={grid}>
-            {transportdata?.transport?.filter(v => v.location_id == id)?.map(vv => (
-              <div key={vv.id}
-                style={cardStyle(selectedTransportId === vv.id)}
-                onClick={() => {
-                  if (selectedTransportId === vv.id) {
-                    setSelectedTransportId(null);
-                    setTransportQty(0);
-                  } else {
-                    setSelectedTransportId(vv.id);
-                    setTransportQty(1);
-                  }
-                }}>
-                <h4>{vv.from} - {vv.to}</h4>
-                <p>₹{vv.amount}</p>
-
-                {selectedTransportId === vv.id && (
-                  <div>
-                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setTransportQty(Math.max(0, transportQty - 1)); }}>-</button>
-                    <span>{transportQty}</span>
-                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setTransportQty(transportQty + 1); }}>+</button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* HOTEL */}
-      {activeSection === "hotel" && (
-        <>
-          <h2>Select Hotel</h2>
-          <div style={grid}>
-            {hoteldata?.hotel?.filter(v => v.location_id == id)?.map(vv => (
-              <div key={vv.id}
-                style={cardStyle(selectedHotelId === vv.id)}
-                onClick={() => {
-                  if (selectedHotelId === vv.id) {
-                    setSelectedHotelId(null);
-                    setHotelQty(0);
-                    setCheckIn("");
-                    setCheckOut("");
-                  } else {
-                    setSelectedHotelId(vv.id);
-                    setHotelQty(1);
-                  }
-                }}>
-                <img src={"http://localhost:4000/" + vv.hotel_img}
-                  style={{ width: "100%", height: "140px", objectFit: "cover" }} />
-                <p>₹{vv.amount}</p>
-
-                {selectedHotelId === vv.id && (
-                  <div>
-                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setHotelQty(Math.max(0, hotelQty - 1)); }}>-</button>
-                    <span>{hotelQty}</span>
-                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setHotelQty(hotelQty + 1); }}>+</button>
-
-                    <input type="date" value={checkIn}
-                      onChange={(e) => setCheckIn(e.target.value)}
-                      onClick={(e) => e.stopPropagation()} />
-
-                    <input type="date" value={checkOut}
-                      onChange={(e) => setCheckOut(e.target.value)}
-                      onClick={(e) => e.stopPropagation()} />
-
-                    <p>Days: {days}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* RESTAURANT */}
-      {activeSection === "restaurant" && (
-        <>
-          <h2>Select Restaurant</h2>
-          <div style={grid}>
-            {restaurantdata?.restaurant?.filter(v => v.location_id == id)?.map(vv => (
-              <div key={vv.id}
-                style={cardStyle(selectedRestaurantId === vv.id)}
-                onClick={() => {
-                  if (selectedRestaurantId === vv.id) {
-                    setSelectedRestaurantId(null);
-                    setRestaurantQty(0);
-                  } else {
-                    setSelectedRestaurantId(vv.id);
-                    setRestaurantQty(1);
-                  }
-                }}>
-                <img src={"http://localhost:4000/" + vv.restaurant_img}
-                  style={{ width: "100%", height: "140px", objectFit: "cover" }} />
-                <p>₹{vv.amount}</p>
-
-                {selectedRestaurantId === vv.id && (
-                  <div>
-                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setRestaurantQty(Math.max(0, restaurantQty - 1)); }}>-</button>
-                    <span>{restaurantQty}</span>
-                    <button style={btnStyle} onClick={(e) => { e.stopPropagation(); setRestaurantQty(restaurantQty + 1); }}>+</button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-      <br /><br />
-
-      {/* PAYMENT */}
       <form onSubmit={paymentFormik.handleSubmit} id="payment-form">
+        {/* PASSENGERS */}
+        <span>Travel Date: </span>
+        <TextField
+          error={paymentFormik.errors.travel_date && paymentFormik.touched.travel_date}
+          id="travel_date"
+          name="travel_date"
+          type="date"
+          variant="standard"
+          onChange={paymentFormik.handleChange}
+          onBlur={paymentFormik.handleBlur}
+          value={paymentFormik.values.travel_date}
+          helperText={paymentFormik.errors.travel_date && paymentFormik.touched.travel_date ? paymentFormik.errors.travel_date : ''}
+        />
+        <h3>Passenger Details</h3>
+
+        <br /><br />
+        {paymentFormik.values.passengers.map((p, i) => (
+          <div key={i}>
+            <input
+              placeholder="Name"
+              value={p.name}
+              onChange={(e) => handlePassengerChange(i, "name", e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Age"
+              value={p.age}
+              onChange={(e) => handlePassengerChange(i, "age", e.target.value)}
+            />
+
+            <button type="button" onClick={addPassenger}>+</button>
+            {paymentFormik.values.passengers.length > 1 && (
+              <button
+                type="button"
+                onClick={() => {
+                  const updated = paymentFormik.values.passengers.filter((_, index) => index !== i);
+                  paymentFormik.setFieldValue("passengers", updated);
+                }}
+              >
+                -
+              </button>
+            )}
+          </div>
+        ))}
+
+        {/* SUMMARY */}
+        <div style={{ background: "#f1f3f5", padding: "20px", margin: "20px 0" }}>
+          <p>Transport: ₹{transportPrice}</p>
+          <p>Hotel: ₹{hotelPrice}</p>
+          <p>Restaurant: ₹{restaurantPrice}</p>
+          <p>Passengers: {totalPassengers}</p>
+          <h2>Total: ₹{finalPrice}</h2>
+        </div>
+
+
+
+        {/* SECTION TOGGLE */}
+        <div style={{ margin: "20px 0" }}>
+          <button type="button" style={toggleBtn(activeSection === "transport")} onClick={() => setActiveSection("transport")}>Transport</button>
+          <button type="button" style={toggleBtn(activeSection === "hotel")} onClick={() => setActiveSection("hotel")}>Hotel</button>
+          <button type="button" style={toggleBtn(activeSection === "restaurant")} onClick={() => setActiveSection("restaurant")}>Restaurant</button>
+        </div>
+
+        {/* TRANSPORT */}
+        {activeSection === "transport" && (
+          <>
+            <h2>Select Transport</h2>
+            <div style={grid}>
+              {transportdata?.transport?.filter(v => v.location_id == id)?.map(vv => (
+                <div key={vv.id}
+                  style={cardStyle(paymentFormik.values.selectedTransportId === vv.id)}
+                  onClick={() => {
+                    const current = paymentFormik.values.selectedTransportId;
+
+                    if (current === vv.id) {
+                      paymentFormik.setFieldValue("selectedTransportId", "");
+                      paymentFormik.setFieldValue("transportQty", 0);
+                    } else {
+                      paymentFormik.setFieldValue("selectedTransportId", vv.id);
+                      paymentFormik.setFieldValue("transportQty", 1);
+                    }
+                  }}>
+                  <h4>{vv.from} - {vv.to}</h4>
+                  <p>₹{vv.amount}</p>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      paymentFormik.setFieldValue(
+                        "transportQty",
+                        Math.max(1, paymentFormik.values.transportQty - 1)
+                      );
+                    }}
+                  >
+                    -
+                  </button>
+
+                  <span>{paymentFormik.values.transportQty}</span>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      paymentFormik.setFieldValue(
+                        "transportQty",
+                        paymentFormik.values.transportQty + 1
+                      );
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* HOTEL */}
+        {activeSection === "hotel" && (
+          <>
+            <h2>Select Hotel</h2>
+            <div style={grid}>
+              {hoteldata?.hotel?.filter(v => v.location_id == id)?.map(vv => (
+                <div key={vv.id}
+                  style={cardStyle(paymentFormik.values.selectedHotelId === vv.id)}
+                  onClick={() => {
+                    if (paymentFormik.values.selectedHotelId === vv.id) {
+                      paymentFormik.setFieldValue("selectedHotelId", "")
+                      paymentFormik.setFieldValue("hotelQty", 0)
+                      paymentFormik.setFieldValue("checkIn", "")
+                      paymentFormik.setFieldValue("checkOut", "")
+                    } else {
+                      paymentFormik.setFieldValue("selectedHotelId", vv.id)
+                      paymentFormik.setFieldValue("hotelQty", 1)
+                    }
+                  }}>
+                  <img src={"http://localhost:4000/" + vv.hotel_img}
+                    style={{ width: "100%", height: "140px", objectFit: "cover" }} />
+                  <p>₹{vv.amount}</p>
+
+                  {paymentFormik.values.selectedHotelId === vv.id && (
+                    <div>
+                      <button type="button" style={btnStyle} onClick={(e) => {
+                        e.stopPropagation();
+                        paymentFormik.setFieldValue("hotelQty", Math.max(0, paymentFormik.values.hotelQty - 1))
+                      }}>-</button>
+                      <span>{paymentFormik.values.hotelQty}</span>
+                      <button type="button" style={btnStyle} onClick={(e) => {
+                        e.stopPropagation();
+                        paymentFormik.setFieldValue("hotelQty", paymentFormik.values.hotelQty + 1)
+                      }}>+</button>
+
+                      <input
+                        type="date"
+                        name="checkIn"
+                        value={paymentFormik.values.checkIn}
+                        onChange={paymentFormik.handleChange}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+
+                      <input
+                        type="date"
+                        name="checkOut"
+                        value={paymentFormik.values.checkOut}
+                        min={paymentFormik.values.checkIn}
+                        onChange={paymentFormik.handleChange}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+
+                      <p>Days: {days}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* RESTAURANT */}
+        {activeSection === "restaurant" && (
+          <>
+            <h2>Select Restaurant</h2>
+            <div style={grid}>
+              {restaurantdata?.restaurant?.filter(v => v.location_id == id)?.map(vv => (
+                <div key={vv.id}
+                  style={cardStyle(paymentFormik.values.selectedRestaurantId === vv.id)}
+                  onClick={() => {
+                    if (paymentFormik.values.selectedRestaurantId === vv.id) {
+                      paymentFormik.setFieldValue("selectedRestaurantId", null)
+                      paymentFormik.setFieldValue("restaurantQty", 0)
+
+                    } else {
+                      paymentFormik.setFieldValue("selectedRestaurantId", vv.id)
+                      paymentFormik.setFieldValue("restaurantQty", 1)
+
+                    }
+                  }}>
+                  <img src={"http://localhost:4000/" + vv.restaurant_img}
+                    style={{ width: "100%", height: "140px", objectFit: "cover" }} />
+                  <p>₹{vv.amount}</p>
+
+                  {paymentFormik.values.selectedRestaurantId === vv.id && (
+                    <div>
+                      <button style={btnStyle} onClick={(e) => {
+                        e.stopPropagation();
+                        paymentFormik.setFieldValue("restaurantQty", Math.max(0, paymentFormik.values.restaurantQty - 1))
+                      }}>-</button>
+                      <span>{paymentFormik.values.restaurantQty}</span>
+                      <button style={btnStyle} onClick={(e) => {
+                        e.stopPropagation();
+                        paymentFormik.setFieldValue("restaurantQty", Math.max(0, paymentFormik.values.restaurantQty + 1));
+                      }}>+</button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        <br /><br />
+
+        {/* PAYMENT */}
+
         <TextField
           error={paymentFormik.errors.mode && paymentFormik.touched.mode}
           id="standard-select-currency-native"
@@ -336,7 +475,7 @@ function LocationDetails() {
           onBlur={paymentFormik.handleBlur}
           value={paymentFormik.values.transaction_id}
           helperText={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id ? paymentFormik.errors.transaction_id : ''}
-        ></TextField>
+        />
 
         <TextField
 
@@ -368,7 +507,8 @@ function LocationDetails() {
           onBlur={paymentFormik.handleBlur}
           value={paymentFormik.values.amount}
           helperText={paymentFormik.errors.amount && paymentFormik.touched.amount ? paymentFormik.errors.amount : ''}
-        />        <Button type="submit">Submit</Button>
+        />
+        <Button type="submit">Submit</Button>
       </form>
 
     </div>

@@ -92,6 +92,29 @@ export const delpackage = createAsyncThunk(
     }
 )
 
+export const bookCustomized	 = createAsyncThunk(
+    'bookCustomized	/bookCustomized	',
+    async (data) => {
+        try {
+            console.log("bookCustomized	", data);
+
+            
+           
+
+            const response = await axios.post('http://localhost:4000/package/bookCustomized', data);
+            console.log(response.data.data
+
+            );
+            return response.data.data;
+        } catch (error) {
+
+        }
+
+    }
+)
+
+
+
 
 export const packageSlice = createSlice({
     name: 'package',
@@ -123,11 +146,17 @@ export const packageSlice = createSlice({
 
             const index = state.package.findIndex(v => v.id === action.payload);
             state.package.splice(index, 1);
+        })
 
-
+         builder.addCase(bookCustomized.fulfilled, (state, action) => {
+            state.bookCustomized.push(action.payload)
 
 
         })
+
+
+
+
 
     }
 })
