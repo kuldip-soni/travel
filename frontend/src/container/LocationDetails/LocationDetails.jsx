@@ -97,7 +97,7 @@ function LocationDetails() {
   const hotelPrice = (selectedHotel?.amount || 0) * hotelQty * days;
   const restaurantPrice = (selectedRestaurant?.amount || 0) * restaurantQty;
 
-  const finalPrice = totalPassengers * (transportPrice + hotelPrice + restaurantPrice);
+  const finalPrice =  (transportPrice + hotelPrice + restaurantPrice);
 
   const container = { maxWidth: "1200px", margin: "auto", padding: "20px" };
 
