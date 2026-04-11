@@ -111,7 +111,7 @@ function LocationDetails() {
     validationSchema: Paymentschema,
     onSubmit: (values, { resetForm }) => {
       // add
-      dispatch(bookCustomized(values)) 
+      dispatch(bookCustomized({...values, user_id: localStorage.getItem("user_id"), location_id: id})) 
       resetForm();
     },
   });
