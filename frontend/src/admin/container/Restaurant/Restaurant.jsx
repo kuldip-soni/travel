@@ -370,10 +370,10 @@ function Restaurant(props) {
               >
                 <option value="">--Select vendor--</option>
                 {vendor.vendor
-                  .filter(v => v.location_id == formik.values.location_id)
+                  .filter(v => v.location_id == formik.values.location_id && v.type=="restaurent")
                   .map((v) => (
                     <option key={v.id} value={v.id}>
-                      {v.name}
+                      {v.company_name}
                     </option>
                   ))}
               </TextField>

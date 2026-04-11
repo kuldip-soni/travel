@@ -222,6 +222,22 @@ function Transport(props) {
     },
     { field: 'from', headerName: 'from', width: 130 },
     { field: 'to', headerName: 'to', width: 130 },
+    { 
+      field: 'vendor_id', 
+      headerName: 'Vendor',  //vendor
+      width: 130,
+      renderCell: (params) => (
+        vendor.vendor.find(v => v.id == params.row.vendor_id)?.name
+      )
+    },
+    { 
+      field: 'service_id', 
+      headerName: 'Service',  //vendor
+      width: 130,
+      renderCell: (params) => (
+        service.service.find(v => v.id == params.row.service_id)?.name
+      )
+    },
     { field: 'datetime', headerName: 'datetime', width: 130 },
     { field: 'passenger', headerName: 'passenger', width: 130 },
     { field: 'amount', headerName: 'amount', width: 130 },
@@ -356,10 +372,10 @@ function Transport(props) {
               >
                 <option value="">--Select vendor--</option>
                 {vendor.vendor
-                  .filter(v => v.location_id == formik.values.location_id)
+                  .filter(v => v.location_id == formik.values.location_id && v.type=="transport")
                   .map((v) => (
                     <option key={v.id} value={v.id}>
-                      {v.name}
+                      {v.company_name}
                     </option>
                   ))}
               </TextField>

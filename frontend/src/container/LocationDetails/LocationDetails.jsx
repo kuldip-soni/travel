@@ -10,6 +10,7 @@ import { array, date, number, object, string } from 'yup';
 import { useFormik } from 'formik';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { getservice } from '../../redux/slice/service.slice';
 
 const mode = [
   { value: 'online', label: 'online' },
@@ -43,7 +44,10 @@ function LocationDetails() {
     dispatch(gettransport());
     dispatch(gethotel());
     dispatch(getrestaurant());
+    dispatch(getservice())
   }, [dispatch]);
+
+  const service = useSelector(state => state.service) 
 
   const Paymentschema = object({
     travel_date: date().required(),
@@ -54,33 +58,33 @@ function LocationDetails() {
       })
     ),
 
-    selectedTransportId: string().required("Select transport"),
-    transportQty: number().min(1, "Qty must be > 0"),
+    // selectedTransportId: string().required("Select transport"),
+    // transportQty: number().min(1, "Qty must be > 0"),
 
-    selectedHotelId: string().required("Select hotel"),
-    hotelQty: number().min(1, "Qty must be > 0"),
+    // selectedHotelId: string().required("Select hotel"),
+    // hotelQty: number().min(1, "Qty must be > 0"),
 
-    checkOut: string()
-      .required("Check-out required")
-      .test("date-check", "Check-out must be after check-in", function (value) {
-        const { checkIn, selectedHotelId } = this.parent;
+    // checkOut: string()
+    //   .required("Check-out required")
+    //   .test("date-check", "Check-out must be after check-in", function (value) {
+    //     const { checkIn, selectedHotelId } = this.parent;
 
-        if (!selectedHotelId) return true; // skip if no hotel selected
-        if (!checkIn || !value) return false;
+    //     if (!selectedHotelId) return true; // skip if no hotel selected
+    //     if (!checkIn || !value) return false;
 
-        return new Date(value) > new Date(checkIn);
-      }),
-    checkIn: string().test(
-      "checkin-required",
-      "Check-in required",
-      function (value) {
-        if (!this.parent.selectedHotelId) return true;
-        return !!value;
-      }
-    ),
+    //     return new Date(value) > new Date(checkIn);
+    //   }),
+    // checkIn: string().test(
+    //   "checkin-required",
+    //   "Check-in required",
+    //   function (value) {
+    //     if (!this.parent.selectedHotelId) return true;
+    //     return !!value;
+    //   }
+    // ),
 
-    selectedRestaurantId: string().required("Select restaurant"),
-    restaurantQty: number().min(1, "Qty must be > 0"),
+    // selectedRestaurantId: string().required("Select restaurant"),
+    // restaurantQty: number().min(1, "Qty must be > 0"),
 
     mode: string().required("Select mode"),
     transaction_id: string().required("Enter transaction id"),
@@ -112,7 +116,7 @@ function LocationDetails() {
     onSubmit: (values, { resetForm }) => {
       // add
       dispatch(bookCustomized({...values, user_id: localStorage.getItem("user_id"), location_id: id})) 
-      resetForm();
+      // resetForm();
     },
   });
 
@@ -200,7 +204,7 @@ function LocationDetails() {
     cursor: "pointer"
   });
 
-  console.log("paymentFormikpaymentFormik", paymentFormik.errors);
+  console.log("paymentFormikpaymentFormik", paymentFormik.values);
 
 
   return (
@@ -335,7 +339,7 @@ function LocationDetails() {
           <>
             <h2>Select Hotel</h2>
             <div style={grid}>
-              {hoteldata?.hotel?.filter(v => v.location_id == id)?.map(vv => (
+              {hoteldata?.hotel?.filter(v => v.location_id == id && v.booking_id == 0)?.map(vv => (
                 <div key={vv.id}
                   style={cardStyle(paymentFormik.values.selectedHotelId === vv.id)}
                   onClick={() => {
@@ -349,6 +353,10 @@ function LocationDetails() {
                       paymentFormik.setFieldValue("hotelQty", 1)
                     }
                   }}>
+                    <h2>{service?.service?.find(v9 => v9.id == vv.service_id)?.name}</h2>
+                    <p>
+                      {service?.service?.find(v9 => v9.id == vv.service_id)?.description}
+                    </p>
                   <img src={"http://localhost:4000/" + vv.hotel_img}
                     style={{ width: "100%", height: "140px", objectFit: "cover" }} />
                   <p>₹{vv.amount}</p>
@@ -410,6 +418,10 @@ function LocationDetails() {
 
                     }
                   }}>
+                    <h2>{service?.service?.find(v9 => v9.id == vv.service_id)?.name}</h2>
+                    <p>
+                      {service?.service?.find(v9 => v9.id == vv.service_id)?.description}
+                    </p>
                   <img src={"http://localhost:4000/" + vv.restaurant_img}
                     style={{ width: "100%", height: "140px", objectFit: "cover" }} />
                   <p>₹{vv.amount}</p>

@@ -158,18 +158,23 @@ const delpackage = async (req, res) => {
 const bookCustomized = async (req, res) => {
     try {
         console.log("ookok");
-        
-        const {user_id, location_id, travel_date, passengers  } = req.body;
 
-        console.log(user_id, location_id, travel_date, passengers );
+        const { user_id, location_id, travel_date, passengers, transaction_id, mode, date, amount, selectedHotelId, hotelQty, checkIn,  checkOut} = req.body;
+
+        console.log(user_id, location_id, travel_date, passengers, transaction_id, mode, date, amount);
+
+
+        const [hotelData] = await pool.query("SELECT * FROM hotel WHERE id=?", [selectedHotelId]);
+
+        console.log("hotelData", selectedHotelId, hotelData, hotelData[0]?.vendor_id, hotelData[0]?.service_id, hotelData[0]?.amount);
         
-        
+
         // const {user_id, travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
         // console.log(transportQty, selectedHotelId, hotelQty);
 
 
         console.log(req.body);
-        
+
         const [bookingResult] = await pool.query(
             `INSERT INTO booking (
                 user_id,
@@ -179,21 +184,103 @@ const bookCustomized = async (req, res) => {
                 type
             ) VALUES (?,?,?,?,?)
             `,
-            [user_id, location_id, travel_date, passengers?.length, "customized_package" ]
+            [user_id, location_id, travel_date, passengers?.length, "customized_package"]
         );
 
         console.log(bookingResult.insertId);
-        
 
 
-        // const [rows, fields, result] = await pool.query("INSERT INTO booking (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        //     [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
 
-        // )
-        //  const [data1] = await pool.query("INSERT INTO payment (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        //     [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
 
-        // )
+        const [paymentResult] = await pool.query(
+            `INSERT INTO payment (
+                user_id,
+                booking_id,
+                transaction_id,
+                mode,
+                date,
+                amount
+            ) VALUES (?,?,?,?,?,?)
+            `,
+            [user_id, bookingResult.insertId, transaction_id, mode, date, amount]
+        );
+
+        console.log(paymentResult.insertId);
+
+
+        // const [transportResult] = await pool.query(
+        //     `INSERT INTO transport (
+        //         location_id,
+        //         booking_id,
+        //         passenger,
+        //         amount
+                
+        //     ) VALUES (?,?,?,?)
+        //     `,
+        //     [location_id, bookingResult.insertId, passengers?.length, amount]
+        // );
+
+        // console.log(transportResult.insertId);
+
+
+        const [hotelResult] = await pool.query(
+            `INSERT INTO hotel (
+                location_id,
+                booking_id,
+                vendor_id,
+                service_id,
+                checkin,
+                checkout,
+                datetime,
+                passenger,
+                amount,
+                type
+            ) VALUES (?,?,?,?,?,?,?,?,?,?)
+            `,
+            [
+                location_id, 
+                bookingResult.insertId, 
+                hotelData[0]?.vendor_id, 
+                hotelData[0]?.service_id, 
+                checkIn,  
+                checkOut,
+                date,
+                passengers?.length, 
+                hotelData[0]?.amount * hotelQty,
+                "customized_package"
+            ]
+        );
+
+        console.log(hotelResult.insertId);
+
+
+        // const [restaurantResult] = await pool.query(
+        //     `INSERT INTO restaurant (
+        //         location_id,
+        //         booking_id,
+        //         passenger,
+        //         amount
+                
+        //     ) VALUES (?,?,?,?)
+        //     `,
+        //     [
+        //         location_id, 
+        //         bookingResult.insertId, 
+        //         passengers?.length, 
+        //         amount]
+        // );
+
+        // console.log(restaurantResult.insertId);
+
+
+
+
+
+
+
+
+
+
 
         //   const [data2] = await pool.query("INSERT INTO transport (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         //     [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
@@ -210,7 +297,7 @@ const bookCustomized = async (req, res) => {
 
         // )
 
-        
+
 
 
         // res.status(200).json({
@@ -224,7 +311,7 @@ const bookCustomized = async (req, res) => {
         // console.log(rows, fields, result,data1,data2,data3,data4);
 
 
-        
+
 
 
     } catch (error) {
@@ -237,157 +324,157 @@ const bookCustomized = async (req, res) => {
 
     }
 
-//     try {
-        
-//         const { travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
-//         //console.log(transportQty, selectedHotelId, hotelQty);
+    //     try {
 
-//         const [rows, fields, result] = await pool.query("INSERT INTO payment (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-//             [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
+    //         const { travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
+    //         //console.log(transportQty, selectedHotelId, hotelQty);
 
-//         )
+    //         const [rows, fields, result] = await pool.query("INSERT INTO payment (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    //             [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
 
-        
-
-
-//         res.status(200).json({
-//             sucess: true,
-//             data: { ...req.body, id: rows.insertId },
-//             message: "bookCustomized is add sucessfuly"
-//         })
+    //         )
 
 
 
-//         console.log(rows, fields, result);
 
-
-        
-
-
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({
-//             sucess: false,
-//             data: null,
-//             message: "internal server error (bookCustomized)" + error
-//         })
-
-//     }
-
-    
-//      try {
-        
-//         const { travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
-//         //console.log(transportQty, selectedHotelId, hotelQty);
-
-//         const [rows, fields, result] = await pool.query("INSERT INTO transport (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-//             [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
-
-//         )
-
-        
-
-
-//         res.status(200).json({
-//             sucess: true,
-//             data: { ...req.body, id: rows.insertId },
-//             message: "bookCustomized is add sucessfuly"
-//         })
+    //         res.status(200).json({
+    //             sucess: true,
+    //             data: { ...req.body, id: rows.insertId },
+    //             message: "bookCustomized is add sucessfuly"
+    //         })
 
 
 
-//         console.log(rows, fields, result);
-
-
-        
-
-
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({
-//             sucess: false,
-//             data: null,
-//             message: "internal server error (bookCustomized)" + error
-//         })
-
-//     }
+    //         console.log(rows, fields, result);
 
 
 
-// try {
-        
-//         const { travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
-//         //console.log(transportQty, selectedHotelId, hotelQty);
-
-//         const [rows, fields, result] = await pool.query("INSERT INTO hotel (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-//             [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
-
-//         )
-
-        
 
 
-//         res.status(200).json({
-//             sucess: true,
-//             data: { ...req.body, id: rows.insertId },
-//             message: "bookCustomized is add sucessfuly"
-//         })
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(500).json({
+    //             sucess: false,
+    //             data: null,
+    //             message: "internal server error (bookCustomized)" + error
+    //         })
+
+    //     }
 
 
+    //      try {
 
-//         console.log(rows, fields, result);
+    //         const { travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
+    //         //console.log(transportQty, selectedHotelId, hotelQty);
 
+    //         const [rows, fields, result] = await pool.query("INSERT INTO transport (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    //             [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
 
-        
-
-
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({
-//             sucess: false,
-//             data: null,
-//             message: "internal server error (bookCustomized)" + error
-//         })
-
-//     }
-
-
-//     try {
-        
-//         const { travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
-//         //console.log(transportQty, selectedHotelId, hotelQty);
-
-//         const [rows, fields, result] = await pool.query("INSERT INTO restaurant (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-//             [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
-
-//         )
-
-        
-
-
-//         res.status(200).json({
-//             sucess: true,
-//             data: { ...req.body, id: rows.insertId },
-//             message: "bookCustomized is add sucessfuly"
-//         })
+    //         )
 
 
 
-//         console.log(rows, fields, result);
+
+    //         res.status(200).json({
+    //             sucess: true,
+    //             data: { ...req.body, id: rows.insertId },
+    //             message: "bookCustomized is add sucessfuly"
+    //         })
 
 
-        
+
+    //         console.log(rows, fields, result);
 
 
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({
-//             sucess: false,
-//             data: null,
-//             message: "internal server error (bookCustomized)" + error
-//         })
 
-//     }
+
+
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(500).json({
+    //             sucess: false,
+    //             data: null,
+    //             message: "internal server error (bookCustomized)" + error
+    //         })
+
+    //     }
+
+
+
+    // try {
+
+    //         const { travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
+    //         //console.log(transportQty, selectedHotelId, hotelQty);
+
+    //         const [rows, fields, result] = await pool.query("INSERT INTO hotel (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    //             [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
+
+    //         )
+
+
+
+
+    //         res.status(200).json({
+    //             sucess: true,
+    //             data: { ...req.body, id: rows.insertId },
+    //             message: "bookCustomized is add sucessfuly"
+    //         })
+
+
+
+    //         console.log(rows, fields, result);
+
+
+
+
+
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(500).json({
+    //             sucess: false,
+    //             data: null,
+    //             message: "internal server error (bookCustomized)" + error
+    //         })
+
+    //     }
+
+
+    //     try {
+
+    //         const { travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
+    //         //console.log(transportQty, selectedHotelId, hotelQty);
+
+    //         const [rows, fields, result] = await pool.query("INSERT INTO restaurant (travel_date,name,age,selectedTransportId,transportQty,selectedHotelId,hotelQty,checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    //             [travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount]
+
+    //         )
+
+
+
+
+    //         res.status(200).json({
+    //             sucess: true,
+    //             data: { ...req.body, id: rows.insertId },
+    //             message: "bookCustomized is add sucessfuly"
+    //         })
+
+
+
+    //         console.log(rows, fields, result);
+
+
+
+
+
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(500).json({
+    //             sucess: false,
+    //             data: null,
+    //             message: "internal server error (bookCustomized)" + error
+    //         })
+
+    //     }
 }
 
 
@@ -398,7 +485,7 @@ module.exports = {
     addpackage,
     putpackage,
     delpackage,
-    bookCustomized	
+    bookCustomized
 
 
 }

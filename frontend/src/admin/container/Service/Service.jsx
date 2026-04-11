@@ -215,7 +215,7 @@ function Service(props) {
                  <option>---vendor---</option>
                 {vendor.vendor.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.name}
+                    {v.company_name} - {v.type}
                   </option>
                 ))}
               </TextField>

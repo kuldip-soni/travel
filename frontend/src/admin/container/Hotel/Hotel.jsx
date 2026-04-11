@@ -117,7 +117,7 @@ function Hotel(props) {
     datetime: string().required('please select datetime'),
     passenger: string().required('please enter passenger'),
     amount: string().required('please enter amount'),
-    hotel_img: mixed().required('please upload hotel image'),
+    // hotel_img: mixed().required('please upload hotel image'),
     status: string().required('please enter status')
 
 
@@ -159,7 +159,7 @@ function Hotel(props) {
   });
 
   const handleEdit = (data) => {
-    console.log(data);
+    console.log("handleEdithandleEdit",data);
     handleClickOpen();
     formik.setValues(data);
     setupdate(true);
@@ -342,10 +342,10 @@ function Hotel(props) {
               >
                 <option value="">--Select vendor--</option>
                 {vendor.vendor
-                  .filter(v => v.location_id == formik.values.location_id)
+                  .filter(v => v.location_id == formik.values.location_id  && v.type=="hotel")
                   .map((v) => (
                     <option key={v.id} value={v.id}>
-                      {v.name}
+                      {v.company_name}
                     </option>
                   ))}
               </TextField>
