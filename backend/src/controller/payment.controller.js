@@ -80,14 +80,14 @@ const putPayment =async (req,res) => {
        console.log("req.body", req.params.id);
         // console.log(req.body, req.file.path);
 
-       const {  transaction_id,mode, date,amount } = req.body;
+       const {  transaction_id,mode, date,amount, status } = req.body;
 
         console.log(transaction_id,mode, date,amount, req.params.id);
         
 
 
-       const [rows] = await pool.query("UPDATE  payment  SET transaction_id=?, mode=?, date=?,amount=? WHERE id=?",
-            [transaction_id,mode, date,amount, req.params.id]
+       const [rows] = await pool.query("UPDATE  payment  SET transaction_id=?, mode=?, date=?,amount=?,status=? WHERE id=?",
+            [transaction_id,mode, date,amount,status, req.params.id]
 
         )
 

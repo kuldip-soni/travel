@@ -284,7 +284,7 @@ function LocationDetails() {
           <>
             <h2>Select Transport</h2>
             <div style={grid}>
-              {transportdata?.transport?.filter(v => v.location_id == id)?.map(vv => (
+              {transportdata?.transport?.filter(v => v.location_id == id && v.booking_id == 0)?.map(vv => (
                 <div key={vv.id}
                   style={cardStyle(paymentFormik.values.selectedTransportId === vv.id)}
                   onClick={() => {
@@ -404,7 +404,7 @@ function LocationDetails() {
           <>
             <h2>Select Restaurant</h2>
             <div style={grid}>
-              {restaurantdata?.restaurant?.filter(v => v.location_id == id)?.map(vv => (
+              {restaurantdata?.restaurant?.filter(v => v.location_id == id && v.booking_id == 0)?.map(vv => (
                 <div key={vv.id}
                   style={cardStyle(paymentFormik.values.selectedRestaurantId === vv.id)}
                   onClick={() => {

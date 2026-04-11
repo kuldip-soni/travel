@@ -159,15 +159,23 @@ const bookCustomized = async (req, res) => {
     try {
         console.log("ookok");
 
-        const { user_id, location_id, travel_date, passengers, transaction_id, mode, date, amount, selectedHotelId, hotelQty, checkIn,  checkOut} = req.body;
+        const { user_id, location_id, travel_date, passengers, transaction_id, mode, date, amount, selectedHotelId, hotelQty, checkIn, checkOut, selectedTransportId, transportQty, from, to,selectedRestaurantId,restaurantQty } = req.body;
 
-        console.log(user_id, location_id, travel_date, passengers, transaction_id, mode, date, amount);
+
 
 
         const [hotelData] = await pool.query("SELECT * FROM hotel WHERE id=?", [selectedHotelId]);
 
         console.log("hotelData", selectedHotelId, hotelData, hotelData[0]?.vendor_id, hotelData[0]?.service_id, hotelData[0]?.amount);
-        
+
+        const [transportData] = await pool.query("SELECT * FROM transport WHERE id=?", [selectedTransportId]);
+
+        console.log("transportData", selectedTransportId, transportData, transportData[0]?.vendor_id, transportData[0]?.service_id, transportData[0]?.amount);
+
+        const [restaurantData] = await pool.query("SELECT * FROM restaurant WHERE id=?", [selectedRestaurantId]);
+
+        console.log("restaurantData", selectedRestaurantId, restaurantData, restaurantData[0]?.vendor_id, restaurantData[0]?.service_id, restaurantData[0]?.amount);
+
 
         // const {user_id, travel_date,name,age,selectedTransportId, transportQty, selectedHotelId, hotelQty, checkIn,checkOut,selectedRestaurantId,restaurantQty,mode,transaction_id,date,amount} = req.body;
         // console.log(transportQty, selectedHotelId, hotelQty);
@@ -208,19 +216,36 @@ const bookCustomized = async (req, res) => {
         console.log(paymentResult.insertId);
 
 
-        // const [transportResult] = await pool.query(
-        //     `INSERT INTO transport (
-        //         location_id,
-        //         booking_id,
-        //         passenger,
-        //         amount
-                
-        //     ) VALUES (?,?,?,?)
-        //     `,
-        //     [location_id, bookingResult.insertId, passengers?.length, amount]
-        // );
+        
+        const [transportResult] = await pool.query(
+            `INSERT INTO transport (
+        location_id,
+        booking_id,
+        vendor_id,
+        service_id,
+        \`from\`,
+        \`to\`,
+        datetime,
+        passenger,
+        amount,
+        type
+    ) VALUES (?,?,?,?,?,?,?,?,?,?)
+    `,
+            [
+                location_id,
+                bookingResult.insertId,
+                transportData[0]?.vendor_id,
+                transportData[0]?.service_id,
+                transportData[0]?.from,
+                transportData[0]?.to,
+                date,
+                passengers?.length,
+                transportData[0]?.amount * transportQty,
+                "customized_package"
+            ]
+        );
 
-        // console.log(transportResult.insertId);
+        console.log(transportResult.insertId);
 
 
         const [hotelResult] = await pool.query(
@@ -254,23 +279,34 @@ const bookCustomized = async (req, res) => {
         console.log(hotelResult.insertId);
 
 
-        // const [restaurantResult] = await pool.query(
-        //     `INSERT INTO restaurant (
-        //         location_id,
-        //         booking_id,
-        //         passenger,
-        //         amount
-                
-        //     ) VALUES (?,?,?,?)
-        //     `,
-        //     [
-        //         location_id, 
-        //         bookingResult.insertId, 
-        //         passengers?.length, 
-        //         amount]
-        // );
+        const [restaurantResult] = await pool.query(
+            `INSERT INTO restaurant (
+                location_id,
+                booking_id,
+                vendor_id,
+                service_id,
+                datetime,
+                meals,
+                passenger,
+                amount,
+                type
+            ) VALUES (?,?,?,?,?,?,?,?,?)
+            `,
+            [
+                location_id, 
+                bookingResult.insertId, 
+                restaurantData[0]?.vendor_id, 
+                restaurantData[0]?.service_id, 
+                date,
+                restaurantQty,
 
-        // console.log(restaurantResult.insertId);
+                passengers?.length, 
+                restaurantData[0]?.amount * restaurantQty,
+                "customized_package"
+            ]
+        );
+
+        console.log(restaurantResult.insertId);
 
 
 
@@ -300,11 +336,11 @@ const bookCustomized = async (req, res) => {
 
 
 
-        // res.status(200).json({
-        //     sucess: true,
-        //     data: { ...req.body, id: rows.insertId },
-        //     message: "bookCustomized is add sucessfuly"
-        // })
+        res.status(200).json({
+            sucess: true,
+            data: [],
+            message: "bookCustomized is add sucessfuly"
+        })
 
 
 

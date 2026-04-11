@@ -19,6 +19,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import TextField from '@mui/material/TextField';
 import DialogActions from '@mui/material/DialogActions';
+import MenuItem from '@mui/material/MenuItem';
 
 const mode = [
     {
@@ -28,6 +29,18 @@ const mode = [
     {
         value: 'cash',
         label: 'cash',
+    },
+
+];
+
+const status = [
+    {
+        value: 'pending',
+        label: 'pending',
+    },
+    {
+        value: 'complete',
+        label: 'complete',
     },
 
 ];
@@ -72,8 +85,8 @@ function Payment(props) {
 
     }, []);
 
-   
-    
+
+
 
     const handleEdit = (data) => {
         console.log(data);
@@ -85,20 +98,20 @@ function Payment(props) {
         const uData = paymentdata.payment?.find(v => v.booking_id == data.id);
 
         console.log(uData);
-        
+
         if (uData) {
-            paymentFormik.setValues({user_id: uData.user_id, booking_id: uData.id, transaction_id: uData.transaction_id, mode: uData.mode, date: uData.date, amount: uData.amount, status: 'complete'});
+            paymentFormik.setValues({ user_id: uData.user_id, booking_id: uData.id, transaction_id: uData.transaction_id, mode: uData.mode, date: uData.date, amount: uData.amount, status: uData.status });
 
             setupdate(true)
             setPaymentId(uData.id);
         } else {
-            
+
             // paymentFormik.setValues({...data, id: data.id})
         }
 
 
-        
-       
+
+
 
     }
 
@@ -153,6 +166,7 @@ function Payment(props) {
         transaction_id: string().required('please enter transaction_id'),
         date: string().required('please select date'),
         amount: string().required('please enter amount'),
+        status: string().required('please enter status'),
     });
 
     const paymentFormik = useFormik({
@@ -161,18 +175,20 @@ function Payment(props) {
             transaction_id: '',
             date: '',
             amount: '',
+            status: '',
+
 
         },
         validationSchema: Paymentschema,
         onSubmit: (values, { resetForm }) => {
-            console.log("sssss",update,values, bookigData);
+                console.log("sssss", update, values, bookigData);
 
             if (update) {
-                dispatch(putPayment({...values, id: paymentId}))
+                dispatch(putPayment({ ...values, id: paymentId }))
             } else {
                 dispatch(addPayment(
-                    {user_id: bookigData.user_id, booking_id: bookigData.id, transaction_id: values.transaction_id, mode: values.mode, date: values.date, amount: values.amount, status: 'payment_complete'}))
-            
+                    { user_id: bookigData.user_id, booking_id: bookigData.id, transaction_id: values.transaction_id, mode: values.mode, date: values.date, amount: values.amount, status: values.status }))
+
             }
 
             window.location.reload();
@@ -186,6 +202,8 @@ function Payment(props) {
         },
     });
 
+
+    console.log("paymentFormik.values.status", paymentFormik.values.status);
 
 
     return (
@@ -278,6 +296,28 @@ function Payment(props) {
                                 value={paymentFormik.values.amount}
                                 helperText={paymentFormik.errors.amount && paymentFormik.touched.amount ? paymentFormik.errors.amount : ''}
                             />
+
+                            <TextField
+                                error={paymentFormik.errors.status && paymentFormik.touched.status}
+                                id="standard-select-currency-native"
+                                name="status"
+                                select
+                                fullWidth
+
+                                
+                                variant="standard"
+                                onChange={paymentFormik.handleChange}
+                                onBlur={paymentFormik.handleBlur}
+                                value={paymentFormik.values.status}
+                                helperText={paymentFormik.errors.status && paymentFormik.touched.status ? paymentFormik.errors.status : ''}
+                            >
+                                <option value="">--Select status--</option>
+                                {status.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
 
 
 
