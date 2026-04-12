@@ -40,19 +40,17 @@ function BookPackage(props) {
         location_id: string().required('please select location'),
         package_id: string().required('please select package'),
         travel_date: string().required('please enter travel_date'),
-        passenger: string().required('please enter no passenger'),
+        passengers: object().required('please select name and age')
     });
 
     const formik = useFormik({
         initialValues: {
-
             location_id: '',
             package_id: '',
             travel_date: '',
-            passenger: '',
-
-
-
+            passengers: [
+                { name: '', age: '' }
+            ],
         },
         validationSchema: bookpackageschema,
 
@@ -199,24 +197,70 @@ function BookPackage(props) {
                                     />
 
                                     {/* PASSENGERS */}
-                                    <TextField 
-                                        label="Passengers"
-                                        type="number"
-                                        name="passenger"
-                                        fullWidth
-                                        margin="normal"
-                                        value={formik.values.passenger}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.passenger && Boolean(formik.errors.passenger)}
-                                        helperText={formik.touched.passenger && formik.errors.passenger}
-                                        InputLabelProps={{
-                                            style: { fontSize: '18px', color: '#555' }  // Label font size
-                                        }}
-                                        inputProps={{
-                                            style: { fontSize: '18px' } // Input text (what user types) font size
-                                        }}
-                                    />
+                                    <div style={{ marginTop: "20px" }}>
+
+                                        {/* Header */}
+                                        <div style={{ display: "flex", gap: "10px", fontWeight: "600", marginBottom: "8px" }}>
+                                            <div style={{ flex: 1 }}>Name</div>
+                                            <div style={{ width: "120px" }}>Age</div>
+                                            <div style={{ width: "50px" }}></div>
+                                        </div>
+
+                                        {formik.values.passengers?.map((p, index) => (
+                                            <div key={index} style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+
+                                                {/* Name */}
+                                                <TextField
+                                                    label="Name"
+                                                    name={`passengers[${index}].name`}
+                                                    value={p.name}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                    fullWidth
+                                                />
+
+                                                {/* Age */}
+                                                <TextField
+                                                    label="Age"
+                                                    type="number"
+                                                    name={`passengers[${index}].age`}
+                                                    value={p.age}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                    style={{ width: "120px" }}
+                                                />
+
+                                                {/* Remove */}
+                                                <Button
+                                                    type="button"
+                                                    color="error"
+                                                    variant="outlined"
+                                                    onClick={() => {
+                                                        const updated = [...formik.values.passengers];
+                                                        updated.splice(index, 1);
+                                                        formik.setFieldValue("passengers", updated);
+                                                    }}
+                                                >
+                                                    X
+                                                </Button>
+                                            </div>
+                                        ))}
+
+                                        {/* Add Button */}
+                                        <Button
+                                            type="button"
+                                            variant="contained"
+                                            size="small"
+                                            onClick={() => {
+                                                formik.setFieldValue("passengers", [
+                                                    ...(formik.values.passengers || []),
+                                                    { name: "", age: "" }
+                                                ]);
+                                            }}
+                                        >
+                                            + Add Passenger
+                                        </Button>
+                                    </div>
 
                                     {/* BUTTON */}
                                     <Button
