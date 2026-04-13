@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import Location from '../admin/container/Location/Location';
 import { ThemeProvider } from '@emotion/react';
 import theme from '../admin/theme';
+import Dashboard from '../admin/container/Dashboard/Dashboard';
 import Package from '../admin/container/Package/Package';
 import Itineary from '../admin/container/itineary/Itineary';
 import Transport from '../admin/container/Transport/Transport';
@@ -25,11 +26,13 @@ import Contact from '../admin/container/Contect/Contect';
 
 
 
+
 function AdminRoutes(props) {
     return (
         <ThemeProvider theme={theme}>
             <Layout>
                 <Routes>
+                    <Route path='/' element={<Dashboard/>} />
                     <Route path='/location' element={<Location />} />
                     <Route path='/package' element={<Package />} />
                     <Route path='/itineary' element={<Itineary />} />

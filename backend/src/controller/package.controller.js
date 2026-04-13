@@ -159,7 +159,7 @@ const bookCustomized = async (req, res) => {
     try {
         console.log("ookok");
 
-        const { user_id, location_id, travel_date, passengers, transaction_id, mode, date, amount, selectedHotelId, hotelQty, checkIn, checkOut, selectedTransportId, transportQty, from, to,selectedRestaurantId,restaurantQty } = req.body;
+        const { user_id, location_id, travel_date, passengers, transaction_id, mode, date, amount, selectedHotelId, hotelQty, checkIn, checkOut, selectedTransportId, transportQty, from, to, selectedRestaurantId, restaurantQty } = req.body;
 
 
 
@@ -185,17 +185,27 @@ const bookCustomized = async (req, res) => {
 
         const [bookingResult] = await pool.query(
             `INSERT INTO booking (
-                user_id,
-                location_id,
-                travel_date,
-                passenger,
-                type
-            ) VALUES (?,?,?,?,?)
-            `,
-            [user_id, location_id, travel_date, passengers?.length, "customized_package"]
+            user_id,
+            location_id,
+            travel_date,
+            passenger,
+            type
+           ) VALUES (?,?,?,?,?)`,
+            [user_id, location_id, travel_date, passengers.length, "customized_package"]
         );
 
-        console.log(bookingResult.insertId);
+        const booking_id = bookingResult.insertId;
+
+        const passengerValues = passengers.map(p => [
+            booking_id,
+            p.name,
+            p.age
+        ]);
+
+        await pool.query(
+            "INSERT INTO passenger (booking_id, name, age) VALUES ?",
+            [passengerValues]
+        );
 
 
 
@@ -216,8 +226,8 @@ const bookCustomized = async (req, res) => {
         console.log(paymentResult.insertId);
 
 
-        
-        const [transportResult] = await pool.query(
+        if (selectedTransportId) {
+                    const [transportResult] = await pool.query(
             `INSERT INTO transport (
         location_id,
         booking_id,
@@ -246,9 +256,11 @@ const bookCustomized = async (req, res) => {
         );
 
         console.log(transportResult.insertId);
+        }
 
 
-        const [hotelResult] = await pool.query(
+        if (selectedHotelId) {
+            const [hotelResult] = await pool.query(
             `INSERT INTO hotel (
                 location_id,
                 booking_id,
@@ -263,23 +275,25 @@ const bookCustomized = async (req, res) => {
             ) VALUES (?,?,?,?,?,?,?,?,?,?)
             `,
             [
-                location_id, 
-                bookingResult.insertId, 
-                hotelData[0]?.vendor_id, 
-                hotelData[0]?.service_id, 
-                checkIn,  
+                location_id,
+                bookingResult.insertId,
+                hotelData[0]?.vendor_id,
+                hotelData[0]?.service_id,
+                checkIn,
                 checkOut,
                 date,
-                passengers?.length, 
+                passengers?.length,
                 hotelData[0]?.amount * hotelQty,
                 "customized_package"
             ]
         );
 
         console.log(hotelResult.insertId);
+        }
 
 
-        const [restaurantResult] = await pool.query(
+        if (selectedRestaurantId) {
+                    const [restaurantResult] = await pool.query(
             `INSERT INTO restaurant (
                 location_id,
                 booking_id,
@@ -293,20 +307,24 @@ const bookCustomized = async (req, res) => {
             ) VALUES (?,?,?,?,?,?,?,?,?)
             `,
             [
-                location_id, 
-                bookingResult.insertId, 
-                restaurantData[0]?.vendor_id, 
-                restaurantData[0]?.service_id, 
+                location_id,
+                bookingResult.insertId,
+                restaurantData[0]?.vendor_id,
+                restaurantData[0]?.service_id,
                 date,
                 restaurantQty,
 
-                passengers?.length, 
+                passengers?.length,
                 restaurantData[0]?.amount * restaurantQty,
                 "customized_package"
             ]
         );
 
         console.log(restaurantResult.insertId);
+        }
+
+
+
 
 
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { object, string } from 'yup';
+import { array, number, object, string } from 'yup';
 import { getlocation } from '../../redux/slice/location.slice';
 import { getpackage } from '../../redux/slice/package.slice';
 import { bookpackage } from '../../redux/slice/bookpackage.slice';
@@ -38,9 +38,14 @@ function BookPackage(props) {
 
     let bookpackageschema = object({
         location_id: string().required('please select location'),
-        package_id: string().required('please select package'),
-        travel_date: string().required('please enter travel_date'),
-        passengers: object().required('please select name and age')
+    package_id: string().required('please select package'),
+    travel_date: string().required('please enter travel_date'),
+    passengers: array().of(
+        object({
+            name: string().required('Name required'),
+            age: number().required('Age required').positive().integer()
+        })
+    ).min(1, 'At least one passenger required')
     });
 
     const formik = useFormik({

@@ -35,7 +35,7 @@ const addPayment = async (req, res) => {
         
         const {  user_id,booking_id,transaction_id,mode, date,amount, status } = req.body;
 
-        console.log( mode, date,amount);
+        console.log( "user_id,booking_id,transaction_id,mode, date,amount, status", user_id,booking_id,transaction_id,mode, date,amount, status);
 
 
         const [rows, fields, result] = await pool.query("INSERT INTO payment (user_id,booking_id,transaction_id, mode, date,amount, status) VALUES(?,?,?,?,?,?,?)",

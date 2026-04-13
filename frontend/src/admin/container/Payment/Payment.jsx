@@ -59,9 +59,43 @@ function Payment(props) {
     const locationdata = useSelector(state => state.location);
     const paymentdata = useSelector(state => state.payment);
 
-    console.log(bookingdata);
-    console.log("paymentdata.payment", paymentdata.payment);
+    console.log("bookingdata", bookingdata.booking);
+    console.log("paymentdata", paymentdata.payment);
 
+    //     const result = bookingdata.booking?.map(booking => {
+    //     const payment = paymentdata.payment?.find(p => p.booking_id === booking.id);
+
+    //     console.log("sdcsdc",payment, booking);
+
+
+    //     return {
+    //         id: payment.id,
+    //         booking_id: booking.id,
+    //         location_id: booking.location_id,
+    //         travel_date: booking.travel_date,
+    //         passenger: booking.passenger,
+    //         amount: payment ? payment.amount : null,
+    //         status: payment ? payment.status : booking.status
+    //     };
+    // });
+
+    // console.log(result);
+
+    const result = bookingdata.booking?.map(booking => {
+        const payment = paymentdata.payment?.find(p => p.booking_id === booking.id);
+
+        return {
+            id: crypto.randomUUID(),
+            booking_id: booking.id,
+            location_id: booking.location_id,
+            travel_date: booking.travel_date,
+            passenger: booking.passenger,
+            amount: payment?.amount ?? null,
+            status: payment?.status ?? booking.status
+        };
+    });
+
+        console.log("resultresult",result);
 
     const dispatch = useDispatch();
 
@@ -97,7 +131,7 @@ function Payment(props) {
 
         const uData = paymentdata.payment?.find(v => v.booking_id == data.id);
 
-        console.log(uData);
+        console.log("uData",uData);
 
         if (uData) {
             paymentFormik.setValues({ user_id: uData.user_id, booking_id: uData.id, transaction_id: uData.transaction_id, mode: uData.mode, date: uData.date, amount: uData.amount, status: uData.status });
@@ -129,12 +163,13 @@ function Payment(props) {
             }
         },
         {
-            field: 'id',
+            field: 'booking_id',
             headerName: 'Booking id',
             width: 130
         },
         { field: 'travel_date', headerName: 'travel_date', width: 130 },
         { field: 'passenger', headerName: 'passenger', width: 130 },
+        { field: 'amount', headerName: 'amount', width: 130 },
         { field: 'status', headerName: 'status', width: 130 },
         {
             field: 'Action',
@@ -181,13 +216,13 @@ function Payment(props) {
         },
         validationSchema: Paymentschema,
         onSubmit: (values, { resetForm }) => {
-                console.log("sssss", update, values, bookigData);
+            console.log("sssss", update, values, bookigData);
 
             if (update) {
                 dispatch(putPayment({ ...values, id: paymentId }))
             } else {
                 dispatch(addPayment(
-                    { user_id: bookigData.user_id, booking_id: bookigData.id, transaction_id: values.transaction_id, mode: values.mode, date: values.date, amount: values.amount, status: values.status }))
+                    { user_id: localStorage.getItem("user_id"), booking_id: bookigData.booking_id, transaction_id: values.transaction_id, mode: values.mode, date: values.date, amount: values.amount, status: values.status }))
 
             }
 
@@ -203,7 +238,7 @@ function Payment(props) {
     });
 
 
-    console.log("paymentFormik.values.status", paymentFormik.values.status);
+    console.log("paymentFormik.values.status", paymentFormik.values);
 
 
     return (
@@ -304,7 +339,7 @@ function Payment(props) {
                                 select
                                 fullWidth
 
-                                
+
                                 variant="standard"
                                 onChange={paymentFormik.handleChange}
                                 onBlur={paymentFormik.handleBlur}
@@ -333,7 +368,7 @@ function Payment(props) {
             </React.Fragment>
 
             <DataGrid
-                rows={bookingdata.booking}
+                rows={result}
                 columns={columns}
                 initialState={{ pagination: { paginationModel } }}
                 pageSizeOptions={[5, 10]}
