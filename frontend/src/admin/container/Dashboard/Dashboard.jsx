@@ -1,317 +1,335 @@
 import React, { useMemo } from "react";
 import {
-  LineChart, Line, BarChart, Bar,
-  PieChart, Pie, Cell,
-  XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
+    LineChart, Line, BarChart, Bar,
+    PieChart, Pie, Cell,
+    XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from "recharts";
 
 const Dashboard = ({
-  bookings = [],
-  payments = [],
-  packages = [],
-  locations = [],
-  hotels = [],
-  transport = [],
-  restaurants = []
+    bookings = [],
+    payments = [],
+    packages = [],
+    locations = [],
+    hotels = [],
+    transport = [],
+    restaurants = []
 }) => {
 
-  // ✅ Fallback Static Data
-  const demoBookings = [
-    { id: 1, location_id: "Goa", travel_date: "2025-04-10", passenger: 2, created_at: "2025-04-01", status: "complete" },
-    { id: 2, location_id: "Manali", travel_date: "2025-04-15", passenger: 4, created_at: "2025-04-02", status: "pending" },
-    { id: 3, location_id: "Delhi", travel_date: "2025-04-18", passenger: 1, created_at: "2025-04-03", status: "complete" }
-  ];
+    // ✅ Fallback Static Data
+    const demoBookings = [
+        { id: 1, location_id: "Goa", travel_date: "2025-04-10", passenger: 2, created_at: "2025-04-01", status: "complete" },
+        { id: 2, location_id: "Manali", travel_date: "2025-04-15", passenger: 4, created_at: "2025-04-02", status: "pending" },
+        { id: 3, location_id: "Delhi", travel_date: "2025-04-18", passenger: 1, created_at: "2025-04-03", status: "complete" }
+    ];
 
-  const demoPayments = [
-    { booking_id: 1, amount: 15000, status: "complete", date: "2025-01-10" },
-    { booking_id: 2, amount: 20000, status: "pending", date: "2025-02-15" },
-    { booking_id: 3, amount: 10000, status: "complete", date: "2025-03-12" }
-  ];
+    const demoPayments = [
+        { booking_id: 1, amount: 15000, status: "complete", date: "2025-01-10" },
+        { booking_id: 2, amount: 20000, status: "pending", date: "2025-02-15" },
+        { booking_id: 3, amount: 10000, status: "complete", date: "2025-03-12" }
+    ];
 
-  const finalBookings = bookings.length ? bookings : demoBookings;
-  const finalPayments = payments.length ? payments : demoPayments;
+    const finalBookings = bookings.length ? bookings : demoBookings;
+    const finalPayments = payments.length ? payments : demoPayments;
 
-  // ✅ Metrics
-  const metrics = useMemo(() => ({
-    totalPackages: packages.length || 12,
-    totalLocations: locations.length || 8,
-    totalBookings: finalBookings.length,
-    totalRevenue: finalPayments
-      .filter(p => p.status === "complete")
-      .reduce((sum, p) => sum + p.amount, 0),
-    totalCustomizedPackages: finalBookings.filter(b => b.type === "customized_package").length || 3,
-    totalHotels: hotels.length || 6,
-    totalTransport: transport.length || 5,
-    totalRestaurants: restaurants.length || 10
-  }), [finalBookings, finalPayments, packages, locations, hotels, transport, restaurants]);
+    // ✅ Metrics
+    const metrics = useMemo(() => ({
+        totalPackages: packages.length || 12,
+        totalLocations: locations.length || 8,
+        totalBookings: finalBookings.length,
+        totalRevenue: finalPayments
+            .filter(p => p.status === "complete")
+            .reduce((sum, p) => sum + p.amount, 0),
+        totalCustomizedPackages: finalBookings.filter(b => b.type === "customized_package").length || 3,
+        totalHotels: hotels.length || 6,
+        totalTransport: transport.length || 5,
+        totalRestaurants: restaurants.length || 10
+    }), [finalBookings, finalPayments, packages, locations, hotels, transport, restaurants]);
 
-  const paymentMap = useMemo(() => {
-    return Object.fromEntries(finalPayments.map(p => [p.booking_id, p]));
-  }, [finalPayments]);
+    const paymentMap = useMemo(() => {
+        return Object.fromEntries(finalPayments.map(p => [p.booking_id, p]));
+    }, [finalPayments]);
 
-  // ✅ Charts Data
-  const revenueData = useMemo(() => {
-    const data = {};
-    finalPayments.forEach(p => {
-      if (p.status === "complete") {
-        const month = new Date(p.date).toLocaleString("default", { month: "short" });
-        data[month] = (data[month] || 0) + p.amount;
-      }
-    });
-    return Object.keys(data).map(k => ({ month: k, revenue: data[k] }));
-  }, [finalPayments]);
+    // ✅ Charts Data
+    const revenueData = useMemo(() => {
+        const data = {};
+        finalPayments.forEach(p => {
+            if (p.status === "complete") {
+                const month = new Date(p.date).toLocaleString("default", { month: "short" });
+                data[month] = (data[month] || 0) + p.amount;
+            }
+        });
+        return Object.keys(data).map(k => ({ month: k, revenue: data[k] }));
+    }, [finalPayments]);
 
-  const bookingData = useMemo(() => {
-    const data = {};
-    finalBookings.forEach(b => {
-      const date = new Date(b.travel_date).toISOString().split("T")[0];
-      data[date] = (data[date] || 0) + 1;
-    });
-    return Object.keys(data).map(k => ({ date: k, bookings: data[k] }));
-  }, [finalBookings]);
+    const bookingData = useMemo(() => {
+        const data = {};
+        finalBookings.forEach(b => {
+            const date = new Date(b.travel_date).toISOString().split("T")[0];
+            data[date] = (data[date] || 0) + 1;
+        });
+        return Object.keys(data).map(k => ({ date: k, bookings: data[k] }));
+    }, [finalBookings]);
 
-  // ✅ Static Charts
-  const pieData = [
-    { name: "Packages", value: 400 },
-    { name: "Hotels", value: 300 },
-    { name: "Transport", value: 300 },
-    { name: "Restaurants", value: 200 }
-  ];
+    // ✅ Static Charts
+    const pieData = [
+        { name: "Packages", value: 400 },
+        { name: "Hotels", value: 300 },
+        { name: "Transport", value: 300 },
+        { name: "Restaurants", value: 200 }
+    ];
 
-  const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444"];
+    const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444"];
 
-  const staticBarData = [
-    { month: "Jan", revenue: 12000 },
-    { month: "Feb", revenue: 15000 },
-    { month: "Mar", revenue: 10000 },
-    { month: "Apr", revenue: 18000 },
-    { month: "May", revenue: 22000 }
-  ];
+    const staticBarData = [
+        { month: "Jan", revenue: 12000 },
+        { month: "Feb", revenue: 15000 },
+        { month: "Mar", revenue: 10000 },
+        { month: "Apr", revenue: 18000 },
+        { month: "May", revenue: 22000 }
+    ];
 
-  // ✅ Tables
-  const recentBookings = useMemo(() => {
-    return [...finalBookings]
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      .slice(0, 5)
-      .map(b => ({
-        ...b,
-        amount: paymentMap[b.id]?.amount || null,
-        paymentStatus: paymentMap[b.id]?.status || b.status
-      }));
-  }, [finalBookings, paymentMap]);
+    // ✅ Tables
+    const recentBookings = useMemo(() => {
+        return [...finalBookings]
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(0, 5)
+            .map(b => ({
+                ...b,
+                amount: paymentMap[b.id]?.amount || null,
+                paymentStatus: paymentMap[b.id]?.status || b.status
+            }));
+    }, [finalBookings, paymentMap]);
 
-  const pendingPayments = useMemo(() => {
-    return finalBookings
-      .filter(b => {
-        const p = paymentMap[b.id];
-        return !p || p.status === "pending";
-      })
-      .map(b => ({
-        ...b,
-        amount: paymentMap[b.id]?.amount || null,
-        paymentStatus: paymentMap[b.id]?.status || "pending"
-      }));
-  }, [finalBookings, paymentMap]);
+    const pendingPayments = useMemo(() => {
+        return finalBookings
+            .filter(b => {
+                const p = paymentMap[b.id];
+                return !p || p.status === "pending";
+            })
+            .map(b => ({
+                ...b,
+                amount: paymentMap[b.id]?.amount || null,
+                paymentStatus: paymentMap[b.id]?.status || "pending"
+            }));
+    }, [finalBookings, paymentMap]);
 
-  return (
-    <div style={styles.container}>
+    return (
+        <div style={styles.container}>
 
-      <div style={styles.header}>
-        <h1 style={styles.title}>Admin Dashboard</h1>
-        <p style={styles.subtitle}>Overview of your system</p>
-      </div>
+            <div style={styles.header}>
+                <h1 style={styles.title}>Admin Dashboard</h1>
+                <p style={styles.subtitle}>Overview of your system</p>
+            </div>
 
-      {/* Cards */}
-      <div style={styles.cardGrid}>
-        <Card title="Packages" value={metrics.totalPackages} color="#3b82f6" />
-        <Card title="Locations" value={metrics.totalLocations} color="#8b5cf6" />
-        <Card title="Bookings" value={metrics.totalBookings} color="#22c55e" />
-        <Card title="Revenue" value={`₹${metrics.totalRevenue}`} color="#f59e0b" />
-        <Card title="Customized" value={metrics.totalCustomizedPackages} color="#ec4899" />
-        <Card title="Hotels" value={metrics.totalHotels} color="#6366f1" />
-        <Card title="Transport" value={metrics.totalTransport} color="#f97316" />
-        <Card title="Restaurants" value={metrics.totalRestaurants} color="#14b8a6" />
-      </div>
+            {/* Cards */}
+            <div className="row mt-3">
+                <div className="col-md-3">
+                    <Card title="Packages" value={metrics.totalPackages} color="#3b82f6" />
+                </div>
+                <div className="col-md-3">
+                    <Card title="Locations" value={metrics.totalLocations} color="#8b5cf6" />
+                </div>
+                <div className="col-md-3">
+                    <Card title="Bookings" value={metrics.totalBookings} color="#22c55e" />
+                </div>
+                <div className="col-md-3">
+                    <Card title="Revenue" value={`₹${metrics.totalRevenue}`} color="#f59e0b" />
+                </div>
+            </div>
 
-     
+            <div className="row mt-3">
+                <div className="col-md-3">
+                    <Card title="Customized" value={metrics.totalCustomizedPackages} color="#ec4899" />
+                </div>
+                <div className="col-md-3">
+                    <Card title="Hotels" value={metrics.totalHotels} color="#6366f1" />
+                </div>
+                <div className="col-md-3">
+                    <Card title="Transport" value={metrics.totalTransport} color="#f97316" />
+                </div>
+                <div className="col-md-3">
+                    <Card title="Restaurants" value={metrics.totalRestaurants} color="#14b8a6" />
+                </div>
+            </div>
 
-      {/* Extra Charts */}
-      <div style={styles.grid2}>
-        <ChartCard title="Service Distribution">
-          <PieChart>
-            <Pie data={pieData} dataKey="value" outerRadius={100} label>
-              {pieData.map((e, i) => (
-                <Cell key={i} fill={COLORS[i]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </ChartCard>
 
-        <ChartCard title="Monthly Revenue (Static)">
-          <BarChart data={staticBarData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="revenue" fill="#6366f1" />
-          </BarChart>
-        </ChartCard>
-      </div>
+            {/* Extra Charts */}
+            <div style={styles.grid2}>
+                <ChartCard title="Service Distribution">
+                    <PieChart>
+                        <Pie data={pieData} dataKey="value" outerRadius={100} label>
+                            {pieData.map((e, i) => (
+                                <Cell key={i} fill={COLORS[i]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                    </PieChart>
+                </ChartCard>
 
-      {/* Tables */}
-      <div style={styles.grid2}>
-        <Table title="Recent Bookings" data={recentBookings} />
-        <Table title="Pending Payments" data={pendingPayments} />
-      </div>
+                <ChartCard title="Monthly Revenue (Static)">
+                    <BarChart data={staticBarData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="revenue" fill="#6366f1" />
+                    </BarChart>
+                </ChartCard>
+            </div>
 
-    </div>
-  );
+            {/* Tables */}
+            <div style={styles.grid2}>
+                <Table title="Recent Bookings" data={recentBookings} />
+                <Table title="Pending Payments" data={pendingPayments} />
+            </div>
+
+        </div>
+    );
 };
 
 // Reusable Chart Card
 const ChartCard = ({ title, children }) => (
-  <div style={styles.card}>
-    <h3>{title}</h3>
-    <ResponsiveContainer width="100%" height={300}>
-      {children}
-    </ResponsiveContainer>
-  </div>
+    <div style={styles.card}>
+        <h3>{title}</h3>
+        <ResponsiveContainer width="100%" height={300}>
+            {children}
+        </ResponsiveContainer>
+    </div>
 );
 
 // Card
 const Card = ({ title, value, color }) => (
-  <div style={styles.cardBox}>
-    <div>
-      <p style={{ color: "#777" }}>{title}</p>
-      <h2>{value}</h2>
+    <div style={styles.cardBox}>
+        <div>
+            <p style={{ color: "#777" }}>{title}</p>
+            <h2>{value}</h2>
+        </div>
+        <div style={{ ...styles.dot, backgroundColor: color }} />
     </div>
-    <div style={{ ...styles.dot, backgroundColor: color }} />
-  </div>
 );
 
 // Table + Status same as before...
 
 const Table = ({ title, data }) => (
-  <div
-    style={{
-      background: "#fff",
-      padding: "16px",
-      borderRadius: "12px",
-      boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
-    }}
-  >
-    <h3 style={{ marginBottom: "12px", fontWeight: "600" }}>{title}</h3>
-
-    <div style={{ width: "100%", overflowX: "auto" }}>
-      <table
+    <div
         style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          minWidth: "600px"
+            background: "#fff",
+            padding: "16px",
+            borderRadius: "12px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
         }}
-      >
-        <thead>
-          <tr style={{ background: "#f9fafb" }}>
-            <th style={thStyle}>ID</th>
-            <th style={thStyle}>Location</th>
-            <th style={thStyle}>Date</th>
-            <th style={thStyle}>Passenger</th>
-            <th style={thStyle}>Amount</th>
-            <th style={thStyle}>Status</th>
-          </tr>
-        </thead>
+    >
+        <h3 style={{ marginBottom: "12px", fontWeight: "600" }}>{title}</h3>
 
-        <tbody>
-          {data.length ? (
-            data.map((row, index) => (
-              <tr
-                key={row.id}
+        <div style={{ width: "100%", overflowX: "auto" }}>
+            <table
                 style={{
-                  background: index % 2 === 0 ? "#fafafa" : "#ffffff",
-                  transition: "0.2s"
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    minWidth: "600px"
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "#f1f5f9")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background =
-                    index % 2 === 0 ? "#fafafa" : "#ffffff")
-                }
-              >
-                <td style={tdStyle}>{row.id}</td>
-                <td style={tdStyle}>{row.location_id}</td>
-                <td style={tdStyle}>{row.travel_date}</td>
-                <td style={tdStyle}>{row.passenger}</td>
-                <td style={tdStyle}>₹{row.amount || "-"}</td>
-                <td style={tdStyle}>
-                  <span
-                    style={{
-                      padding: "5px 10px",
-                      borderRadius: "20px",
-                      fontSize: "12px",
-                      fontWeight: "500",
-                      textTransform: "capitalize",
-                      background:
-                        row.paymentStatus === "complete"
-                          ? "#dcfce7"
-                          : "#fef3c7",
-                      color:
-                        row.paymentStatus === "complete"
-                          ? "#166534"
-                          : "#92400e"
-                    }}
-                  >
-                    {row.paymentStatus}
-                  </span>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                colSpan="6"
-                style={{
-                  textAlign: "center",
-                  padding: "20px",
-                  color: "#888"
-                }}
-              >
-                No data available
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            >
+                <thead>
+                    <tr style={{ background: "#f9fafb" }}>
+                        <th style={thStyle}>ID</th>
+                        <th style={thStyle}>Location</th>
+                        <th style={thStyle}>Date</th>
+                        <th style={thStyle}>Passenger</th>
+                        <th style={thStyle}>Amount</th>
+                        <th style={thStyle}>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {data.length ? (
+                        data.map((row, index) => (
+                            <tr
+                                key={row.id}
+                                style={{
+                                    background: index % 2 === 0 ? "#fafafa" : "#ffffff",
+                                    transition: "0.2s"
+                                }}
+                                onMouseEnter={(e) =>
+                                    (e.currentTarget.style.background = "#f1f5f9")
+                                }
+                                onMouseLeave={(e) =>
+                                (e.currentTarget.style.background =
+                                    index % 2 === 0 ? "#fafafa" : "#ffffff")
+                                }
+                            >
+                                <td style={tdStyle}>{row.id}</td>
+                                <td style={tdStyle}>{row.location_id}</td>
+                                <td style={tdStyle}>{row.travel_date}</td>
+                                <td style={tdStyle}>{row.passenger}</td>
+                                <td style={tdStyle}>₹{row.amount || "-"}</td>
+                                <td style={tdStyle}>
+                                    <span
+                                        style={{
+                                            padding: "5px 10px",
+                                            borderRadius: "20px",
+                                            fontSize: "12px",
+                                            fontWeight: "500",
+                                            textTransform: "capitalize",
+                                            background:
+                                                row.paymentStatus === "complete"
+                                                    ? "#dcfce7"
+                                                    : "#fef3c7",
+                                            color:
+                                                row.paymentStatus === "complete"
+                                                    ? "#166534"
+                                                    : "#92400e"
+                                        }}
+                                    >
+                                        {row.paymentStatus}
+                                    </span>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td
+                                colSpan="6"
+                                style={{
+                                    textAlign: "center",
+                                    padding: "20px",
+                                    color: "#888"
+                                }}
+                            >
+                                No data available
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
 );
 
 // reusable inline styles
 const thStyle = {
-  padding: "10px",
-  textAlign: "left",
-  fontSize: "14px",
-  borderBottom: "1px solid #e5e7eb"
+    padding: "10px",
+    textAlign: "left",
+    fontSize: "14px",
+    borderBottom: "1px solid #e5e7eb"
 };
 
 const tdStyle = {
-  padding: "10px",
-  fontSize: "14px",
-  borderBottom: "1px solid #f1f5f9"
+    padding: "10px",
+    fontSize: "14px",
+    borderBottom: "1px solid #f1f5f9"
 };
 
 const styles = {
-  container: { padding: 20, background: "#f3f4f6", minHeight: "100vh" },
-  header: { marginBottom: 20 },
-  title: { margin: 0 },
-  subtitle: { color: "#666" },
-  cardGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 15 },
-  grid2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 20 },
-  card: { background: "#fff", padding: 15, borderRadius: 12, boxShadow: "0 2px 6px rgba(0,0,0,0.05)" },
-  cardBox: { background: "#fff", padding: 15, borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center" },
-  dot: { width: 14, height: 14, borderRadius: "50%" },
-  table: { width: "100%", marginTop: 10, borderCollapse: "collapse" }
+    container: { padding: 20, background: "#f3f4f6", minHeight: "100vh" },
+    header: { marginBottom: 20 },
+    title: { margin: 0 },
+    subtitle: { color: "#666" },
+    cardGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 15 },
+    grid2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 20 },
+    card: { background: "#fff", padding: 15, borderRadius: 12, boxShadow: "0 2px 6px rgba(0,0,0,0.05)" },
+    cardBox: { background: "#fff", padding: 15, borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center" },
+    dot: { width: 14, height: 14, borderRadius: "50%" },
+    table: { width: "100%", marginTop: 10, borderCollapse: "collapse" }
 };
 
 export default Dashboard;
