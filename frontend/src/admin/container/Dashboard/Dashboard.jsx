@@ -193,29 +193,113 @@ const Card = ({ title, value, color }) => (
 // Table + Status same as before...
 
 const Table = ({ title, data }) => (
-  <div style={styles.card}>
-    <h3>{title}</h3>
-    <table style={styles.table}>
-      <thead>
-        <tr>
-          <th>ID</th><th>Location</th><th>Date</th><th>Passenger</th><th>Amount</th><th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map(row => (
-          <tr key={row.id}>
-            <td>{row.id}</td>
-            <td>{row.location_id}</td>
-            <td>{row.travel_date}</td>
-            <td>{row.passenger}</td>
-            <td>₹{row.amount || "-"}</td>
-            <td>{row.paymentStatus}</td>
+  <div
+    style={{
+      background: "#fff",
+      padding: "16px",
+      borderRadius: "12px",
+      boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
+    }}
+  >
+    <h3 style={{ marginBottom: "12px", fontWeight: "600" }}>{title}</h3>
+
+    <div style={{ width: "100%", overflowX: "auto" }}>
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          minWidth: "600px"
+        }}
+      >
+        <thead>
+          <tr style={{ background: "#f9fafb" }}>
+            <th style={thStyle}>ID</th>
+            <th style={thStyle}>Location</th>
+            <th style={thStyle}>Date</th>
+            <th style={thStyle}>Passenger</th>
+            <th style={thStyle}>Amount</th>
+            <th style={thStyle}>Status</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          {data.length ? (
+            data.map((row, index) => (
+              <tr
+                key={row.id}
+                style={{
+                  background: index % 2 === 0 ? "#fafafa" : "#ffffff",
+                  transition: "0.2s"
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "#f1f5f9")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background =
+                    index % 2 === 0 ? "#fafafa" : "#ffffff")
+                }
+              >
+                <td style={tdStyle}>{row.id}</td>
+                <td style={tdStyle}>{row.location_id}</td>
+                <td style={tdStyle}>{row.travel_date}</td>
+                <td style={tdStyle}>{row.passenger}</td>
+                <td style={tdStyle}>₹{row.amount || "-"}</td>
+                <td style={tdStyle}>
+                  <span
+                    style={{
+                      padding: "5px 10px",
+                      borderRadius: "20px",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      textTransform: "capitalize",
+                      background:
+                        row.paymentStatus === "complete"
+                          ? "#dcfce7"
+                          : "#fef3c7",
+                      color:
+                        row.paymentStatus === "complete"
+                          ? "#166534"
+                          : "#92400e"
+                    }}
+                  >
+                    {row.paymentStatus}
+                  </span>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan="6"
+                style={{
+                  textAlign: "center",
+                  padding: "20px",
+                  color: "#888"
+                }}
+              >
+                No data available
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
   </div>
 );
+
+// reusable inline styles
+const thStyle = {
+  padding: "10px",
+  textAlign: "left",
+  fontSize: "14px",
+  borderBottom: "1px solid #e5e7eb"
+};
+
+const tdStyle = {
+  padding: "10px",
+  fontSize: "14px",
+  borderBottom: "1px solid #f1f5f9"
+};
 
 const styles = {
   container: { padding: 20, background: "#f3f4f6", minHeight: "100vh" },
