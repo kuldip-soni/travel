@@ -122,42 +122,28 @@ const Dashboard = ({
             </div>
 
             {/* Cards */}
-            <div className="row mt-3">
-                <div className="col-md-3">
-                    <Card title="Packages" value={metrics.totalPackages} color="#3b82f6" />
-                </div>
-                <div className="col-md-3">
-                    <Card title="Locations" value={metrics.totalLocations} color="#8b5cf6" />
-                </div>
-                <div className="col-md-3">
-                    <Card title="Bookings" value={metrics.totalBookings} color="#22c55e" />
-                </div>
-                <div className="col-md-3">
-                    <Card title="Revenue" value={`₹${metrics.totalRevenue}`} color="#f59e0b" />
-                </div>
-            </div>
+            <div style={styles.cardGrid}>
+                <Card title="Locations" value={metrics.totalLocations} color="#8b5cf6" />
+                <Card title="Packages" value={metrics.totalPackages} color="#3b82f6" />
+                <Card title="Bookings" value={metrics.totalBookings} color="#22c55e" />
+                <Card title="Revenue" value={`₹${metrics.totalRevenue}`} color="#f59e0b" />
 
-            <div className="row mt-3">
-                <div className="col-md-3">
-                    <Card title="Customized" value={metrics.totalCustomizedPackages} color="#ec4899" />
-                </div>
-                <div className="col-md-3">
-                    <Card title="Hotels" value={metrics.totalHotels} color="#6366f1" />
-                </div>
-                <div className="col-md-3">
-                    <Card title="Transport" value={metrics.totalTransport} color="#f97316" />
-                </div>
-                <div className="col-md-3">
-                    <Card title="Restaurants" value={metrics.totalRestaurants} color="#14b8a6" />
-                </div>
+                <Card title="Customized" value={metrics.totalCustomizedPackages} color="#ec4899" />
+                <Card title="Hotels" value={metrics.totalHotels} color="#6366f1" />
+                <Card title="Transport" value={metrics.totalTransport} color="#f97316" />
+                <Card title="Restaurants" value={metrics.totalRestaurants} color="#14b8a6" />
             </div>
 
 
             {/* Extra Charts */}
             <div style={styles.grid2}>
                 <ChartCard title="Service Distribution">
-                    <PieChart>
-                        <Pie data={pieData} dataKey="value" outerRadius={100} label>
+                     <PieChart
+                        style={{ outline: "none" }}
+                        tabIndex={-1}
+                        onMouseDown={(e) => e.preventDefault()}
+                    >
+                        <Pie data={pieData} dataKey="value" outerRadius={100}>
                             {pieData.map((e, i) => (
                                 <Cell key={i} fill={COLORS[i]} />
                             ))}
@@ -167,13 +153,19 @@ const Dashboard = ({
                 </ChartCard>
 
                 <ChartCard title="Monthly Revenue (Static)">
-                    <BarChart data={staticBarData}>
+                    <BarChart
+                        data={staticBarData}
+                        style={{ outline: "none" }}
+                        tabIndex={-1}
+                        onMouseDown={(e) => e.preventDefault()}
+                    >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
                         <YAxis />
                         <Tooltip />
                         <Bar dataKey="revenue" fill="#6366f1" />
                     </BarChart>
+
                 </ChartCard>
             </div>
 
@@ -191,15 +183,31 @@ const Dashboard = ({
 const ChartCard = ({ title, children }) => (
     <div style={styles.card}>
         <h3>{title}</h3>
-        <ResponsiveContainer width="100%" height={300}>
-            {children}
-        </ResponsiveContainer>
+
+        <div
+            tabIndex={-1}
+            style={{ outline: "none" }}
+            onMouseDown={(e) => e.preventDefault()}
+        >
+            <ResponsiveContainer width="100%" height={300}>
+                {children}
+            </ResponsiveContainer>
+        </div>
     </div>
 );
-
 // Card
 const Card = ({ title, value, color }) => (
-    <div style={styles.cardBox}>
+    <div
+        style={styles.cardBox}
+        onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-5px)";
+            e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.12)";
+        }}
+        onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.08)";
+        }}
+    >
         <div>
             <p style={{ color: "#777" }}>{title}</p>
             <h2>{value}</h2>
@@ -207,7 +215,6 @@ const Card = ({ title, value, color }) => (
         <div style={{ ...styles.dot, backgroundColor: color }} />
     </div>
 );
-
 // Table + Status same as before...
 
 const Table = ({ title, data }) => (
@@ -324,10 +331,25 @@ const styles = {
     header: { marginBottom: 20 },
     title: { margin: 0 },
     subtitle: { color: "#666" },
-    cardGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 15 },
+   cardGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)", // ✅ FIXED: exactly 4 per row
+    gap: 20,
+    marginTop: 20
+},
+cardBox: {
+    background: "#fff",
+    padding: 20,
+    borderRadius: 12,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+    transition: "0.3s",
+    cursor: "pointer"
+},
     grid2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 20 },
     card: { background: "#fff", padding: 15, borderRadius: 12, boxShadow: "0 2px 6px rgba(0,0,0,0.05)" },
-    cardBox: { background: "#fff", padding: 15, borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center" },
     dot: { width: 14, height: 14, borderRadius: "50%" },
     table: { width: "100%", marginTop: 10, borderCollapse: "collapse" }
 };
