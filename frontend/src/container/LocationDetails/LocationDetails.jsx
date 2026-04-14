@@ -47,7 +47,7 @@ function LocationDetails() {
     dispatch(getservice())
   }, [dispatch]);
 
-  const service = useSelector(state => state.service) 
+  const service = useSelector(state => state.service)
 
   const Paymentschema = object({
     travel_date: date().required(),
@@ -115,7 +115,7 @@ function LocationDetails() {
     validationSchema: Paymentschema,
     onSubmit: (values, { resetForm }) => {
       // add
-      dispatch(bookCustomized({...values, user_id: localStorage.getItem("user_id"), location_id: id})) 
+      dispatch(bookCustomized({ ...values, user_id: localStorage.getItem("user_id"), location_id: id }))
       // resetForm();
     },
   });
@@ -206,115 +206,432 @@ function LocationDetails() {
 
   console.log("paymentFormikpaymentFormik", paymentFormik.values);
 
+  const rowStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginBottom: "10px",
+  fontSize: "15px",
+};
+
+const qtyBtn = {
+  width: "35px",
+  height: "35px",
+  borderRadius: "10px",
+  border: "none",
+  background: "#007bff",
+  color: "#fff",
+  fontSize: "18px",
+  cursor: "pointer",
+};
+
+
+const dateInput = {
+  flex: 1,
+  padding: "8px",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+  outline: "none",
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "10px",
+  borderRadius: "10px",
+  border: "1px solid #ddd",
+  outline: "none",
+  marginTop: "5px",
+};
+
+const labelStyle = {
+  fontSize: "14px",
+  fontWeight: "500",
+  color: "#333",
+};
+
+const errorStyle = {
+  color: "red",
+  fontSize: "12px",
+  marginTop: "5px",
+};
 
   return (
     <div style={container}>
 
       {/* HERO */}
-      <div style={{ height: "300px", marginBottom: "30px" }}>
-        <img src={"http://localhost:4000/" + lD?.image}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      <div style={{ position: "relative", height: "300px", marginBottom: "30px", marginTop: "100px" }}>
+        <img
+          src={"http://localhost:4000/" + lD?.image}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+            borderRadius: "16px",
+          }}
+        />
+        <h1
+          style={{
+            position: "absolute",
+            bottom: "20px",
+            left: "20px",
+            color: "#fff",
+            background: "rgba(0,0,0,0.6)",
+            padding: "10px 20px",
+            borderRadius: "10px",
+          }}
+        >
+          {lD?.name}
+        </h1>
       </div>
       <form onSubmit={paymentFormik.handleSubmit} id="payment-form">
         {/* PASSENGERS */}
-        <span>Travel Date: </span>
-        <TextField
-          error={paymentFormik.errors.travel_date && paymentFormik.touched.travel_date}
-          id="travel_date"
-          name="travel_date"
-          type="date"
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.travel_date}
-          helperText={paymentFormik.errors.travel_date && paymentFormik.touched.travel_date ? paymentFormik.errors.travel_date : ''}
-        />
-        <h3>Passenger Details</h3>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            marginBottom: "15px",
+          }}
+        >
+          <span style={{ fontWeight: "500" }}>Travel Date:</span>
 
-        <br /><br />
-        {paymentFormik.values.passengers.map((p, i) => (
-          <div key={i}>
-            <input
-              placeholder="Name"
-              value={p.name}
-              onChange={(e) => handlePassengerChange(i, "name", e.target.value)}
-            />
-            <input
-              type="number"
-              placeholder="Age"
-              value={p.age}
-              onChange={(e) => handlePassengerChange(i, "age", e.target.value)}
-            />
-
-            <button type="button" onClick={addPassenger}>+</button>
-            {paymentFormik.values.passengers.length > 1 && (
-              <button
-                type="button"
-                onClick={() => {
-                  const updated = paymentFormik.values.passengers.filter((_, index) => index !== i);
-                  paymentFormik.setFieldValue("passengers", updated);
-                }}
-              >
-                -
-              </button>
-            )}
-          </div>
-        ))}
-
-        {/* SUMMARY */}
-        <div style={{ background: "#f1f3f5", padding: "20px", margin: "20px 0" }}>
-          <p>Transport: ₹{transportPrice}</p>
-          <p>Hotel: ₹{hotelPrice}</p>
-          <p>Restaurant: ₹{restaurantPrice}</p>
-          <p>Passengers: {totalPassengers}</p>
-          <h2>Total: ₹{finalPrice}</h2>
+          <TextField
+            error={paymentFormik.errors.travel_date && paymentFormik.touched.travel_date}
+            id="travel_date"
+            name="travel_date"
+            type="date"
+            variant="standard"
+            onChange={paymentFormik.handleChange}
+            onBlur={paymentFormik.handleBlur}
+            value={paymentFormik.values.travel_date}
+            helperText={
+              paymentFormik.errors.travel_date && paymentFormik.touched.travel_date
+                ? paymentFormik.errors.travel_date
+                : ""
+            }
+            style={{ minWidth: "200px" }} // optional control width
+          />
         </div>
 
+       <div
+  style={{
+    background: "#fff",
+    padding: "20px",
+    borderRadius: "16px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+    marginBottom: "20px",
+  }}
+>
+  <h3 style={{ marginBottom: "15px" }}>
+    Passenger Details ({paymentFormik.values.passengers.length})
+  </h3>
+
+  {paymentFormik.values.passengers.map((p, i) => (
+    <div
+      key={i}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        marginBottom: "12px",
+        padding: "12px",
+        borderRadius: "10px",
+        background: "#f9fafb",
+      }}
+    >
+      {/* Name */}
+      <input
+        placeholder="Full Name"
+        value={p.name}
+        onChange={(e) =>
+          handlePassengerChange(i, "name", e.target.value)
+        }
+        style={{
+          flex: 1,
+          padding: "10px",
+          borderRadius: "8px",
+          border: "1px solid #ccc",
+          outline: "none",
+        }}
+      />
+
+      {/* Age */}
+      <input
+        type="number"
+        placeholder="Age"
+        value={p.age}
+        onChange={(e) =>
+          handlePassengerChange(i, "age", e.target.value)
+        }
+        style={{
+          width: "90px",
+          padding: "10px",
+          borderRadius: "8px",
+          border: "1px solid #ccc",
+          outline: "none",
+        }}
+      />
+
+      {/* Remove Button */}
+      {paymentFormik.values.passengers.length > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            const updated = paymentFormik.values.passengers.filter(
+              (_, index) => index !== i
+            );
+            paymentFormik.setFieldValue("passengers", updated);
+          }}
+          style={{
+            padding: "8px 12px",
+            background: "#ff4d4f",
+            color: "#fff",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
+        >
+          Remove
+        </button>
+      )}
+    </div>
+  ))}
+
+  {/* Add Button */}
+  <button
+    type="button"
+    onClick={addPassenger}
+    style={{
+      marginTop: "10px",
+      padding: "10px 15px",
+      background: "#007bff",
+      color: "#fff",
+      border: "none",
+      borderRadius: "10px",
+      cursor: "pointer",
+      fontWeight: "500",
+    }}
+  >
+    + Add Passenger
+  </button>
+</div>
+
+        <div
+  style={{
+    background: "#fff",
+    padding: "20px",
+    borderRadius: "16px",
+    boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+    margin: "25px 0",
+  }}
+>
+  <h3 style={{ marginBottom: "15px" }}>Price Summary</h3>
+
+  {/* Row */}
+  <div style={rowStyle}>
+    <span>🚗 Transport</span>
+    <span>₹{transportPrice}</span>
+  </div>
+
+  <div style={rowStyle}>
+    <span>🏨 Hotel</span>
+    <span>₹{hotelPrice}</span>
+  </div>
+
+  <div style={rowStyle}>
+    <span>🍽 Restaurant</span>
+    <span>₹{restaurantPrice}</span>
+  </div>
+
+  <div style={rowStyle}>
+    <span>👤 Passengers</span>
+    <span>{totalPassengers}</span>
+  </div>
+
+  {/* Divider */}
+  <div
+    style={{
+      height: "1px",
+      background: "#eee",
+      margin: "15px 0",
+    }}
+  />
+
+  {/* Total */}
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      fontSize: "20px",
+      fontWeight: "600",
+    }}
+  >
+    <span>Total</span>
+    <span style={{ color: "#007bff" }}>₹{finalPrice}</span>
+  </div>
+</div>
 
 
         {/* SECTION TOGGLE */}
-        <div style={{ margin: "20px 0" }}>
-          <button type="button" style={toggleBtn(activeSection === "transport")} onClick={() => setActiveSection("transport")}>Transport</button>
-          <button type="button" style={toggleBtn(activeSection === "hotel")} onClick={() => setActiveSection("hotel")}>Hotel</button>
-          <button type="button" style={toggleBtn(activeSection === "restaurant")} onClick={() => setActiveSection("restaurant")}>Restaurant</button>
-        </div>
+        <div
+  style={{
+    display: "flex",
+    gap: "10px",
+    background: "#f1f3f5",
+    padding: "8px",
+    borderRadius: "12px",
+    margin: "20px 0",
+    width: "fit-content",
+  }}
+>
+  {/* Transport */}
+  <button
+    type="button"
+    onClick={() => setActiveSection("transport")}
+    style={{
+      padding: "10px 18px",
+      borderRadius: "10px",
+      border: "none",
+      cursor: "pointer",
+      fontWeight: "500",
+      background:
+        activeSection === "transport" ? "#007bff" : "transparent",
+      color: activeSection === "transport" ? "#fff" : "#333",
+      transition: "0.2s",
+    }}
+  >
+    🚗 Transport
+  </button>
+
+  {/* Hotel */}
+  <button
+    type="button"
+    onClick={() => setActiveSection("hotel")}
+    style={{
+      padding: "10px 18px",
+      borderRadius: "10px",
+      border: "none",
+      cursor: "pointer",
+      fontWeight: "500",
+      background:
+        activeSection === "hotel" ? "#007bff" : "transparent",
+      color: activeSection === "hotel" ? "#fff" : "#333",
+      transition: "0.2s",
+    }}
+  >
+    🏨 Hotel
+  </button>
+
+  {/* Restaurant */}
+  <button
+    type="button"
+    onClick={() => setActiveSection("restaurant")}
+    style={{
+      padding: "10px 18px",
+      borderRadius: "10px",
+      border: "none",
+      cursor: "pointer",
+      fontWeight: "500",
+      background:
+        activeSection === "restaurant" ? "#007bff" : "transparent",
+      color: activeSection === "restaurant" ? "#fff" : "#333",
+      transition: "0.2s",
+    }}
+  >
+    🍽 Restaurant
+  </button>
+</div>
 
         {/* TRANSPORT */}
-        {activeSection === "transport" && (
-          <>
-            <h2>Select Transport</h2>
-            <div style={grid}>
-              {transportdata?.transport?.filter(v => v.location_id == id && v.booking_id == 0)?.map(vv => (
-                <div key={vv.id}
-                  style={cardStyle(paymentFormik.values.selectedTransportId === vv.id)}
-                  onClick={() => {
-                    const current = paymentFormik.values.selectedTransportId;
+      
+{activeSection === "transport" && (
+  <>
+    <h2 style={{ marginBottom: "15px" }}>🚗 Select Transport</h2>
 
-                    if (current === vv.id) {
-                      paymentFormik.setFieldValue("selectedTransportId", "");
-                      paymentFormik.setFieldValue("transportQty", 0);
-                    } else {
-                      paymentFormik.setFieldValue("selectedTransportId", vv.id);
-                      paymentFormik.setFieldValue("transportQty", 1);
-                    }
-                  }}>
-                  <h4>{vv.from} - {vv.to}</h4>
-                  <p>₹{vv.amount}</p>
+    <div style={grid}>
+      {transportdata?.transport
+        ?.filter((v) => v.location_id == id && v.booking_id == 0)
+        ?.map((vv) => {
+          const isSelected =
+            paymentFormik.values.selectedTransportId === vv.id;
 
+          return (
+            <div
+              key={vv.id}
+              onClick={() => {
+                const current =
+                  paymentFormik.values.selectedTransportId;
+
+                if (current === vv.id) {
+                  paymentFormik.setFieldValue("selectedTransportId", "");
+                  paymentFormik.setFieldValue("transportQty", 0);
+                } else {
+                  paymentFormik.setFieldValue("selectedTransportId", vv.id);
+                  paymentFormik.setFieldValue("transportQty", 1);
+                }
+              }}
+              style={{
+                background: "#fff",
+                borderRadius: "16px",
+                padding: "15px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                border: isSelected
+                  ? "2px solid #007bff"
+                  : "1px solid #eee",
+                cursor: "pointer",
+                transition: "0.2s",
+                transform: isSelected ? "scale(1.02)" : "scale(1)",
+              }}
+            >
+              {/* Route */}
+              <h4 style={{ marginBottom: "8px" }}>
+                🚍 {vv.from} → {vv.to}
+              </h4>
+
+              {/* Price */}
+              <p
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#007bff",
+                  marginBottom: "10px",
+                }}
+              >
+                ₹{vv.amount}
+              </p>
+
+              {/* Quantity Controls */}
+              {isSelected && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "12px",
+                    marginTop: "10px",
+                  }}
+                >
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       paymentFormik.setFieldValue(
                         "transportQty",
-                        Math.max(1, paymentFormik.values.transportQty - 1)
+                        Math.max(
+                          1,
+                          paymentFormik.values.transportQty - 1
+                        )
                       );
                     }}
+                    style={qtyBtn}
                   >
-                    -
+                    −
                   </button>
 
-                  <span>{paymentFormik.values.transportQty}</span>
+                  <span style={{ fontSize: "16px", fontWeight: "500" }}>
+                    {paymentFormik.values.transportQty}
+                  </span>
 
                   <button
                     type="button"
@@ -325,60 +642,171 @@ function LocationDetails() {
                         paymentFormik.values.transportQty + 1
                       );
                     }}
+                    style={qtyBtn}
                   >
                     +
                   </button>
                 </div>
-              ))}
+              )}
             </div>
-          </>
-        )}
+          );
+        })}
+    </div>
+  </>
+)}
 
         {/* HOTEL */}
-        {activeSection === "hotel" && (
-          <>
-            <h2>Select Hotel</h2>
-            <div style={grid}>
-              {hoteldata?.hotel?.filter(v => v.location_id == id && v.booking_id == 0)?.map(vv => (
-                <div key={vv.id}
-                  style={cardStyle(paymentFormik.values.selectedHotelId === vv.id)}
-                  onClick={() => {
-                    if (paymentFormik.values.selectedHotelId === vv.id) {
-                      paymentFormik.setFieldValue("selectedHotelId", "")
-                      paymentFormik.setFieldValue("hotelQty", 0)
-                      paymentFormik.setFieldValue("checkIn", "")
-                      paymentFormik.setFieldValue("checkOut", "")
-                    } else {
-                      paymentFormik.setFieldValue("selectedHotelId", vv.id)
-                      paymentFormik.setFieldValue("hotelQty", 1)
-                    }
-                  }}>
-                    <h2>{service?.service?.find(v9 => v9.id == vv.service_id)?.name}</h2>
-                    <p>
-                      {service?.service?.find(v9 => v9.id == vv.service_id)?.description}
-                    </p>
-                  <img src={"http://localhost:4000/" + vv.hotel_img}
-                    style={{ width: "100%", height: "140px", objectFit: "cover" }} />
-                  <p>₹{vv.amount}</p>
+{activeSection === "hotel" && (
+  <>
+    <h2 style={{ marginBottom: "15px" }}>🏨 Select Hotel</h2>
 
-                  {paymentFormik.values.selectedHotelId === vv.id && (
-                    <div>
-                      <button type="button" style={btnStyle} onClick={(e) => {
-                        e.stopPropagation();
-                        paymentFormik.setFieldValue("hotelQty", Math.max(0, paymentFormik.values.hotelQty - 1))
-                      }}>-</button>
-                      <span>{paymentFormik.values.hotelQty}</span>
-                      <button type="button" style={btnStyle} onClick={(e) => {
-                        e.stopPropagation();
-                        paymentFormik.setFieldValue("hotelQty", paymentFormik.values.hotelQty + 1)
-                      }}>+</button>
+    <div style={grid}>
+      {hoteldata?.hotel
+        ?.filter((v) => v.location_id == id && v.booking_id == 0)
+        ?.map((vv) => {
+          const isSelected =
+            paymentFormik.values.selectedHotelId === vv.id;
 
+          const serviceInfo = service?.service?.find(
+            (v9) => v9.id == vv.service_id
+          );
+
+          return (
+            <div
+              key={vv.id}
+              onClick={() => {
+                if (isSelected) {
+                  paymentFormik.setFieldValue("selectedHotelId", "");
+                  paymentFormik.setFieldValue("hotelQty", 0);
+                  paymentFormik.setFieldValue("checkIn", "");
+                  paymentFormik.setFieldValue("checkOut", "");
+                } else {
+                  paymentFormik.setFieldValue("selectedHotelId", vv.id);
+                  paymentFormik.setFieldValue("hotelQty", 1);
+                }
+              }}
+              style={{
+                background: "#fff",
+                borderRadius: "16px",
+                overflow: "hidden",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                border: isSelected
+                  ? "2px solid #007bff"
+                  : "1px solid #eee",
+                cursor: "pointer",
+                transition: "0.2s",
+                transform: isSelected ? "scale(1.02)" : "scale(1)",
+              }}
+            >
+              {/* IMAGE */}
+              <img
+                src={"http://localhost:4000/" + vv.hotel_img}
+                style={{
+                  width: "100%",
+                  height: "160px",
+                  objectFit: "cover",
+                }}
+              />
+
+              {/* CONTENT */}
+              <div style={{ padding: "12px" }}>
+                {/* Title */}
+                <h3 style={{ margin: "5px 0" }}>
+                  🏨 {serviceInfo?.name}
+                </h3>
+
+                {/* Description */}
+                <p
+                  style={{
+                    fontSize: "13px",
+                    color: "#666",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {serviceInfo?.description}
+                </p>
+
+                {/* Price */}
+                <p
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    color: "#007bff",
+                  }}
+                >
+                  ₹{vv.amount} / night
+                </p>
+
+                {/* Selected Controls */}
+                {isSelected && (
+                  <div
+                    style={{
+                      marginTop: "12px",
+                      paddingTop: "12px",
+                      borderTop: "1px solid #eee",
+                    }}
+                  >
+                    {/* Qty */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "12px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          paymentFormik.setFieldValue(
+                            "hotelQty",
+                            Math.max(
+                              1,
+                              paymentFormik.values.hotelQty - 1
+                            )
+                          );
+                        }}
+                        style={qtyBtn}
+                      >
+                        −
+                      </button>
+
+                      <span style={{ fontWeight: "500" }}>
+                        {paymentFormik.values.hotelQty}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          paymentFormik.setFieldValue(
+                            "hotelQty",
+                            paymentFormik.values.hotelQty + 1
+                          );
+                        }}
+                        style={qtyBtn}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {/* Dates */}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                        marginBottom: "10px",
+                      }}
+                    >
                       <input
                         type="date"
                         name="checkIn"
                         value={paymentFormik.values.checkIn}
                         onChange={paymentFormik.handleChange}
                         onClick={(e) => e.stopPropagation()}
+                        style={dateInput}
                       />
 
                       <input
@@ -388,139 +816,285 @@ function LocationDetails() {
                         min={paymentFormik.values.checkIn}
                         onChange={paymentFormik.handleChange}
                         onClick={(e) => e.stopPropagation()}
+                        style={dateInput}
                       />
-
-                      <p>Days: {days}</p>
                     </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
 
-        {/* RESTAURANT */}
-        {activeSection === "restaurant" && (
-          <>
-            <h2>Select Restaurant</h2>
-            <div style={grid}>
-              {restaurantdata?.restaurant?.filter(v => v.location_id == id && v.booking_id == 0)?.map(vv => (
-                <div key={vv.id}
-                  style={cardStyle(paymentFormik.values.selectedRestaurantId === vv.id)}
-                  onClick={() => {
-                    if (paymentFormik.values.selectedRestaurantId === vv.id) {
-                      paymentFormik.setFieldValue("selectedRestaurantId", null)
-                      paymentFormik.setFieldValue("restaurantQty", 0)
-
-                    } else {
-                      paymentFormik.setFieldValue("selectedRestaurantId", vv.id)
-                      paymentFormik.setFieldValue("restaurantQty", 1)
-
-                    }
-                  }}>
-                    <h2>{service?.service?.find(v9 => v9.id == vv.service_id)?.name}</h2>
-                    <p>
-                      {service?.service?.find(v9 => v9.id == vv.service_id)?.description}
+                    {/* Days */}
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#333",
+                      }}
+                    >
+                      📅 Days: {days}
                     </p>
-                  <img src={"http://localhost:4000/" + vv.restaurant_img}
-                    style={{ width: "100%", height: "140px", objectFit: "cover" }} />
-                  <p>₹{vv.amount}</p>
-
-                  {paymentFormik.values.selectedRestaurantId === vv.id && (
-                    <div>
-                      <button style={btnStyle} onClick={(e) => {
-                        e.stopPropagation();
-                        paymentFormik.setFieldValue("restaurantQty", Math.max(0, paymentFormik.values.restaurantQty - 1))
-                      }}>-</button>
-                      <span>{paymentFormik.values.restaurantQty}</span>
-                      <button style={btnStyle} onClick={(e) => {
-                        e.stopPropagation();
-                        paymentFormik.setFieldValue("restaurantQty", Math.max(0, paymentFormik.values.restaurantQty + 1));
-                      }}>+</button>
-                    </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </>
-        )}
-        <br /><br />
+          );
+        })}
+    </div>
+  </>
+)}
+       {/* RESTAURANT */}
+{activeSection === "restaurant" && (
+  <>
+    <h2 style={{ marginBottom: "15px" }}>🍽 Select Restaurant</h2>
+
+    <div style={grid}>
+      {restaurantdata?.restaurant
+        ?.filter((v) => v.location_id == id && v.booking_id == 0)
+        ?.map((vv) => {
+          const isSelected =
+            paymentFormik.values.selectedRestaurantId === vv.id;
+
+          const serviceInfo = service?.service?.find(
+            (v9) => v9.id == vv.service_id
+          );
+
+          return (
+            <div
+              key={vv.id}
+              onClick={() => {
+                if (isSelected) {
+                  paymentFormik.setFieldValue(
+                    "selectedRestaurantId",
+                    null
+                  );
+                  paymentFormik.setFieldValue("restaurantQty", 0);
+                } else {
+                  paymentFormik.setFieldValue(
+                    "selectedRestaurantId",
+                    vv.id
+                  );
+                  paymentFormik.setFieldValue("restaurantQty", 1);
+                }
+              }}
+              style={{
+                background: "#fff",
+                borderRadius: "16px",
+                overflow: "hidden",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                border: isSelected
+                  ? "2px solid #007bff"
+                  : "1px solid #eee",
+                cursor: "pointer",
+                transition: "0.2s",
+                transform: isSelected ? "scale(1.02)" : "scale(1)",
+              }}
+            >
+              {/* IMAGE */}
+              <img
+                src={"http://localhost:4000/" + vv.restaurant_img}
+                style={{
+                  width: "100%",
+                  height: "160px",
+                  objectFit: "cover",
+                }}
+              />
+
+              {/* CONTENT */}
+              <div style={{ padding: "12px" }}>
+                {/* Title */}
+                <h3 style={{ margin: "5px 0" }}>
+                  🍽 {serviceInfo?.name}
+                </h3>
+
+                {/* Description */}
+                <p
+                  style={{
+                    fontSize: "13px",
+                    color: "#666",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {serviceInfo?.description}
+                </p>
+
+                {/* Price */}
+                <p
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    color: "#007bff",
+                  }}
+                >
+                  ₹{vv.amount} / meal
+                </p>
+
+                {/* Selected Controls */}
+                {isSelected && (
+                  <div
+                    style={{
+                      marginTop: "12px",
+                      paddingTop: "12px",
+                      borderTop: "1px solid #eee",
+                    }}
+                  >
+                    {/* Qty */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "12px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          paymentFormik.setFieldValue(
+                            "restaurantQty",
+                            Math.max(
+                              1,
+                              paymentFormik.values.restaurantQty - 1
+                            )
+                          );
+                        }}
+                        style={qtyBtn}
+                      >
+                        −
+                      </button>
+
+                      <span style={{ fontWeight: "500" }}>
+                        {paymentFormik.values.restaurantQty}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          paymentFormik.setFieldValue(
+                            "restaurantQty",
+                            paymentFormik.values.restaurantQty + 1
+                          );
+                        }}
+                        style={qtyBtn}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+    </div>
+  </>
+)}
 
         {/* PAYMENT */}
 
-        <TextField
-          error={paymentFormik.errors.mode && paymentFormik.touched.mode}
-          id="standard-select-currency-native"
-          name="mode"
-          select
-          fullWidth
+       <TextField
+  error={paymentFormik.errors.mode && paymentFormik.touched.mode}
+  id="mode"
+  name="mode"
+  select
+  fullWidth
+  slotProps={{
+    select: {
+      native: true,
+    },
+  }}
+  variant="standard"
+  onChange={paymentFormik.handleChange}
+  onBlur={paymentFormik.handleBlur}
+  value={paymentFormik.values.mode}
+  helperText={
+    paymentFormik.errors.mode && paymentFormik.touched.mode
+      ? paymentFormik.errors.mode
+      : ""
+  }
+  style={{ marginBottom: "12px" }}
+>
+  <option value="">-- Select mode --</option>
+  {mode.map((option) => (
+    <option key={option.value} value={option.value}>
+      {option.label}
+    </option>
+  ))}
+</TextField>
 
-          slotProps={{
-            select: {
-              native: true,
-            },
-          }}
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.mode}
-          helperText={paymentFormik.errors.mode && paymentFormik.touched.mode ? paymentFormik.errors.mode : ''}
-        >
-          <option value="">--Select mode--</option>
-          {mode.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </TextField>
-        <br />
+<TextField
+  error={
+    paymentFormik.errors.transaction_id &&
+    paymentFormik.touched.transaction_id
+  }
+  id="transaction_id"
+  name="transaction_id"
+  type="text"
+  label="Transaction ID"
+  fullWidth
+  variant="standard"
+  onChange={paymentFormik.handleChange}
+  onBlur={paymentFormik.handleBlur}
+  value={paymentFormik.values.transaction_id}
+  helperText={
+    paymentFormik.errors.transaction_id &&
+    paymentFormik.touched.transaction_id
+      ? paymentFormik.errors.transaction_id
+      : ""
+  }
+  style={{ marginBottom: "12px" }}
+/>
 
-        <TextField
-          error={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id}
-          id="transaction_id"
-          name="transaction_id"
-          type="text"
-          label="transaction_id "
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.transaction_id}
-          helperText={paymentFormik.errors.transaction_id && paymentFormik.touched.transaction_id ? paymentFormik.errors.transaction_id : ''}
-        />
+<TextField
+  error={paymentFormik.errors.date && paymentFormik.touched.date}
+  id="date"
+  name="date"
+  type="date"
+  fullWidth
+  variant="standard"
+  onChange={paymentFormik.handleChange}
+  onBlur={paymentFormik.handleBlur}
+  value={paymentFormik.values.date}
+  helperText={
+    paymentFormik.errors.date && paymentFormik.touched.date
+      ? paymentFormik.errors.date
+      : ""
+  }
+  style={{ marginBottom: "12px" }}
+/>
 
-        <TextField
+<TextField
+  error={paymentFormik.errors.amount && paymentFormik.touched.amount}
+  id="amount"
+  name="amount"
+  label="Amount"
+  type="number"
+  fullWidth
+  variant="standard"
+  onChange={paymentFormik.handleChange}
+  onBlur={paymentFormik.handleBlur}
+  value={paymentFormik.values.amount}
+  helperText={
+    paymentFormik.errors.amount && paymentFormik.touched.amount
+      ? paymentFormik.errors.amount
+      : ""
+  }
+  style={{ marginBottom: "16px" }}
+/>
 
-          error={paymentFormik.errors.date && paymentFormik.touched.date}
-          margin="dense"
-          id="date"
-          name="date"
-          type="date"
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.date}
-          helperText={paymentFormik.errors.date && paymentFormik.touched.date ? paymentFormik.errors.date : ''}
-
-        />
-
-        <TextField
-
-          error={paymentFormik.errors.amount && paymentFormik.touched.amount}
-          margin="dense"
-          id="amount"
-          name="amount"
-          label="amount"
-          type="number"
-          fullWidth
-          variant="standard"
-          onChange={paymentFormik.handleChange}
-          onBlur={paymentFormik.handleBlur}
-          value={paymentFormik.values.amount}
-          helperText={paymentFormik.errors.amount && paymentFormik.touched.amount ? paymentFormik.errors.amount : ''}
-        />
-        <Button type="submit">Submit</Button>
+<Button
+  type="submit"
+  fullWidth
+  style={{
+    padding: "12px",
+    background: "#007bff",
+    color: "#fff",
+    fontWeight: "600",
+    borderRadius: "10px",
+    textTransform: "none",
+  }}
+>
+  💳 Confirm Booking
+</Button>
       </form>
 
     </div>
