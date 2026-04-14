@@ -5,180 +5,196 @@ import { getpackage } from '../../redux/slice/package.slice';
 import { getitineary } from '../../redux/slice/itineary.slice';
 import { getlocation } from '../../redux/slice/location.slice';
 
-
-function PackageDetails(props) {
+function PackageDetails() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     dispatch(getpackage());
     dispatch(getitineary());
     dispatch(getlocation());
-
   }, []);
 
   const { id } = useParams();
-  const packagedata = useSelector(State => State.package);
-
-  const itnorydata = useSelector(State => State.itineary);
-  console.log(itnorydata.itineary);
-
-
-  const pD = packagedata.package?.find((v) => v.id == id);
-  console.log(pD);
-
-  const fit = itnorydata.itineary?.find(v => v.package_id === pD.id);
-  console.log(fit);
-
+  const packagedata = useSelector(state => state.package);
+  const itnorydata = useSelector(state => state.itineary);
   const locationdata = useSelector(state => state.location);
-  console.log(locationdata);
 
-
-
-
+  const pD = packagedata.package?.find(v => v.id == id);
+  const fit = itnorydata.itineary?.find(v => v.package_id === pD?.id);
 
   return (
-    <div style={{ marginTop: "90px", background: "#eef2f7" }}>
+    <div style={{ background: "#f2f5f9", fontFamily: "sans-serif" }}>
 
-      {/* HERO SECTION */}
-      <div
-        style={{
-          height: "420px",
-          backgroundImage: `url(http://localhost:4000/${pD?.image})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative"
-        }}
-      >
-        {/* Overlay */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.3))"
-          }}
-        />
+      {/* HERO */}
+      <div style={{
+        height: "460px",
+        backgroundImage: `url(http://localhost:4000/${pD?.image})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative"
+      }}>
+        <div style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.3))"
+        }} />
 
-        {/* Text */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "40px",
-            left: "60px",
-            color: "#fff"
-          }}
-        >
-          <h1 style={{ fontSize: "40px", fontWeight: "800" }}>
+        <div style={{
+          position: "absolute",
+          bottom: "50px",
+          left: "60px",
+          color: "#fff"
+        }}>
+          <h1 style={{ fontSize: "44px", fontWeight: "800", marginBottom: "10px" }}>
             {pD?.name}
           </h1>
 
-          <p style={{ fontSize: "16px", opacity: 0.9 }}>
-            {
-              locationdata.location?.find(v1 => v1.id == pD?.location_id)?.name
-            }
+          <p style={{ fontSize: "18px", opacity: 0.9 }}>
+            📍 {locationdata.location?.find(v => v.id == pD?.location_id)?.name}
           </p>
         </div>
       </div>
 
-      {/* CONTENT WRAPPER */}
-      <div style={{ maxWidth: "1100px", margin: "30px auto 40px", padding: "0 20px" }}>
-        {/* PACKAGE CARD */}
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: "18px",
-            padding: "25px 30px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "30px"
-          }}
-        >
-          <div>
-            <h3 style={{ fontWeight: "700", marginBottom: "5px" }}>
-              {pD?.name}
-            </h3>
-            <p style={{ color: "#666" }}>{pD?.duration}</p>
-          </div>
+      {/* MAIN CONTENT */}
+      <div style={{
+        maxWidth: "1200px",
+        margin: "auto",
+        display: "flex",
+        gap: "30px",
+        padding: "30px 20px"
+      }}>
 
-          <div style={{ textAlign: "right" }}>
-            <h2 style={{ color: "#0d6efd", fontWeight: "800" }}>
-              ₹ {pD?.price}
+        {/* LEFT CONTENT */}
+        <div style={{ flex: 3 }}>
+
+          {/* PACKAGE INFO */}
+          <div style={{
+            background: "#fff",
+            borderRadius: "16px",
+            padding: "25px",
+            boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
+            marginBottom: "25px"
+          }}>
+            <h2 style={{ fontWeight: "700", marginBottom: "5px" }}>
+              {pD?.name}
             </h2>
 
+            <p style={{ color: "#666", marginBottom: "10px" }}>
+              ⏱ {pD?.duration}
+            </p>
+
+            <p style={{ color: "#444", lineHeight: "1.6" }}>
+              Experience a perfect getaway with curated experiences, comfort stays,
+              and guided tours designed for unforgettable memories.
+            </p>
+          </div>
+
+          {/* ITINERARY */}
+          <div style={{
+            background: "#fff",
+            borderRadius: "16px",
+            padding: "25px",
+            boxShadow: "0 8px 25px rgba(0,0,0,0.08)"
+          }}>
+            <h2 style={{ marginBottom: "20px" }}>🗺️ Itinerary</h2>
+
+            <img
+              src={"http://localhost:4000/" + fit?.itineary_img}
+              alt=""
+              style={{
+                width: "100%",
+                height: "320px",
+                objectFit: "cover",
+                borderRadius: "12px",
+                marginBottom: "25px"
+              }}
+            />
+
+            <div style={{
+              borderLeft: "3px solid #0d6efd",
+              paddingLeft: "20px"
+            }}>
+              {fit?.description?.split("\n").map((item, index) => (
+                <div key={index} style={{
+                  marginBottom: "20px",
+                  position: "relative"
+                }}>
+                  <span style={{
+                    position: "absolute",
+                    left: "-28px",
+                    top: "6px",
+                    width: "14px",
+                    height: "14px",
+                    background: "#0d6efd",
+                    borderRadius: "50%",
+                    boxShadow: "0 0 0 4px #e7f1ff"
+                  }} />
+
+                  <p style={{
+                    margin: 0,
+                    color: "#444",
+                    lineHeight: "1.7",
+                    fontSize: "15px"
+                  }}>
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* RIGHT SIDE BOOKING CARD */}
+        <div style={{ flex: 1 }}>
+
+          <div style={{
+            position: "sticky",
+            top: "100px",
+            background: "#fff",
+            borderRadius: "16px",
+            padding: "25px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.12)"
+          }}>
+            <h3 style={{ marginBottom: "10px" }}>Starting From</h3>
+
+            <h1 style={{
+              color: "#0d6efd",
+              fontWeight: "800",
+              marginBottom: "15px"
+            }}>
+              ₹ {pD?.price}
+            </h1>
+
+            <p style={{ color: "#666", marginBottom: "20px" }}>
+              Per person 
+            </p>
+
             <NavLink to="/BookPackage">
-              <button
-                style={{
-                  marginTop: "10px",
-                  background: "#0d6efd",
-                  color: "#fff",
-                  border: "none",
-                  padding: "10px 22px",
-                  borderRadius: "30px",
-                  fontWeight: "600",
-                  cursor: "pointer"
-                }}
+              <button style={{
+                width: "100%",
+                background: "#0d6efd",
+                color: "#fff",
+                border: "none",
+                padding: "14px",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "0.3s"
+              }}
+              onMouseOver={(e)=> e.target.style.background="#0b5ed7"}
+              onMouseOut={(e)=> e.target.style.background="#0d6efd"}
               >
                 Book Now
               </button>
             </NavLink>
+
+            
+
           </div>
-        </div>
 
-        {/* ITINERARY */}
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: "18px",
-            padding: "30px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
-          }}
-        >
-          <h2 style={{ fontWeight: "700", marginBottom: "20px" }}>
-            📍 Itinerary Plan
-          </h2>
-
-          {/* IMAGE */}
-          <img
-            src={"http://localhost:4000/" + fit?.itineary_img}
-            alt="Itinerary"
-            style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              borderRadius: "14px",
-              marginBottom: "25px"
-            }}
-          />
-
-          {/* TIMELINE STYLE */}
-          <div style={{ borderLeft: "3px solid #0d6efd", paddingLeft: "20px" }}>
-            {fit?.description?.split("\n").map((item, index) => (
-              <div key={index} style={{ marginBottom: "20px", position: "relative" }}>
-
-                {/* Dot */}
-                <span
-                  style={{
-                    position: "absolute",
-                    left: "-28px",
-                    top: "5px",
-                    width: "12px",
-                    height: "12px",
-                    background: "#0d6efd",
-                    borderRadius: "50%"
-                  }}
-                ></span>
-
-                <p style={{ margin: 0, color: "#444", lineHeight: "1.6" }}>
-                  {item}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
 
       </div>
