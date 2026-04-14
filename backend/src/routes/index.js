@@ -16,6 +16,8 @@ const contactRoutes=require("./contect.routes");
 const userRoutes = require("./user.routes");
 const paymentRoutes = require("./payment.routes");
 const passengerRoutes = require("./passenger.routes");
+const dashboardRoutes = require("./dashboard.routes");
+
 
 
 router.use("/location",locationRoutes);
@@ -33,5 +35,8 @@ router.use("/user",userRoutes);
 router.use("/booking",bookingRoutes);
 router.use("/payment", paymentRoutes);
 router.use("/passenger", passengerRoutes);
+router.use("/dashboard", dashboardRoutes);
+
+
 
 module.exports = router; 

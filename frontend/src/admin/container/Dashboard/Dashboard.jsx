@@ -1,11 +1,18 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     LineChart, Line, BarChart, Bar,
     PieChart, Pie, Cell,
     XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from "recharts";
+import { getdashboard, getrecentBooking, locationWisePayment, monthWiseRevenue } from "../../../redux/slice/dashboard.slice";
+import { getbookpackage, getmyBooking } from "../../../redux/slice/bookpackage.slice";
+
+
 
 const Dashboard = ({
+
+
     bookings = [],
     payments = [],
     packages = [],
@@ -14,6 +21,34 @@ const Dashboard = ({
     transport = [],
     restaurants = []
 }) => {
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+
+        dispatch(getdashboard());
+
+        dispatch(getbookpackage());
+
+        dispatch(getrecentBooking());
+
+        dispatch(locationWisePayment());
+
+        dispatch(monthWiseRevenue())
+
+    }, []);
+
+    const dashboarddata = useSelector(state => state.dashboard);
+
+    console.log(dashboarddata);
+
+    const locWisePayment = dashboarddata?.locWisePayment?.map(item => ({
+        location_name: item.location_name.trim(),
+        total_revenue: Number(item.total_revenue)
+    }));
+
+
+    // console.log(recentBooking?.booking?.sort((a, b) => b.id - a.id));
 
     // ✅ Fallback Static Data
     const demoBookings = [
@@ -72,10 +107,10 @@ const Dashboard = ({
 
     // ✅ Static Charts
     const pieData = [
-        { name: "Packages", value: 400 },
-        { name: "Hotels", value: 300 },
-        { name: "Transport", value: 300 },
-        { name: "Restaurants", value: 200 }
+        { name: "Jim Corbett National Park", value: 400 },
+        { name: "Mumbai", value: 300 },
+        { name: "Dwarka", value: 300 },
+        { name: "Statue Of Unity", value: 200 }
     ];
 
     const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444"];
@@ -123,29 +158,37 @@ const Dashboard = ({
 
             {/* Cards */}
             <div style={styles.cardGrid}>
-                <Card title="Locations" value={metrics.totalLocations} color="#8b5cf6" />
-                <Card title="Packages" value={metrics.totalPackages} color="#3b82f6" />
-                <Card title="Bookings" value={metrics.totalBookings} color="#22c55e" />
-                <Card title="Revenue" value={`₹${metrics.totalRevenue}`} color="#f59e0b" />
+                <Card title="Locations" value={dashboarddata?.dashboard?.locations} color="#8b5cf6" />
+                <Card title="Packages" value={dashboarddata?.dashboard?.packages} color="#3b82f6" />
+                <Card title="Bookings" value={dashboarddata?.dashboard?.bookings} color="#22c55e" />
+                <Card title="Revenue" value={`₹${dashboarddata?.dashboard?.revenue}`} color="#f59e0b" />
 
-                <Card title="Customized" value={metrics.totalCustomizedPackages} color="#ec4899" />
-                <Card title="Hotels" value={metrics.totalHotels} color="#6366f1" />
-                <Card title="Transport" value={metrics.totalTransport} color="#f97316" />
-                <Card title="Restaurants" value={metrics.totalRestaurants} color="#14b8a6" />
+                <Card title="Customized" value={dashboarddata?.dashboard?.customized} color="#ec4899" />
+                <Card title="Hotels" value={dashboarddata?.dashboard?.hotels} color="#6366f1" />
+                <Card title="Transport" value={dashboarddata?.dashboard?.transport} color="#f97316" />
+                <Card title="Restaurants" value={dashboarddata?.dashboard?.restaurants} color="#14b8a6" />
             </div>
 
 
             {/* Extra Charts */}
             <div style={styles.grid2}>
-                <ChartCard title="Service Distribution">
-                     <PieChart
+                <ChartCard title="Location wise Revenue">
+                    <PieChart
+                        width={300}
+                        height={300}
                         style={{ outline: "none" }}
                         tabIndex={-1}
                         onMouseDown={(e) => e.preventDefault()}
                     >
-                        <Pie data={pieData} dataKey="value" outerRadius={100}>
-                            {pieData.map((e, i) => (
-                                <Cell key={i} fill={COLORS[i]} />
+                        <Pie
+                            data={locWisePayment}
+                            dataKey="total_revenue"
+                            nameKey="location_name"
+                            outerRadius={100}
+                            label
+                        >
+                            {locWisePayment?.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>
                         <Tooltip />
@@ -154,7 +197,7 @@ const Dashboard = ({
 
                 <ChartCard title="Monthly Revenue (Static)">
                     <BarChart
-                        data={staticBarData}
+                        data={dashboarddata?.monWisePayment}
                         style={{ outline: "none" }}
                         tabIndex={-1}
                         onMouseDown={(e) => e.preventDefault()}
@@ -171,8 +214,8 @@ const Dashboard = ({
 
             {/* Tables */}
             <div style={styles.grid2}>
-                <Table title="Recent Bookings" data={recentBookings} />
-                <Table title="Pending Payments" data={pendingPayments} />
+                <Table title="Recent Bookings" data={dashboarddata?.recentBooking?.slice()?.sort((a, b) => b.id - a.id)} />
+                {/* <Table title="Pending Payments" data={pendingPayments} /> */}
             </div>
 
         </div>
@@ -248,8 +291,8 @@ const Table = ({ title, data }) => (
                 </thead>
 
                 <tbody>
-                    {data.length ? (
-                        data.map((row, index) => (
+                    {data?.length ? (
+                        data?.map((row, index) => (
                             <tr
                                 key={row.id}
                                 style={{
@@ -265,10 +308,10 @@ const Table = ({ title, data }) => (
                                 }
                             >
                                 <td style={tdStyle}>{row.id}</td>
-                                <td style={tdStyle}>{row.location_id}</td>
-                                <td style={tdStyle}>{row.travel_date}</td>
+                                <td style={tdStyle}>{row.name}</td>
+                                <td style={tdStyle}>{new Date(row.travel_date)?.toLocaleDateString()}</td>
                                 <td style={tdStyle}>{row.passenger}</td>
-                                <td style={tdStyle}>₹{row.amount || "-"}</td>
+                                <td style={tdStyle}>₹{row.price || "-"}</td>
                                 <td style={tdStyle}>
                                     <span
                                         style={{
@@ -278,16 +321,16 @@ const Table = ({ title, data }) => (
                                             fontWeight: "500",
                                             textTransform: "capitalize",
                                             background:
-                                                row.paymentStatus === "complete"
+                                                row.status === "payment_complete"
                                                     ? "#dcfce7"
                                                     : "#fef3c7",
                                             color:
-                                                row.paymentStatus === "complete"
+                                                row.status === "payment_complete"
                                                     ? "#166534"
                                                     : "#92400e"
                                         }}
                                     >
-                                        {row.paymentStatus}
+                                        {row.status}
                                     </span>
                                 </td>
                             </tr>
@@ -331,23 +374,23 @@ const styles = {
     header: { marginBottom: 20 },
     title: { margin: 0 },
     subtitle: { color: "#666" },
-   cardGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(4, 1fr)", // ✅ FIXED: exactly 4 per row
-    gap: 20,
-    marginTop: 20
-},
-cardBox: {
-    background: "#fff",
-    padding: 20,
-    borderRadius: 12,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
-    transition: "0.3s",
-    cursor: "pointer"
-},
+    cardGrid: {
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 1fr)", // ✅ FIXED: exactly 4 per row
+        gap: 20,
+        marginTop: 20
+    },
+    cardBox: {
+        background: "#fff",
+        padding: 20,
+        borderRadius: 12,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+        transition: "0.3s",
+        cursor: "pointer"
+    },
     grid2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 20 },
     card: { background: "#fff", padding: 15, borderRadius: 12, boxShadow: "0 2px 6px rgba(0,0,0,0.05)" },
     dot: { width: 14, height: 14, borderRadius: "50%" },

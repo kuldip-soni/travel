@@ -32,6 +32,7 @@ import BookOnlineIcon from '@mui/icons-material/BookOnline';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
 import { NavLink } from 'react-router-dom';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const drawerWidth = 240;
 
@@ -126,6 +127,7 @@ export default function Layout({ children }) {
   };
 
   const alllinks = [
+    { icon: <DashboardIcon />, label: 'Dashboard', to: '/admin/' },
     { icon: <AddLocationAltIcon />, label: 'Location', to: '/admin/location' },
     { icon: <BackpackIcon />, label: 'Package', to: '/admin/package' },
     { icon: <MapIcon />, label: 'Itineary', to: '/admin/itineary' },
