@@ -32,14 +32,14 @@ const getPayment = async (req, res) => {
 const addPayment = async (req, res) => {
     try {
         console.log(req.body);
-        
-        const {  user_id,booking_id,transaction_id,mode, date,amount, status } = req.body;
 
-        console.log( "user_id,booking_id,transaction_id,mode, date,amount, status", user_id,booking_id,transaction_id,mode, date,amount, status);
+        const { user_id, booking_id, transaction_id, mode, date, amount, status } = req.body;
+
+        console.log("user_id,booking_id,transaction_id,mode, date,amount, status", user_id, booking_id, transaction_id, mode, date, amount, status);
 
 
         const [rows, fields, result] = await pool.query("INSERT INTO payment (user_id,booking_id,transaction_id, mode, date,amount, status) VALUES(?,?,?,?,?,?,?)",
-            [ user_id,booking_id,transaction_id,mode, date,amount, status]
+            [user_id, booking_id, transaction_id, mode, date, amount, status]
 
         )
 
@@ -47,9 +47,9 @@ const addPayment = async (req, res) => {
 
         await pool.query("INSERT INTO transport(booking_id, status) VALUES(?, ?)", [booking_id, "pending"]);
 
-        await pool.query("INSERT INTO hotel(booking_id,status ) VALUES(?,?)", [booking_id,"pending"]);
+        await pool.query("INSERT INTO hotel(booking_id,status ) VALUES(?,?)", [booking_id, "pending"]);
 
-        await pool.query("INSERT INTO restaurant(booking_id,status) VALUES(?,?)", [booking_id,"pending"]);
+        await pool.query("INSERT INTO restaurant(booking_id,status) VALUES(?,?)", [booking_id, "pending"]);
 
         res.status(200).json({
             sucess: true,
@@ -75,33 +75,33 @@ const addPayment = async (req, res) => {
 
 }
 
-const putPayment =async (req,res) => {
+const putPayment = async (req, res) => {
     try {
-       console.log("req.body", req.params.id);
+        console.log("req.body", req.params.id);
         // console.log(req.body, req.file.path);
 
-       const {  transaction_id,mode, date,amount, status } = req.body;
+        const { transaction_id, mode, date, amount, status } = req.body;
 
-        console.log(transaction_id,mode, date,amount, req.params.id);
-        
+        console.log(transaction_id, mode, date, amount, req.params.id);
 
 
-       const [rows] = await pool.query("UPDATE  payment  SET transaction_id=?, mode=?, date=?,amount=?,status=? WHERE id=?",
-            [transaction_id,mode, date,amount,status, req.params.id]
+
+        const [rows] = await pool.query("UPDATE  payment  SET transaction_id=?, mode=?, date=?,amount=?,status=? WHERE id=?",
+            [transaction_id, mode, date, amount, status, req.params.id]
 
         )
 
         console.log(rows);
-        
+
 
         res.status(200).json({
             sucess: true,
-            data: {  transaction_id,mode, date,amount, id: req.params.id },
+            data: { transaction_id, mode, date, amount, id: req.params.id },
             message: "payment is update sucessfuly"
 
         })
 
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -109,9 +109,26 @@ const putPayment =async (req,res) => {
             data: null,
             message: "internal server error (putPayment)" + error.message
         })
-        
+
     }
-    
+
+}
+
+const createPaymentGateway = async (req, res) => {
+    try {
+        const { amount } = req.body;
+
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amount * 100, // convert to paisa
+            currency: "inr",
+        });
+
+        res.send({
+            clientSecret: paymentIntent.client_secret,
+        });
+    } catch (err) {
+        res.status(500).send({ error: err.message });
+    }
 }
 
 
@@ -119,5 +136,6 @@ const putPayment =async (req,res) => {
 module.exports = {
     getPayment,
     addPayment,
-    putPayment
+    putPayment,
+    createPaymentGateway
 }

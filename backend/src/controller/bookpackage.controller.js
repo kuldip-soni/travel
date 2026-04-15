@@ -3,19 +3,20 @@ const pool = require("../db/mysql");
 
 const bookpackage = async (req, res) => {
       try {
-        const { user_id, location_id, package_id, travel_date, passengers } = req.body;
+        const { user_id, location_id, package_id, travel_date, passengers, amount } = req.body;
 
         console.log("REQ BODY:", req.body);
 
         // 1. Insert booking
         const [result] = await pool.query(
-            "INSERT INTO booking (user_id, location_id, package_id, travel_date, passenger) VALUES (?,?,?,?,?)",
+            "INSERT INTO booking (user_id, location_id, package_id, travel_date, passenger, amount) VALUES (?,?,?,?,?,?)",
             [
                 user_id,
                 location_id,
                 package_id,
                 travel_date,
-                passengers.length
+                passengers.length,
+                amount
             ]
         );
 

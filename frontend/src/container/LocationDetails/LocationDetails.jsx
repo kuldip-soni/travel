@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getlocation } from '../../redux/slice/location.slice';
 import { bookCustomized, getpackage } from '../../redux/slice/package.slice';
 import { gettransport } from '../../redux/slice/transport.slice';
@@ -48,6 +48,8 @@ function LocationDetails() {
     dispatch(getservice())
   }, [dispatch]);
 
+
+
   const service = useSelector(state => state.service)
 
   const Paymentschema = object({
@@ -93,6 +95,8 @@ function LocationDetails() {
     amount: number().required("Enter amount"),
   });
 
+  const navigate = useNavigate();
+
   const paymentFormik = useFormik({
     initialValues: {
       travel_date: '',
@@ -111,13 +115,14 @@ function LocationDetails() {
       mode: "",
       transaction_id: "",
       date: "",
-      amount: "",
+      amount: 0,
     },
     validationSchema: Paymentschema,
     onSubmit: (values, { resetForm }) => {
       // add
-      dispatch(bookCustomized({ ...values, user_id: localStorage.getItem("user_id"), location_id: id }))
-      // resetForm();
+      dispatch(bookCustomized({ ...values, user_id: localStorage.getItem("user_id"), location_id: id  }))
+      resetForm();
+      navigate("/myBooking");
     },
   });
 
@@ -169,6 +174,10 @@ function LocationDetails() {
   const finalPrice = (transportPrice + hotelPrice + restaurantPrice);
 
   const container = { maxWidth: "1200px", margin: "auto", padding: "20px" };
+
+  useEffect(() => {
+    paymentFormik.setFieldValue("amount", finalPrice);
+  }, [finalPrice]);
 
   const grid = {
     display: "grid",
@@ -1123,19 +1132,12 @@ function LocationDetails() {
               fullWidth
               size="small"
               value={paymentFormik.values.amount}
-              onChange={paymentFormik.handleChange}
-              onBlur={paymentFormik.handleBlur}
-              error={paymentFormik.errors.amount && paymentFormik.touched.amount}
-              helperText={
-                paymentFormik.errors.amount && paymentFormik.touched.amount
-                  ? paymentFormik.errors.amount
-                  : ''
-              }
+              InputProps={{ readOnly: true }}
             />
 
           </div>
 
-         
+
           {/* Submit Button */}
           <Button
             type="submit"

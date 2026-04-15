@@ -38,14 +38,14 @@ function BookPackage(props) {
 
     let bookpackageschema = object({
         location_id: string().required('please select location'),
-    package_id: string().required('please select package'),
-    travel_date: string().required('please enter travel_date'),
-    passengers: array().of(
-        object({
-            name: string().required('Name required'),
-            age: number().required('Age required').positive().integer()
-        })
-    ).min(1, 'At least one passenger required')
+        package_id: string().required('please select package'),
+        travel_date: string().required('please enter travel_date'),
+        passengers: array().of(
+            object({
+                name: string().required('Name required'),
+                age: number().required('Age required').positive().integer()
+            })
+        ).min(1, 'At least one passenger required')
     });
 
     const formik = useFormik({
@@ -61,7 +61,7 @@ function BookPackage(props) {
 
         onSubmit: (values, { resetForm }) => {
             console.log(values);
-            dispatch(bookpackage(values))
+            dispatch(bookpackage({...values, amount: price * formik.values.passengers?.length}))
             resetForm();
             navigate("/myBooking")
 
@@ -82,7 +82,14 @@ function BookPackage(props) {
 
 
 
-    console.log(formik.errors, formik.touched, formik.values.location_id);
+    console.log(formik.errors, formik.touched, formik.values.passengers);
+
+    const price = packagedata.package?.find(v => v.id == formik.values.package_id)?.price;
+    console.log(price);
+
+
+
+
     return (
         <main style={{ background: "#f5f7fb", minHeight: "100vh", padding: "40px 0", marginTop: "60px" }}>
             <div className="container">
@@ -138,9 +145,17 @@ function BookPackage(props) {
                                         inputProps={{
                                             style: { fontSize: '18px' } // Input text (what user types) font size
                                         }}
+                                          sx={{
+    '& input::placeholder': {
+      fontSize: '50px',
+      opacity: 1, // important for visibility
+    }
+  }}
+
                                     >
                                         {locationdata.location.map((v) => (
-                                            <MenuItem key={v.id} value={v.id}>
+                                            <MenuItem key={v.id} value={v.id}   sx={{ fontSize: '18px' }}
+>
                                                 {v.name}
                                             </MenuItem>
                                         ))}
@@ -265,6 +280,12 @@ function BookPackage(props) {
                                         >
                                             + Add Passenger
                                         </Button>
+                                    </div>
+
+                                    <div>
+                                        <h2>Per Person Price: {price}</h2>
+                                        <h3>No of Person: {formik.values.passengers?.length}</h3>
+                                        <h4>Total Price: {price * formik.values.passengers?.length || 0}</h4>
                                     </div>
 
                                     {/* BUTTON */}

@@ -189,9 +189,10 @@ const bookCustomized = async (req, res) => {
             location_id,
             travel_date,
             passenger,
-            type
-           ) VALUES (?,?,?,?,?)`,
-            [user_id, location_id, travel_date, passengers.length, "customized_package"]
+            type,
+            amount
+           ) VALUES (?,?,?,?,?,?)`,
+            [user_id, location_id, travel_date, passengers.length, "customized_package", amount]
         );
 
         const booking_id = bookingResult.insertId;

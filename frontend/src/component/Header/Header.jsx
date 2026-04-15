@@ -43,9 +43,7 @@ function Header(props) {
                         <li><NavLink to='/contact'>contact</NavLink></li>
 
 
-                        <li>
-                            <a href="#"><i className="fa-solid fa-magnifying-glass" /></a>
-                        </li>
+                       
                         <li>
                             {
                                 auth.user ? <a onClick={() => dispatch(logout())}>Logout</a> :

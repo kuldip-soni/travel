@@ -90,7 +90,7 @@ function Payment(props) {
             location_id: booking.location_id,
             travel_date: booking.travel_date,
             passenger: booking.passenger,
-            amount: payment?.amount ?? null,
+            amount: payment?.amount ? payment?.amount : booking?.amount,
             status: payment?.status ?? booking.status
         };
     });
