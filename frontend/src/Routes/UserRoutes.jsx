@@ -19,27 +19,35 @@ import CustomizedPackage from '../container/customizedpackage/customizedpackage'
 
 function UserRoutes(props) {
     return (
-        <div>
+        <div style={{
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column"
+        }}>
+            
             <Header />
-            <Routes>
 
-                <Route path='/' element={<Home />} />
-                <Route path='/about' element={<About />} />
-                <Route path='/location' element={<Location />} />
-                <Route path='/locationdetails/:id' element={<LocationDetails />} />
-                <Route path='/package' element={<Package />} />
-                <Route path='/packagedetails/:id' element={<PackageDetails />} />
-                <Route path='/register' element={<Register />} />
-                <Route path='/login' element={<Login />} />
-                <Route path='/bookpackage' element={<BookPackage />} />
-                <Route path='/contact' element={<Contact />} />
-                <Route path='/myBooking' element={<MyBooking />} />
-                <Route path='/myBookingDetails' element={<MyBookingDetails />} />
-                <Route path='/customizedpackage' element={<CustomizedPackage />} />
+            {/* Main Content */}
+            <div style={{ flex: 1 }}>
+                <Routes>
 
+                    <Route path='/' element={<Home />} />
+                    <Route path='/about' element={<About />} />
+                    <Route path='/location' element={<Location />} />
+                    <Route path='/locationdetails/:id' element={<LocationDetails />} />
+                    <Route path='/package' element={<Package />} />
+                    <Route path='/packagedetails/:id' element={<PackageDetails />} />
+                    <Route path='/register' element={<Register />} />
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/bookpackage' element={<BookPackage />} />
+                    <Route path='/contact' element={<Contact />} />
+                    <Route path='/myBooking' element={<MyBooking />} />
+                    <Route path='/myBookingDetails' element={<MyBookingDetails />} />
+                    <Route path='/customizedpackage' element={<CustomizedPackage />} />
 
+                </Routes>
+            </div>
 
-            </Routes>
             <Footer />
         </div>
     );
