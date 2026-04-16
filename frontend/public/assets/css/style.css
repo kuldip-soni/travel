@@ -209,7 +209,7 @@ header nav ul li:hover>.Products-items {
 
 #hero {
   position: relative;
-  height: 100vh;
+  height: 65vh;
   background-image: url("../image/hero-img.jpg");
   background-repeat: no-repeat;
   background-size: cover;

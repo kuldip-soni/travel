@@ -61,7 +61,7 @@ function BookPackage(props) {
 
         onSubmit: (values, { resetForm }) => {
             console.log(values);
-            dispatch(bookpackage({...values, amount: price * formik.values.passengers?.length}))
+            dispatch(bookpackage({ ...values, amount: price * formik.values.passengers?.length }))
             resetForm();
             navigate("/myBooking")
 
@@ -145,17 +145,17 @@ function BookPackage(props) {
                                         inputProps={{
                                             style: { fontSize: '18px' } // Input text (what user types) font size
                                         }}
-                                          sx={{
-    '& input::placeholder': {
-      fontSize: '50px',
-      opacity: 1, // important for visibility
-    }
-  }}
+                                        sx={{
+                                            '& input::placeholder': {
+                                                fontSize: '50px',
+                                                opacity: 1, // important for visibility
+                                            }
+                                        }}
 
                                     >
                                         {locationdata.location.map((v) => (
-                                            <MenuItem key={v.id} value={v.id}   sx={{ fontSize: '18px' }}
->
+                                            <MenuItem key={v.id} value={v.id} sx={{ fontSize: '18px' }}
+                                            >
                                                 {v.name}
                                             </MenuItem>
                                         ))}
@@ -282,12 +282,63 @@ function BookPackage(props) {
                                         </Button>
                                     </div>
 
-                                    <div>
-                                        <h2>Per Person Price: {price}</h2>
-                                        <h3>No of Person: {formik.values.passengers?.length}</h3>
-                                        <h4>Total Price: {price * formik.values.passengers?.length || 0}</h4>
-                                    </div>
+                                    <br /><br />
 
+                                    <div style={{
+                                        border: "1px solid #e5e7eb",
+                                        borderRadius: "12px",
+                                        padding: "16px",
+                                        backgroundColor: "#ffffff",
+                                        boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                                        maxWidth: "300px"
+                                    }}>
+                                        <h3 style={{
+                                            fontSize: "18px",
+                                            fontWeight: "600",
+                                            marginBottom: "12px",
+                                            color: "#374151"
+                                        }}>
+                                            Booking Summary
+                                        </h3>
+
+                                        <div style={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            marginBottom: "8px",
+                                            color: "#6b7280"
+                                        }}>
+                                            <span>Per Person</span>
+                                            <span style={{ fontWeight: "500", color: "#111827" }}>
+                                                ₹{price || 0}
+                                            </span>
+                                        </div>
+
+                                        <div style={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            marginBottom: "10px",
+                                            color: "#6b7280"
+                                        }}>
+                                            <span>No. of People</span>
+                                            <span style={{ fontWeight: "500", color: "#111827" }}>
+                                                {formik.values.passengers?.length || 0}
+                                            </span>
+                                        </div>
+
+                                        <hr style={{ border: "none", borderTop: "1px solid #e5e7eb", margin: "10px 0" }} />
+
+                                        <div style={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            fontSize: "18px",
+                                            fontWeight: "700"
+                                        }}>
+                                            <span>Total</span>
+                                            <span style={{ color: "#16a34a" }}>
+                                                ₹{(price || 0) * (formik.values.passengers?.length || 0)}
+                                            </span>
+                                        </div>
+                                    </div>
                                     {/* BUTTON */}
                                     <Button
                                         type="submit"
