@@ -38,7 +38,7 @@ function Header(props) {
                         <i className="fa-solid fa-xmark xmarkbar" onClick="handleMenu()" />
                         <li><NavLink to='/'>Home</NavLink></li>
                         <li><NavLink to='/about'>About Us</NavLink></li>
-                        <li><NavLink to='/location'>Location</NavLink></li>
+                        <li><NavLink to='/location'>custom package</NavLink></li>
                         <li><NavLink to='/package'>Package</NavLink></li>
                         <li><NavLink to='/contact'>contact</NavLink></li>
 

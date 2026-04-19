@@ -41,7 +41,7 @@ function Location() {
             color: "#111827",
             marginBottom: "12px"
           }}>
-            Popular Travel Locations
+            Make Your Package
           </h2>
 
           {/* Decorative Line */}

@@ -120,7 +120,7 @@ function LocationDetails() {
     validationSchema: Paymentschema,
     onSubmit: (values, { resetForm }) => {
       // add
-      dispatch(bookCustomized({ ...values, user_id: localStorage.getItem("user_id"), location_id: id  }))
+      dispatch(bookCustomized({ ...values, user_id: localStorage.getItem("user_id"), location_id: id }))
       resetForm();
       navigate("/myBooking");
     },
@@ -300,6 +300,9 @@ function LocationDetails() {
               type="date"
               fullWidth
               size="small"
+              inputProps={{
+                min: new Date().toISOString().split("T")[0]
+              }}
               onChange={paymentFormik.handleChange}
               onBlur={paymentFormik.handleBlur}
               value={paymentFormik.values.travel_date}
@@ -750,7 +753,7 @@ function LocationDetails() {
                           color: "#007bff",
                           marginBottom: "10px"
                         }}>
-                          ₹{vv.amount} / per person
+                          ₹{vv.amount} / per room
                         </p>
 
                         {/* Selected Badge */}
