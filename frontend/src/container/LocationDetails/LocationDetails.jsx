@@ -750,7 +750,7 @@ function LocationDetails() {
                           color: "#007bff",
                           marginBottom: "10px"
                         }}>
-                          ₹{vv.amount} / night
+                          ₹{vv.amount} / per person
                         </p>
 
                         {/* Selected Badge */}

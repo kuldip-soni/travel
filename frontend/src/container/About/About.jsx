@@ -54,24 +54,17 @@ function About(props) {
           <div className="row all-siti">
             <div className="col-lg-6 col-12">
               <div className="siti-img">
-                <img src="./assets/image/Founder.png" alt />
+                <img src="./assets/image/founder1.png" alt />
               </div>
             </div>
             <div className="col-lg-6 col-12">
               <div className="siti-data">
                 <img src="./assets/image/Vector-4.png" alt />
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
-                  porttitor sapien et urna tincidunt fringilla. Vivamus at augue
-                  interdum, blandit arcu quis, laoreet ipsum. In eu ipsum urna.
-                  Suspendisse suscipit est et neque.
+                  The founder of Traveller envisioned a simple yet powerful platform that makes travel planning easy, accessible, and efficient for everyone. With a passion for exploring new destinations and understanding the challenges faced by travelers, the founder created Traveller as a one-stop solution for booking trips, accommodations, and transportation. The idea was to eliminate the hassle of switching between multiple platforms and instead provide a seamless experience where users can plan their entire journey in one place.
                 </p>
                 <p>
-                  Mauris tempor tellus ante, ut fermentum erat gravida vel.
-                  Class aptent taciti sociosqu ad litora torquent per conubia
-                  nostra, per inceptos himenaeos. Aenean nec justo dui. Ut et
-                  consequat dui, a malesuada ipsum. Pellentesque nec turpis
-                  viverra, blandit mi a, accumsan justo.
+                 Driven by innovation and customer satisfaction, the founder focused on building a user-friendly and reliable travel booking website that caters to modern travelers. By integrating advanced technology and keeping user needs at the core, Traveller aims to deliver convenience, affordability, and trust. The founder’s vision continues to guide the company toward expanding its services and making travel more enjoyable and stress-free for people around the world.
                 </p>
                 <h4>Virat Kohli</h4>
                 <p>Founder Traveler</p>

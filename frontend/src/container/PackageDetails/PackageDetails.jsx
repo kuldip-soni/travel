@@ -76,15 +76,15 @@ function PackageDetails() {
             boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
             marginBottom: "25px"
           }}>
-            <h2 style={{ fontWeight: "700", marginBottom: "5px" }}>
+            <h2 style={{ fontWeight: "700", marginBottom: "5px", fontSize:"20px" }}>
               {pD?.name}
             </h2>
 
-            <p style={{ color: "#666", marginBottom: "10px" }}>
+            <p style={{ color: "#666", marginBottom: "10px", fontSize:"18px" }}>
               ⏱ {pD?.duration}
             </p>
 
-            <p style={{ color: "#444", lineHeight: "1.6" }}>
+            <p style={{ color: "#444", lineHeight: "1.6", fontSize:"14px" }}>
               Experience a perfect getaway with curated experiences, comfort stays,
               and guided tours designed for unforgettable memories.
             </p>
