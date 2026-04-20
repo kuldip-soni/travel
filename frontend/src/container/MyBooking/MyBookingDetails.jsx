@@ -15,6 +15,12 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+pdfMake.vfs = pdfFonts.vfs;
+
+
 
 function MyBookingDetails(props) {
     const location = useLocation();
@@ -43,7 +49,229 @@ function MyBookingDetails(props) {
     const frestaurant = restaurantdata.restaurant?.filter(v => v.booking_id == id);
     console.log(frestaurant);
 
+    // const downloadPDF = (transport, hotel, restaurant) => {
+    //     console.log(transport, hotel, restaurant);
 
+    //     const docDefinition = {
+    //         content: [
+    //             { text: "Booking Details", style: "header" },
+
+    //             // TRANSPORT
+    //             { text: "Transport Details", style: "subheader" },
+    //             {
+    //                 table: {
+    //                     headerRows: 1,
+    //                     widths: ["*", "*", "*", "*", "*", "*", "*"],
+    //                     body: [
+    //                         ["Vendor", "Service", "From", "To", "DateTime", "Passenger", "Amount"],
+    //                         ...transport.map(item => [
+    //                             vendor.vendor?.find(v2 => v2.id == item?.vendor_id)?.name,
+    //                             service?.service?.find(v2 => v2.id == item?.service_id)?.name,
+    //                             item.from,
+    //                             item.to,
+    //                             item.datetime,
+    //                             item.passenger,
+    //                             item.amount
+    //                         ])
+    //                     ]
+    //                 }
+    //             },
+
+    //             // { text: " ", margin: [0, 10] },
+
+    //             // HOTEL
+    //             {
+    //                 text: "Hotel Details",
+    //                 style: "subheader"
+    //             },
+    //             {
+    //                 table: {
+    //                     headerRows: 1,
+    //                     widths: ["*", "*", "*", "*", "*", "*", "*"],
+    //                     body: [
+    //                         ["Vendor", "Service", "Checkin", "Checkout", "DateTime", "Passenger", "Amount"],
+    //                         ...(hotel || []).map(item => [
+    //                             vendor.vendor?.find(v2 => v2.id == item?.vendor_id)?.name,
+    //                             service?.service?.find(v2 => v2.id == item?.service_id)?.name,
+    //                             item.checkin || "",
+    //                             item.checkout || "",
+    //                             item.datetime
+    //                                 ? new Date(item.datetime).toLocaleString()
+    //                                 : "",
+    //                             item.passenger || "",
+    //                             item.amount || ""
+    //                         ])
+    //                     ]
+    //                 }
+    //             },
+
+    //             // { text: " ", margin: [0, 10] },
+
+    //             // // RESTAURANT
+    //             {
+    //                 text: "Restaurant Details",
+    //                 style: "subheader"
+    //             },
+    //             {
+    //                 table: {
+    //                     headerRows: 1,
+    //                     widths: ["*", "*", "*", "*", "*", "*"],
+    //                     body: [
+    //                         ["Vendor", "Service", "DateTime", "Meals", "Passenger", "Amount"],
+    //                         ...(restaurant || []).map(item => [
+    //                             vendor.vendor?.find(v2 => v2.id == item?.vendor_id)?.name,
+    //                             service?.service?.find(v2 => v2.id == item?.service_id)?.name,
+    //                             item.datetime
+    //                                 ? new Date(item.datetime).toLocaleString()
+    //                                 : "",
+    //                             item.meals || "",
+    //                             item.passenger || "",
+    //                             item.amount || ""
+    //                         ])
+    //                     ]
+    //                 }
+    //             }
+    //         ],
+
+    //         styles: {
+    //             header: {
+    //                 fontSize: 18,
+    //                 bold: true,
+    //                 margin: [0, 0, 0, 10]
+    //             },
+    //             subheader: {
+    //                 fontSize: 14,
+    //                 bold: true,
+    //                 margin: [0, 10, 0, 5]
+    //             }
+    //         }
+    //     };
+
+    //     pdfMake.createPdf(docDefinition).download("Booking_Details.pdf");
+    // };
+
+    const downloadPDF = (transport, hotel, restaurant) => {
+  const safeArray = (arr) => (Array.isArray(arr) ? arr : []);
+
+  const getVendorName = (id) =>
+    vendor?.vendor?.find(v => v.id == id)?.name || "";
+
+  const getServiceName = (id) =>
+    service?.service?.find(s => s.id == id)?.name || "";
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`; // ✅ no comma
+  };
+
+  const cell = (text) => ({
+    text: String(text || ""),
+    noWrap: true   // ✅ IMPORTANT FIX
+  });
+
+  const docDefinition = {
+    pageOrientation: "landscape", // ✅ more space (VERY IMPORTANT)
+
+    content: [
+      { text: "Booking Details", style: "header" },
+
+      // ================= TRANSPORT =================
+      { text: "Transport Details", style: "subheader" },
+      {
+        table: {
+          headerRows: 1,
+          widths: [90, 120, 80, 80, 120, 70, 80], // ✅ wider columns
+          body: [
+            ["Vendor", "Service", "From", "To", "DateTime", "Passenger", "Amount"],
+            ...(safeArray(transport).length
+              ? transport.map(item => [
+                  cell(getVendorName(item?.vendor_id)),
+                  cell(getServiceName(item?.service_id)),
+                  cell(item.from),
+                  cell(item.to),
+                  cell(formatDate(item.datetime)),
+                  cell(item.passenger),
+                  cell(item.amount)
+                ])
+              : [["-", "-", "-", "-", "-", "-", "-"]])
+          ]
+        },
+        layout: "lightHorizontalLines"
+      },
+
+      { text: "", margin: [0, 10] },
+
+      // ================= HOTEL =================
+      { text: "Hotel Details", style: "subheader" },
+      {
+        table: {
+          headerRows: 1,
+          widths: [90, 120, 80, 80, 120, 70, 80],
+          body: [
+            ["Vendor", "Service", "Checkin", "Checkout", "DateTime", "Passenger", "Amount"],
+            ...(safeArray(hotel).length
+              ? hotel.map(item => [
+                  cell(getVendorName(item?.vendor_id)),
+                  cell(getServiceName(item?.service_id)),
+                  cell(item.checkin),
+                  cell(item.checkout),
+                  cell(formatDate(item.datetime)),
+                  cell(item.passenger),
+                  cell(item.amount)
+                ])
+              : [["-", "-", "-", "-", "-", "-", "-"]])
+          ]
+        },
+        layout: "lightHorizontalLines"
+      },
+
+      { text: "", margin: [0, 10] },
+
+      // ================= RESTAURANT =================
+      { text: "Restaurant Details", style: "subheader" },
+      {
+        table: {
+          headerRows: 1,
+          widths: [100, 140, 140, 80, 70, 80],
+          body: [
+            ["Vendor", "Service", "DateTime", "Meals", "Passenger", "Amount"],
+            ...(safeArray(restaurant).length
+              ? restaurant.map(item => [
+                  cell(getVendorName(item?.vendor_id)),
+                  cell(getServiceName(item?.service_id)), // "(Dinner)" will NOT break now
+                  cell(formatDate(item.datetime)),
+                  cell(item.meals),
+                  cell(item.passenger),
+                  cell(item.amount)
+                ])
+              : [["-", "-", "-", "-", "-", "-"]])
+          ]
+        },
+        layout: "lightHorizontalLines"
+      }
+    ],
+
+    styles: {
+      header: {
+        fontSize: 18,
+        bold: true,
+        margin: [0, 0, 0, 10]
+      },
+      subheader: {
+        fontSize: 14,
+        bold: true,
+        margin: [0, 10, 0, 5]
+      }
+    },
+
+    defaultStyle: {
+      fontSize: 10
+    }
+  };
+
+  pdfMake.createPdf(docDefinition).download("Booking_Details.pdf");
+};
 
     useEffect(() => {
         dispatch(gethotel());
@@ -75,6 +303,12 @@ function MyBookingDetails(props) {
                 >
                     Booking Details
                 </h2>
+
+                <button
+                    onClick={() => downloadPDF(fTransport, fhotel, frestaurant)}
+                >
+                    Download PDF
+                </button>
 
                 <h3 style={{ marginTop: '50px', fontSize: '24px' }}>Transport Details</h3>
                 <TableContainer component={Paper} style={{ fontSize: '30px' }}>
@@ -193,7 +427,7 @@ function MyBookingDetails(props) {
                                         <TableCell>
                                             <img src={`http://localhost:4000/${v2?.restaurant_img}`} width={'50px'} height={'50px'} />
                                             <a href={`http://localhost:4000/${v2?.restaurant_img}`} download="myFile"><RemoveRedEyeIcon /></a>
-                                            </TableCell>
+                                        </TableCell>
 
 
 

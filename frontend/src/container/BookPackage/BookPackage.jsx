@@ -63,6 +63,7 @@ function BookPackage(props) {
             console.log(values);
             dispatch(bookpackage({ ...values, amount: price * formik.values.passengers?.length }))
             resetForm();
+            alert("Our customer support reprentive contact you within 24 hours. Thank you.")
             navigate("/myBooking")
 
         },

@@ -91,6 +91,7 @@ function Payment(props) {
             travel_date: booking.travel_date,
             passenger: booking.passenger,
             amount: payment?.amount ? payment?.amount : booking?.amount,
+            transaction_id: payment?.transaction_id,
             status: payment?.status ?? booking.status
         };
     });
@@ -169,6 +170,7 @@ function Payment(props) {
         },
         { field: 'travel_date', headerName: 'travel_date', width: 130 },
         { field: 'passenger', headerName: 'passenger', width: 130 },
+        { field: 'transaction_id', headerName: 'transaction_id', width: 130 },
         { field: 'amount', headerName: 'amount', width: 130 },
         { field: 'status', headerName: 'status', width: 130 },
         {
