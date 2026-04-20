@@ -121,6 +121,7 @@ function LocationDetails() {
     onSubmit: (values, { resetForm }) => {
       // add
       dispatch(bookCustomized({ ...values, user_id: localStorage.getItem("user_id"), location_id: id }))
+      alert("Our customer support reprentive contact you within 24 hours. Thank you.")
       resetForm();
       navigate("/myBooking");
     },
