@@ -151,127 +151,127 @@ function MyBookingDetails(props) {
     // };
 
     const downloadPDF = (transport, hotel, restaurant) => {
-  const safeArray = (arr) => (Array.isArray(arr) ? arr : []);
+        const safeArray = (arr) => (Array.isArray(arr) ? arr : []);
 
-  const getVendorName = (id) =>
-    vendor?.vendor?.find(v => v.id == id)?.name || "";
+        const getVendorName = (id) =>
+            vendor?.vendor?.find(v => v.id == id)?.name || "";
 
-  const getServiceName = (id) =>
-    service?.service?.find(s => s.id == id)?.name || "";
+        const getServiceName = (id) =>
+            service?.service?.find(s => s.id == id)?.name || "";
 
-  const formatDate = (date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`; // ✅ no comma
-  };
+        const formatDate = (date) => {
+            if (!date) return "";
+            const d = new Date(date);
+            return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`; // ✅ no comma
+        };
 
-  const cell = (text) => ({
-    text: String(text || ""),
-    noWrap: true   // ✅ IMPORTANT FIX
-  });
+        const cell = (text) => ({
+            text: String(text || ""),
+            // noWrap: true   // ✅ IMPORTANT FIX
+        });
 
-  const docDefinition = {
-    pageOrientation: "landscape", // ✅ more space (VERY IMPORTANT)
+        const docDefinition = {
+            pageOrientation: "landscape", // ✅ more space (VERY IMPORTANT)
 
-    content: [
-      { text: "Booking Details", style: "header" },
+            content: [
+                { text: "Booking Details", style: "header" },
 
-      // ================= TRANSPORT =================
-      { text: "Transport Details", style: "subheader" },
-      {
-        table: {
-          headerRows: 1,
-          widths: [90, 120, 80, 80, 120, 70, 80], // ✅ wider columns
-          body: [
-            ["Vendor", "Service", "From", "To", "DateTime", "Passenger", "Amount"],
-            ...(safeArray(transport).length
-              ? transport.map(item => [
-                  cell(getVendorName(item?.vendor_id)),
-                  cell(getServiceName(item?.service_id)),
-                  cell(item.from),
-                  cell(item.to),
-                  cell(formatDate(item.datetime)),
-                  cell(item.passenger),
-                  cell(item.amount)
-                ])
-              : [["-", "-", "-", "-", "-", "-", "-"]])
-          ]
-        },
-        layout: "lightHorizontalLines"
-      },
+                // ================= TRANSPORT =================
+                { text: "Transport Details", style: "subheader" },
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: [90, 120, 80, 80, 120, 70, 80], // ✅ wider columns
+                        body: [
+                            ["Vendor", "Service", "From", "To", "DateTime", "Passenger", "Amount"],
+                            ...(safeArray(transport).length
+                                ? transport.map(item => [
+                                    cell(getVendorName(item?.vendor_id)),
+                                    cell(getServiceName(item?.service_id)),
+                                    cell(item.from),
+                                    cell(item.to),
+                                    cell(formatDate(item.datetime)),
+                                    cell(item.passenger),
+                                    cell(item.amount)
+                                ])
+                                : [["-", "-", "-", "-", "-", "-", "-"]])
+                        ]
+                    },
+                    layout: "lightHorizontalLines"
+                },
 
-      { text: "", margin: [0, 10] },
+                { text: "", margin: [0, 10] },
 
-      // ================= HOTEL =================
-      { text: "Hotel Details", style: "subheader" },
-      {
-        table: {
-          headerRows: 1,
-          widths: [90, 120, 80, 80, 120, 70, 80],
-          body: [
-            ["Vendor", "Service", "Checkin", "Checkout", "DateTime", "Passenger", "Amount"],
-            ...(safeArray(hotel).length
-              ? hotel.map(item => [
-                  cell(getVendorName(item?.vendor_id)),
-                  cell(getServiceName(item?.service_id)),
-                  cell(item.checkin),
-                  cell(item.checkout),
-                  cell(formatDate(item.datetime)),
-                  cell(item.passenger),
-                  cell(item.amount)
-                ])
-              : [["-", "-", "-", "-", "-", "-", "-"]])
-          ]
-        },
-        layout: "lightHorizontalLines"
-      },
+                // ================= HOTEL =================
+                { text: "Hotel Details", style: "subheader" },
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: [90, 120, 80, 80, 120, 70, 80],
+                        body: [
+                            ["Vendor", "Service", "Checkin", "Checkout", "DateTime", "Passenger", "Amount"],
+                            ...(safeArray(hotel).length
+                                ? hotel.map(item => [
+                                    cell(getVendorName(item?.vendor_id)),
+                                    cell(getServiceName(item?.service_id)),
+                                    cell(item.checkin),
+                                    cell(item.checkout),
+                                    cell(formatDate(item.datetime)),
+                                    cell(item.passenger),
+                                    cell(item.amount)
+                                ])
+                                : [["-", "-", "-", "-", "-", "-", "-"]])
+                        ]
+                    },
+                    layout: "lightHorizontalLines"
+                },
 
-      { text: "", margin: [0, 10] },
+                { text: "", margin: [0, 10] },
 
-      // ================= RESTAURANT =================
-      { text: "Restaurant Details", style: "subheader" },
-      {
-        table: {
-          headerRows: 1,
-          widths: [100, 140, 140, 80, 70, 80],
-          body: [
-            ["Vendor", "Service", "DateTime", "Meals", "Passenger", "Amount"],
-            ...(safeArray(restaurant).length
-              ? restaurant.map(item => [
-                  cell(getVendorName(item?.vendor_id)),
-                  cell(getServiceName(item?.service_id)), // "(Dinner)" will NOT break now
-                  cell(formatDate(item.datetime)),
-                  cell(item.meals),
-                  cell(item.passenger),
-                  cell(item.amount)
-                ])
-              : [["-", "-", "-", "-", "-", "-"]])
-          ]
-        },
-        layout: "lightHorizontalLines"
-      }
-    ],
+                // ================= RESTAURANT =================
+                { text: "Restaurant Details", style: "subheader" },
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: [100, 140, 140, 80, 70, 80],
+                        body: [
+                            ["Vendor", "Service", "DateTime", "Meals", "Passenger", "Amount"],
+                            ...(safeArray(restaurant).length
+                                ? restaurant.map(item => [
+                                    cell(getVendorName(item?.vendor_id)),
+                                    cell(getServiceName(item?.service_id)), // "(Dinner)" will NOT break now
+                                    cell(formatDate(item.datetime)),
+                                    cell(item.meals),
+                                    cell(item.passenger),
+                                    cell(item.amount)
+                                ])
+                                : [["-", "-", "-", "-", "-", "-"]])
+                        ]
+                    },
+                    layout: "lightHorizontalLines"
+                }
+            ],
 
-    styles: {
-      header: {
-        fontSize: 18,
-        bold: true,
-        margin: [0, 0, 0, 10]
-      },
-      subheader: {
-        fontSize: 14,
-        bold: true,
-        margin: [0, 10, 0, 5]
-      }
-    },
+            styles: {
+                header: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                subheader: {
+                    fontSize: 14,
+                    bold: true,
+                    margin: [0, 10, 0, 5]
+                }
+            },
 
-    defaultStyle: {
-      fontSize: 10
-    }
-  };
+            defaultStyle: {
+                fontSize: 10
+            }
+        };
 
-  pdfMake.createPdf(docDefinition).download("Booking_Details.pdf");
-};
+        pdfMake.createPdf(docDefinition).download("Booking_Details.pdf");
+    };
 
     useEffect(() => {
         dispatch(gethotel());
