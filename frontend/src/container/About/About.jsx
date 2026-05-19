@@ -66,7 +66,7 @@ function About(props) {
                 <p>
                  Driven by innovation and customer satisfaction, the founder focused on building a user-friendly and reliable travel booking website that caters to modern travelers. By integrating advanced technology and keeping user needs at the core, Traveller aims to deliver convenience, affordability, and trust. The founder’s vision continues to guide the company toward expanding its services and making travel more enjoyable and stress-free for people around the world.
                 </p>
-                <h4>Virat Kohli</h4>
+                <h4>Kuldip soni</h4>
                 <p>Founder Traveler</p>
 
               </div>
@@ -74,7 +74,7 @@ function About(props) {
           </div>
         </div>
       </section>
-      <section className="Client-data">
+      {/* <section className="Client-data">
         <div className="container">
           <div className="row">
             <div className="col-lg-3 col-12 col-md-6">
@@ -131,7 +131,7 @@ function About(props) {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       <section id="Gallery">
         <div className="container">
           <p className="sub-title">Gallery</p>

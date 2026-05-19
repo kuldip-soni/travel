@@ -39,15 +39,17 @@ function MyBookingDetails(props) {
 
     const dispatch = useDispatch();
 
-    const fTransport = transportdata.transport?.filter(v => v.booking_id == id);
-
+const fTransport = transportdata.transport?.filter(
+    v => v.booking_id == id && v.vendor_id && v.service_id && v.amount
+);
     console.log(fTransport);
 
-    const fhotel = hoteldata.hotel?.filter(v => v.booking_id == id);
-    console.log(fhotel);
-
-    const frestaurant = restaurantdata.restaurant?.filter(v => v.booking_id == id);
-    console.log(frestaurant);
+   const fhotel = hoteldata.hotel?.filter(
+  v => v.booking_id == id && v.vendor_id && v.service_id && v.amount
+);
+const frestaurant = restaurantdata.restaurant?.filter(
+    v => v.booking_id == id && v.vendor_id && v.service_id && v.amount
+);
 
     // const downloadPDF = (transport, hotel, restaurant) => {
     //     console.log(transport, hotel, restaurant);

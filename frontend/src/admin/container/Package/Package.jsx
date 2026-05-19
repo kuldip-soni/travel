@@ -124,7 +124,7 @@ function Package(props) {
         name: string().required('please enter name'),
         duration: string().required('please enter duration'),
         price: string().required('please enter price'),
-        itineary_id: string().required('please select itineary_id'),
+        // itineary_id: string().required('please select itineary_id'),
         image: mixed().required('please upload package image'),
 
 
@@ -140,7 +140,7 @@ function Package(props) {
             name: '',
             duration: '',
             price: '',
-            itineary_id: '',
+            // itineary_id: '',
             image: '',
 
 

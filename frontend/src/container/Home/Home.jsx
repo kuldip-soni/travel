@@ -186,7 +186,7 @@ function Home(props) {
                     <div className="row all-siti">
                         <div className="col-lg-6 col-12">
                             <div className="siti-img">
-                                <img src="./assets/image/Founder.png" alt />
+                                <img src="./assets/image/founder1.png" alt />
                             </div>
                         </div>
                         <div className="col-lg-6 col-12">
@@ -205,7 +205,7 @@ function Home(props) {
                                     consequat dui, a malesuada ipsum. Pellentesque nec turpis
                                     viverra, blandit mi a, accumsan justo.
                                 </p>
-                                <h4>Virat Kohli</h4>
+                                <h4> Kuldip soni</h4>
                                 <p>Founder Traveler</p>
                             </div>
                         </div>
@@ -511,136 +511,139 @@ function Home(props) {
                     <p className="sub-title">
                         We are here to help you with all your travel needs. Feel free to reach out to us for any inquiries, support, or booking assistance.
                     </p>
-                    <div className="row all-Contact">
+                    <div
+                        className="row all-Contact"
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            padding: "40px 20px",
+                            background: "#f5f7fa",
+                            borderRadius: "20px",
+                        }}
+                    >
                         <div className="col-lg-5">
+                            <form
+                                onSubmit={formik.handleSubmit}
+                                id="contect-form"
+                                style={{
+                                    background: "#fff",
+                                    padding: "35px",
+                                    borderRadius: "18px",
+                                    boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
+                                }}
+                            >
+                                <h2
+                                    style={{
+                                        textAlign: "center",
+                                        marginBottom: "25px",
+                                        fontWeight: "700",
+                                        color: "#222",
+                                    }}
+                                >
+                                    Contact Us
+                                </h2>
 
-                            <form onSubmit={formik.handleSubmit} id="contect-form">
                                 <TextField
-
                                     error={formik.errors.name && formik.touched.name}
                                     margin="dense"
                                     id="name"
                                     name="name"
-                                    label="name"
+                                    label="Name"
                                     type="text"
                                     fullWidth
-                                    variant="standard"
+                                    variant="outlined"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.name}
-                                    helperText={formik.errors.name && formik.touched.name ? formik.errors.name : ''}
+                                    helperText={
+                                        formik.errors.name && formik.touched.name
+                                            ? formik.errors.name
+                                            : ""
+                                    }
+                                    style={{ marginBottom: "18px" }}
                                 />
-                                <TextField
 
+                                <TextField
                                     error={formik.errors.email && formik.touched.email}
                                     margin="dense"
                                     id="email"
                                     name="email"
-                                    label="email"
+                                    label="Email"
                                     type="email"
                                     fullWidth
-                                    variant="standard"
+                                    variant="outlined"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.email}
-                                    helperText={formik.errors.email && formik.touched.email ? formik.errors.email : ''}
+                                    helperText={
+                                        formik.errors.email && formik.touched.email
+                                            ? formik.errors.email
+                                            : ""
+                                    }
+                                    style={{ marginBottom: "18px" }}
                                 />
-                                <TextField
 
+                                <TextField
                                     error={formik.errors.subject && formik.touched.subject}
                                     margin="dense"
                                     id="subject"
                                     name="subject"
-                                    label="subject"
+                                    label="Subject"
                                     type="text"
                                     fullWidth
-                                    variant="standard"
+                                    variant="outlined"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.subject}
-                                    helperText={formik.errors.subject && formik.touched.subject ? formik.errors.subject : ''}
+                                    helperText={
+                                        formik.errors.subject && formik.touched.subject
+                                            ? formik.errors.subject
+                                            : ""
+                                    }
+                                    style={{ marginBottom: "18px" }}
                                 />
-                                <TextField
 
+                                <TextField
                                     error={formik.errors.message && formik.touched.message}
                                     margin="dense"
                                     id="message"
                                     name="message"
-                                    label="message"
+                                    label="Message"
                                     type="text"
                                     fullWidth
-                                    variant="standard"
+                                    multiline
+                                    rows={4}
+                                    variant="outlined"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.message}
-                                    helperText={formik.errors.message && formik.touched.message ? formik.errors.message : ''}
+                                    helperText={
+                                        formik.errors.message && formik.touched.message
+                                            ? formik.errors.message
+                                            : ""
+                                    }
+                                    style={{ marginBottom: "25px" }}
                                 />
-                                <input type="submit" defaultValue="Send Message" className="btn" />
+
+                                <input
+                                    type="submit"
+                                    value="Send Message"
+                                    className="btn"
+                                    style={{
+                                        width: "100%",
+                                        background: "#1976d2",
+                                        color: "#fff",
+                                        padding: "12px",
+                                        border: "none",
+                                        borderRadius: "10px",
+                                        fontSize: "16px",
+                                        fontWeight: "600",
+                                        cursor: "pointer",
+                                        transition: "0.3s",
+                                    }}
+                                />
                             </form>
-
-
                         </div>
-                        {/* <div className="col-lg-7 Contact-data">
-                            <h2 className="main-title">Get In Touch</h2>
-                            <p className="sub-title">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                eiusmod tempor incididunt ut labore et dolore magna
-                            </p>
-                            <div className="row Contact-data1">
-                                <div className="col-md-6 col-12">
-                                    <h5>Lhoksemawe, Aceh</h5>
-                                    <p>
-                                        <span><i className="fa-solid fa-phone" /></span>+62 6943 6956
-                                    </p>
-                                    <p>
-                                        <span><i className="fa-solid fa-comment" /></span>contact@domain.com
-                                    </p>
-                                    <p>
-                                        <span><i className="fa-solid fa-location-dot" /></span>Jl.
-                                        Darussalam Hagu selatan
-                                    </p>
-                                </div>
-                                <div className="col-md-6 col-12">
-                                    <h5>Lhoksemawe, Aceh</h5>
-                                    <p>
-                                        <span><i className="fa-solid fa-phone" /></span>+62 6943 6956
-                                    </p>
-                                    <p>
-                                        <span><i className="fa-solid fa-comment" /></span>contact@domain.com
-                                    </p>
-                                    <p>
-                                        <span><i className="fa-solid fa-location-dot" /></span>Jl.
-                                        Darussalam Hagu selatan
-                                    </p>
-                                </div>
-                                <div className="col-md-6 col-12">
-                                    <h5>Lhoksemawe, Aceh</h5>
-                                    <p>
-                                        <span><i className="fa-solid fa-phone" /></span>+62 6943 6956
-                                    </p>
-                                    <p>
-                                        <span><i className="fa-solid fa-comment" /></span>contact@domain.com
-                                    </p>
-                                    <p>
-                                        <span><i className="fa-solid fa-location-dot" /></span>Jl.
-                                        Darussalam Hagu selatan
-                                    </p>
-                                </div>
-                                <div className="col-md-6 col-12">
-                                    <h5>Lhoksemawe, Aceh</h5>
-                                    <p>
-                                        <span><i className="fa-solid fa-phone" /></span>+62 6943 6956
-                                    </p>
-                                    <p>
-                                        <span><i className="fa-solid fa-comment" /></span>contact@domain.com
-                                    </p>
-                                    <p>
-                                        <span><i className="fa-solid fa-location-dot" /></span>Jl.
-                                        Darussalam Hagu selatan
-                                    </p>
-                                </div>
-                            </div>
-                        </div> */}
                     </div>
                 </div>
             </section>
